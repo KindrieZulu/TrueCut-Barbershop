@@ -147,14 +147,13 @@ model Service {
 }
 
 model BarberService {
-  id        String  @id @default(uuid())
   barberId  String @map("barber_id")
   serviceId String @map("service_id")
 
   barber  User    @relation(fields: [barberId], references: [id], onDelete: Cascade)
   service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 
-  @@unique([barberId, serviceId])
+  @@id([barberId, serviceId])
   @@map("barber_services")
 }
 
