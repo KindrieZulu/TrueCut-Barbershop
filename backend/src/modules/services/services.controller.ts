@@ -4,6 +4,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/roles.guard';
 import { Roles } from '../../common/roles.decorator';
 import { UserRole } from '@prisma/client';
+import { CreateServiceDto, UpdateServiceDto } from './dto/create-service.dto';
 
 @Controller('services')
 export class ServicesController {
@@ -29,14 +30,14 @@ export class ServicesController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.COMPANY_ADMIN, UserRole.SYSTEM_ADMIN)
-  async createService(@Body() body: any) {
+  async createService(@Body() body: CreateServiceDto) {
     return this.servicesService.create(body);
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.COMPANY_ADMIN, UserRole.SYSTEM_ADMIN)
-  async updateService(@Param('id') id: string, @Body() body: any) {
+  async updateService(@Param('id') id: string, @Body() body: UpdateServiceDto) {
     return this.servicesService.update(id, body);
   }
 }

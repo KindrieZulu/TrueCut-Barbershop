@@ -16,7 +16,12 @@ export class BranchesService {
     const currentHourMin = harareTimeStr.substring(0, 5);
 
     return branches.map((b) => {
-      const isOpenNow = currentHourMin >= b.openTime && currentHourMin <= b.closeTime;
+      // openTime <= closeTime: normal same-day hours (e.g. 08:00-18:00).
+      // openTime > closeTime: overnight hours (e.g. 20:00-02:00) - open if
+      // current time is after opening OR before closing, not both at once.
+      const isOpenNow = b.openTime <= b.closeTime
+        ? currentHourMin >= b.openTime && currentHourMin <= b.closeTime
+        : currentHourMin >= b.openTime || currentHourMin <= b.closeTime;
       return {
         ...b,
         isOpenNow,
