@@ -44,7 +44,24 @@ export const PublicCatalogue: React.FC = () => {
 
       {/* Services Grid */}
       {loading ? (
-        <div className="text-center py-12 text-gold-500 animate-pulse">Loading service catalogue...</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12" aria-busy="true" aria-label="Loading service catalogue">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="bg-dark-800 border border-dark-700 rounded-xl p-6 animate-pulse">
+              <div className="flex items-start justify-between mb-3">
+                <div className="h-5 w-32 bg-dark-700 rounded" />
+                <div className="h-7 w-16 bg-dark-700 rounded-lg" />
+              </div>
+              <div className="space-y-2 mb-4">
+                <div className="h-3 w-full bg-dark-700 rounded" />
+                <div className="h-3 w-3/4 bg-dark-700 rounded" />
+              </div>
+              <div className="pt-4 border-t border-dark-700 flex items-center justify-between">
+                <div className="h-3 w-24 bg-dark-700 rounded" />
+                <div className="h-8 w-24 bg-dark-700 rounded-lg" />
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
           {services.map((s) => (

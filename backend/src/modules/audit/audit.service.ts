@@ -36,7 +36,7 @@ export class AuditService {
     });
   }
 
-  async getLogs(branchId?: string, action?: string) {
+  async getLogs(branchId?: string, action?: string, page = 1, limit = 20) {
     const where: any = {};
     if (branchId) where.branchId = branchId;
     if (action) where.action = action;
@@ -47,7 +47,8 @@ export class AuditService {
         user: { select: { id: true, name: true, role: true } },
       },
       orderBy: { createdAt: 'desc' },
-      take: 100,
+      skip: (page - 1) * limit,
+      take: limit,
     });
   }
 }

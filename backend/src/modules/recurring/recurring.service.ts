@@ -103,20 +103,14 @@ export class RecurringService {
       data: { isActive: false },
     });
 
-    const pendingBookings = await this.prisma.booking.findMany({
+    await this.prisma.booking.updateMany({
       where: {
         recurringGroupId: groupId,
         status: 'HELD',
         startTime: { gt: new Date() },
       },
+      data: { status: 'CANCELLED' },
     });
-
-    for (const b of pendingBookings) {
-      await this.prisma.booking.update({
-        where: { id: b.id },
-        data: { status: 'CANCELLED' },
-      });
-    }
 
     return { message: 'Recurring series cancelled successfully' };
   }

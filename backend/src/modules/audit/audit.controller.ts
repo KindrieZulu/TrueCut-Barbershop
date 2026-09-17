@@ -4,6 +4,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/roles.guard';
 import { Roles } from '../../common/roles.decorator';
 import { UserRole } from '@prisma/client';
+import { AuditLogQueryDto } from './dto/audit-log-query.dto';
 
 @Controller('audit-logs')
 export class AuditController {
@@ -12,10 +13,7 @@ export class AuditController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.COMPANY_ADMIN, UserRole.SYSTEM_ADMIN)
-  async getAuditLogs(
-    @Query('branchId') branchId?: string,
-    @Query('action') action?: string,
-  ) {
-    return this.auditService.getLogs(branchId, action);
+  async getAuditLogs(@Query() query: AuditLogQueryDto) {
+    return this.auditService.getLogs(query.branchId, query.action, query.page, query.limit);
   }
 }

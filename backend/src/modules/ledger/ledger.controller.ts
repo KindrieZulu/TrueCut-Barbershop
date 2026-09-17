@@ -5,6 +5,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/roles.guard';
 import { Roles } from '../../common/roles.decorator';
 import { UserRole } from '@prisma/client';
+import { LedgerQueryDto } from './dto/ledger-query.dto';
 
 @Controller('ledger')
 export class LedgerController {
@@ -13,8 +14,8 @@ export class LedgerController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.COMPANY_ADMIN, UserRole.SYSTEM_ADMIN)
-  async getLedgerEntries(@Query('branchId') branchId?: string) {
-    return this.ledgerService.getLedgerForBranch(branchId);
+  async getLedgerEntries(@Query() query: LedgerQueryDto) {
+    return this.ledgerService.getLedgerForBranch(query.branchId, undefined, undefined, query.page, query.limit);
   }
 
   @Get('export/csv')

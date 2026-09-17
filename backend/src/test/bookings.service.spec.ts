@@ -18,6 +18,7 @@ describe('BookingsService Unit Tests', () => {
         findUnique: jest.fn(),
         findMany: jest.fn(),
         update: jest.fn(),
+        updateMany: jest.fn(),
       },
       bookingHold: {
         findUnique: jest.fn(),
@@ -157,16 +158,18 @@ describe('BookingsService Unit Tests', () => {
   });
 
   describe('processNoShows', () => {
-    it('should automatically mark past confirmed bookings as NO_SHOW', async () => {
-      prismaMock.booking.findMany.mockResolvedValue([
-        { id: 'b1', bookingCode: 'TC-001' },
-        { id: 'b2', bookingCode: 'TC-002' },
-      ]);
-      prismaMock.booking.update.mockResolvedValue({});
+    it('should automatically mark past confirmed bookings as NO_SHOW in a single batch update', async () => {
+      prismaMock.booking.updateMany.mockResolvedValue({ count: 2 });
 
       const noShowCount = await bookingsService.processNoShows();
       expect(noShowCount).toBe(2);
-      expect(prismaMock.booking.update).toHaveBeenCalledTimes(2);
+      expect(prismaMock.booking.updateMany).toHaveBeenCalledTimes(1);
+      expect(prismaMock.booking.updateMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({ status: BookingStatus.CONFIRMED }),
+          data: { status: BookingStatus.NO_SHOW },
+        }),
+      );
     });
   });
 });

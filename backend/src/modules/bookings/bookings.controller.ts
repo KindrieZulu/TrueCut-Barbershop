@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Param, Query, Body, UseGuards, Req } from '@nestjs/common';
 import { BookingsService } from './bookings.service';
+import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/roles.guard';
 import { Roles } from '../../common/roles.decorator';
@@ -18,8 +19,8 @@ export class BookingsController {
 
   @Get('client')
   @UseGuards(JwtAuthGuard)
-  async getMyBookings(@Req() req: any) {
-    return this.bookingsService.getClientBookings(req.user.id);
+  async getMyBookings(@Req() req: any, @Query() pagination: PaginationQueryDto) {
+    return this.bookingsService.getClientBookings(req.user.id, pagination.page, pagination.limit);
   }
 
   @Get('branch/today')

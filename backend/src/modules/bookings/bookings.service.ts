@@ -139,7 +139,7 @@ export class BookingsService {
     return booking;
   }
 
-  async getClientBookings(clientId: string) {
+  async getClientBookings(clientId: string, page = 1, limit = 20) {
     return this.prisma.booking.findMany({
       where: { clientId },
       include: {
@@ -149,6 +149,8 @@ export class BookingsService {
         payments: { select: { id: true, status: true, amount: true, paymentType: true } },
       },
       orderBy: { startTime: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
     });
   }
 
@@ -229,23 +231,19 @@ export class BookingsService {
     const penaltyFee = this.settingsService.getNumber('penalty_fee', 3);
     const cutoffTime = addMinutes(new Date(), -graceMinutes);
 
-    const pendingNoShows = await this.prisma.booking.findMany({
+    const result = await this.prisma.booking.updateMany({
       where: {
         status: BookingStatus.CONFIRMED,
         startTime: { lte: cutoffTime },
       },
+      data: { status: BookingStatus.NO_SHOW },
     });
 
-    for (const booking of pendingNoShows) {
-      await this.prisma.booking.update({
-        where: { id: booking.id },
-        data: { status: BookingStatus.NO_SHOW },
-      });
-
-      this.logger.log(`[NO_SHOW AUTOMATION] Marked Booking ${booking.bookingCode} as NO_SHOW (Penalty: $${penaltyFee})`);
+    if (result.count > 0) {
+      this.logger.log(`[NO_SHOW AUTOMATION] Marked ${result.count} booking(s) as NO_SHOW (Penalty: $${penaltyFee})`);
     }
 
-    return pendingNoShows.length;
+    return result.count;
   }
 
   /**

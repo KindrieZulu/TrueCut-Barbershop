@@ -297,6 +297,7 @@ model Payment {
   booking Booking         @relation(fields: [bookingId], references: [id], onDelete: Cascade)
   ledgers PaymentLedger[]
 
+  @@index([providerReference])
   @@map("payments")
 }
 

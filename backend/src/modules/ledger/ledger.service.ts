@@ -48,7 +48,7 @@ export class LedgerService {
     return entry;
   }
 
-  async getLedgerForBranch(branchId?: string, startDate?: Date, endDate?: Date) {
+  private buildLedgerWhere(branchId?: string, startDate?: Date, endDate?: Date) {
     const where: any = {};
     if (branchId) where.branchId = branchId;
     if (startDate || endDate) {
@@ -56,9 +56,29 @@ export class LedgerService {
       if (startDate) where.createdAt.gte = startDate;
       if (endDate) where.createdAt.lte = endDate;
     }
+    return where;
+  }
 
+  async getLedgerForBranch(branchId?: string, startDate?: Date, endDate?: Date, page = 1, limit = 20) {
     return this.prisma.paymentLedger.findMany({
-      where,
+      where: this.buildLedgerWhere(branchId, startDate, endDate),
+      include: {
+        booking: {
+          select: { bookingCode: true, client: { select: { name: true, phone: true } } },
+        },
+        branch: { select: { id: true, name: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+  }
+
+  async generateCsvExport(branchId?: string) {
+    // Deliberately not paginated: a financial export needs to be complete for
+    // reconciliation, unlike the paged list view getLedgerForBranch serves the UI.
+    const entries = await this.prisma.paymentLedger.findMany({
+      where: this.buildLedgerWhere(branchId),
       include: {
         booking: {
           select: { bookingCode: true, client: { select: { name: true, phone: true } } },
@@ -67,10 +87,6 @@ export class LedgerService {
       },
       orderBy: { createdAt: 'desc' },
     });
-  }
-
-  async generateCsvExport(branchId?: string) {
-    const entries = await this.getLedgerForBranch(branchId);
     let csv = 'ID,BookingCode,ClientName,Branch,EntryType,ServiceAmount,BookingFee,EmergencyFee,SqueezeInFee,HouseCallFee,Penalty,TotalNet,ProviderRef,Timestamp\n';
 
     for (const e of entries) {
