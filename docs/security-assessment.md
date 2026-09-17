@@ -25,10 +25,16 @@ This was a repository-level assessment. It was not an authenticated external pen
 ## Residual risks
 
 - The backend still has high and moderate advisories in the NestJS 10 dependency tree. The available fixes require a coordinated NestJS major-version upgrade and should be handled as a separate compatibility change.
-- Authentication endpoints use inline request objects rather than DTO classes, so their body fields do not receive the full `ValidationPipe` shape validation. Add DTOs before exposing the API broadly.
-- Cookie-based authentication should be paired with a CSRF defense for state-changing requests when deployed cross-site.
+- ~~Authentication endpoints use inline request objects rather than DTO classes...~~ Resolved 2026-09-17: all five auth endpoints now bind to validated DTO classes (`backend/src/modules/auth/dto/`), verified with tests that replay the pre-fix behavior alongside the new rejections (`backend/src/test/auth-dto-validation.spec.ts`).
+- ~~Cookie-based authentication should be paired with a CSRF defense...~~ Resolved 2026-09-17: double-submit-cookie CSRF middleware (`backend/src/common/csrf.middleware.ts`), verified against a live server running with `sameSite=none` (`backend/src/test/csrf.middleware.spec.ts`).
 - `docker-compose.yml` is a local/demo stack. Production must use managed secrets, private database/Redis networking, TLS termination, and rotated credentials.
 - No external network penetration test was possible without a deployed target and authorization scope.
+
+## Process recommendation
+
+Every fixed finding above except the `bcrypt` upgrade was found in a "Phase 6: hardening" pass that happened after the architecture, schema, and backend modules were already built (see `docs/phase-6-hardening-tests.md`). That ordering is itself a finding: security review arriving as a final pass, rather than continuously, is exactly the process that let a hard-coded secret, a predictable JWT fallback, an unvalidated auth endpoint, and a missing CSRF defense all ship in the same codebase at once.
+
+Going forward, security-relevant changes (auth, payments, anything touching cookies/tokens/secrets, new dependencies) should be reviewed at the time they're made, not deferred to a later audit. This is enforced structurally, not just documented: see `.github/pull_request_template.md`, which requires every PR to state its security considerations before merge.
 
 ## CI/CD controls added
 
