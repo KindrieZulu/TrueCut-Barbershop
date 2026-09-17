@@ -1,0 +1,105 @@
+name: CI
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+      - name: Run backend dependency audit
+        working-directory: backend
+        run: npm audit --omit=dev --audit-level=critical
+      - name: Build backend
+        working-directory: backend
+        run: npm run build
+      - name: Run backend tests
+        working-directory: backend
+        run: npm test -- --runInBand --passWithNoTests
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Run frontend tests
+        working-directory: frontend
+        run: npm test -- --run
+      - name: Run frontend dependency audit
+        working-directory: frontend
+        run: npm audit --omit=dev --audit-level=critical
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build --silent
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scan repository for secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend, secrets]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate docker compose configuration
+        env:
+          POSTGRES_USER: ci_user
+          POSTGRES_PASSWORD: ci_password
+          POSTGRES_DB: truecut_db
+          DATABASE_URL: postgresql://ci_user:ci_password@postgres:5432/truecut_db
+          JWT_SECRET: ci-jwt-secret-for-compose-validation-only
+          JWT_REFRESH_SECRET: ci-refresh-secret-for-compose-validation-only
+        run: docker compose config >/dev/null
+      - name: Build backend image
+        run: docker build --tag truecut-backend:ci ./backend
+      - name: Build frontend image
+        run: docker build --tag truecut-frontend:ci ./frontend
+      - name: Scan backend image
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: truecut-backend:ci
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '1'
+      - name: Scan frontend image
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: truecut-frontend:ci
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '1'

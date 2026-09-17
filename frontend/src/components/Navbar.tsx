@@ -1,0 +1,112 @@
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { Scissors, Clock, LogOut, LayoutDashboard, Sparkles, ArrowLeft } from 'lucide-react';
+
+export const Navbar: React.FC = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [harareTime, setHarareTime] = useState('');
+
+  useEffect(() => {
+    const updateClock = () => {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', {
+        timeZone: 'Africa/Harare',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      });
+      setHarareTime(timeStr);
+    };
+
+    updateClock();
+    const interval = setInterval(updateClock, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const getDashboardPath = () => {
+    if (!user) return '/catalogue';
+    switch (user.role) {
+      case 'RECEPTIONIST': return '/receptionist';
+      case 'BARBER': return '/barber';
+      case 'COMPANY_ADMIN': return '/admin';
+      case 'SYSTEM_ADMIN': return '/sysadmin';
+      default: return '/dashboard';
+    }
+  };
+
+  return (
+    <nav className="bg-dark-800/80 backdrop-blur-xl border-b border-dark-700 sticky top-0 z-50 px-4 py-3">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        {/* Brand & Home Navigation */}
+        <div className="flex items-center space-x-3">
+          {location.pathname !== '/' && location.pathname !== '/welcome' && (
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center space-x-1.5 bg-dark-900 hover:bg-dark-700 text-gray-300 hover:text-white border border-dark-600 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
+              title="Go back"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">Back</span>
+            </button>
+          )}
+          <Link to="/welcome" className="flex items-center space-x-2">
+            <div className="bg-gold-500 p-2 rounded-lg text-black font-bold">
+              <Scissors className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-xl font-extrabold tracking-wider text-white">TRUE<span className="text-gold-500">CUT</span></span>
+              <span className="text-xs text-gray-400 block -mt-1 font-medium">HARARE, ZIMBABWE</span>
+            </div>
+          </Link>
+        </div>
+
+        {/* Live Harare Clock */}
+        <div className="hidden md:flex items-center space-x-2 bg-dark-900 px-3 py-1.5 rounded-full border border-dark-600 text-xs text-gold-400">
+          <Clock className="w-3.5 h-3.5 animate-pulse text-gold-500" />
+          <span className="font-mono font-bold">{harareTime} CAT</span>
+        </div>
+
+        {/* Navigation Links */}
+        <div className="flex items-center space-x-3">
+          <Link
+            to="/catalogue"
+            className="text-xs sm:text-sm text-gray-300 hover:text-gold-400 px-2 py-1 transition-colors flex items-center space-x-1"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-gold-500" />
+            <span>Prices</span>
+          </Link>
+
+          {user ? (
+            <>
+              <Link
+                to={getDashboardPath()}
+                className="flex items-center space-x-1 bg-gold-500 hover:bg-gold-600 text-black font-semibold text-xs sm:text-sm px-3 py-1.5 rounded-lg transition-colors"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                <span className="hidden sm:inline">Dashboard</span>
+              </Link>
+
+              <button
+                onClick={() => { logout(); navigate('/welcome'); }}
+                className="text-gray-400 hover:text-red-400 p-1.5 rounded-lg transition-colors"
+                title="Logout"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/book"
+              className="bg-gold-500 hover:bg-gold-600 text-black font-semibold text-xs sm:text-sm px-4 py-1.5 rounded-lg transition-colors shadow-lg shadow-gold-500/10"
+            >
+              Book Now
+            </Link>
+          )}
+        </div>
+      </div>
+    </nav>
+  );
+};

@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: truecut_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:?POSTGRES_USER is required}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}"
+      POSTGRES_DB: "${POSTGRES_DB:-truecut_db}"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: truecut_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: truecut_backend
+    restart: always
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      DATABASE_URL: "${DATABASE_URL:?DATABASE_URL is required}"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: "${JWT_SECRET:?JWT_SECRET is required}"
+      JWT_REFRESH_SECRET: "${JWT_REFRESH_SECRET:?JWT_REFRESH_SECRET is required}"
+      PAYNOW_INTEGRATION_ID: "${PAYNOW_INTEGRATION_ID:-}"
+      PAYNOW_INTEGRATION_KEY: "${PAYNOW_INTEGRATION_KEY:-}"
+      SMS_PROVIDER: "${SMS_PROVIDER:-TWILIO}"
+      GATEWAYAPI_TOKEN: "${GATEWAYAPI_TOKEN:-}"
+      GATEWAYAPI_SENDER: "${GATEWAYAPI_SENDER:-}"
+      TWILIO_ACCOUNT_SID: "${TWILIO_ACCOUNT_SID:-}"
+      TWILIO_AUTH_TOKEN: "${TWILIO_AUTH_TOKEN:-}"
+      TWILIO_PHONE_NUMBER: "${TWILIO_PHONE_NUMBER:-}"
+      AFRICASTALKING_USERNAME: "${AFRICASTALKING_USERNAME:-}"
+      AFRICASTALKING_API_KEY: "${AFRICASTALKING_API_KEY:-}"
+      DEFAULT_TIMEZONE: "Africa/Harare"
+      CORS_ORIGINS: "http://localhost:80,http://localhost:5173,http://localhost:4173"
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://localhost:3000/api/v1/health/live').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))\""]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: truecut_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/ >/dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  postgres_data:
+  redis_data:

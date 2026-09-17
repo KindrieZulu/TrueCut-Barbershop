@@ -1,0 +1,414 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  SYSTEM_ADMIN
+  COMPANY_ADMIN
+  RECEPTIONIST
+  BARBER
+  CLIENT
+}
+
+enum BookingType {
+  GENERAL
+  REGULAR
+  EMERGENCY
+  HOUSE_CALL
+}
+
+enum BookingStatus {
+  HELD
+  CONFIRMED
+  SERVED
+  CANCELLED
+  NO_SHOW
+}
+
+enum PaymentType {
+  ECOCASH
+  PAYNOW
+  CASH
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+  TIMED_OUT
+  REFUND_PENDING
+  PARTIALLY_REFUNDED
+  REFUNDED
+}
+
+enum LedgerEntryType {
+  PAYMENT_COLLECTED
+  REFUND_ISSUED
+  PENALTY_APPLIED
+}
+
+enum NotificationStatus {
+  SCHEDULED
+  SENT
+  DELIVERED
+  FAILED
+}
+
+model User {
+  id               String   @id @default(uuid())
+  name             String
+  phone            String   @unique
+  email            String?  @unique
+  passwordHash     String?
+  role             UserRole @default(CLIENT)
+  isActive         Boolean  @default(true)
+  refreshTokenHash String?  @map("refresh_token_hash")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  staffBranches      BranchStaff[]
+  barberServices     BarberService[]
+  barberSchedules    BarberSchedule[]
+  barberBlockOuts    BarberBlockOut[]
+  clientBookings     Booking[]             @relation("ClientBookings")
+  barberBookings     Booking[]             @relation("BarberBookings")
+  receptionBookings  Booking[]             @relation("ReceptionistBookings")
+  recurringGroups    RecurringBookingGroup[]
+  auditLogs          AuditLog[]
+
+  @@map("users")
+}
+
+model Branch {
+  id        String   @id @default(uuid())
+  name      String
+  code      String   @unique
+  address   String
+  city      String   @default("Harare")
+  phone     String
+  isActive  Boolean  @default(true) @map("is_active")
+  openTime  String   @default("08:00") @map("open_time")
+  closeTime String   @default("18:00") @map("close_time")
+  timezone  String   @default("Africa/Harare")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  staff           BranchStaff[]
+  schedules       BarberSchedule[]
+  blockOuts       BarberBlockOut[]
+  bookingHolds    BookingHold[]
+  bookings        Booking[]
+  recurringGroups RecurringBookingGroup[]
+  ledgers         PaymentLedger[]
+  dailyReports    DailyReport[]
+
+  @@map("branches")
+}
+
+model BranchStaff {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  branchId  String   @map("branch_id")
+  isPrimary Boolean  @default(true) @map("is_primary")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, branchId])
+  @@map("branch_staff")
+}
+
+model Service {
+  id              String   @id @default(uuid())
+  name            String
+  description     String
+  price           Float
+  durationMinutes Int      @map("duration_minutes")
+  isActive        Boolean  @default(true) @map("is_active")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  barberServices  BarberService[]
+  bookingHolds    BookingHold[]
+  bookings        Booking[]
+  recurringGroups RecurringBookingGroup[]
+
+  @@map("services")
+}
+
+model BarberService {
+  id        String  @id @default(uuid())
+  barberId  String @map("barber_id")
+  serviceId String @map("service_id")
+
+  barber  User    @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@unique([barberId, serviceId])
+  @@map("barber_services")
+}
+
+model BarberSchedule {
+  id           String   @id @default(uuid())
+  barberId     String   @map("barber_id")
+  branchId     String   @map("branch_id")
+  dayOfWeek    Int      @map("day_of_week") // 0 = Sunday, 1 = Monday, ... 6 = Saturday
+  startTime    String   @map("start_time") // "08:00"
+  endTime      String   @map("end_time") // "17:00"
+  isWorkingDay Boolean  @default(true) @map("is_working_day")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  barber User   @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@unique([barberId, branchId, dayOfWeek])
+  @@map("barber_schedules")
+}
+
+model BarberBlockOut {
+  id        String   @id @default(uuid())
+  barberId  String   @map("barber_id")
+  branchId  String   @map("branch_id")
+  startTime DateTime @map("start_time")
+  endTime   DateTime @map("end_time")
+  reason    String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  barber User   @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@index([barberId, startTime, endTime])
+  @@map("barber_block_outs")
+}
+
+model BookingHold {
+  id               String      @id @default(uuid())
+  holdToken        String      @unique @map("hold_token")
+  branchId         String      @map("branch_id")
+  barberId         String      @map("barber_id")
+  serviceId        String      @map("service_id")
+  clientId         String      @map("client_id")
+  bookingType      BookingType @map("booking_type")
+  startTime        DateTime    @map("start_time")
+  endTime          DateTime    @map("end_time")
+  expiresAt        DateTime    @map("expires_at")
+  houseCallAddress String?     @map("house_call_address")
+  isEmergency      Boolean     @default(false) @map("is_emergency")
+  isSqueezeIn      Boolean     @default(false) @map("is_squeeze_in")
+  createdAt        DateTime    @default(now()) @map("created_at")
+
+  branch  Branch  @relation(fields: [branchId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
+
+  @@index([barberId, startTime, endTime, expiresAt])
+  @@map("booking_holds")
+}
+
+model Booking {
+  id               String        @id @default(uuid())
+  bookingCode      String        @unique @map("booking_code")
+  branchId         String        @map("branch_id")
+  clientId         String        @map("client_id")
+  barberId         String        @map("barber_id")
+  serviceId        String        @map("service_id")
+  receptionistId   String?       @map("receptionist_id")
+  recurringGroupId String?       @map("recurring_group_id")
+  bookingType      BookingType   @default(GENERAL) @map("booking_type")
+  status           BookingStatus @default(HELD)
+
+  startTime DateTime @map("start_time")
+  endTime   DateTime @map("end_time")
+
+  serviceFee       Float @map("service_fee")
+  bookingFee       Float @map("booking_fee")
+  emergencyFee     Float @default(0.00) @map("emergency_fee")
+  houseCallFee     Float @default(0.00) @map("house_call_fee")
+  squeezeInFee     Float @default(0.00) @map("squeeze_in_fee")
+  totalAmount      Float @map("total_amount")
+
+  houseCallAddress String? @map("house_call_address")
+  isSqueezeIn      Boolean @default(false) @map("is_squeeze_in")
+  squeezeInReason  String? @map("squeeze_in_reason")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  branch         Branch                 @relation(fields: [branchId], references: [id])
+  client         User                   @relation("ClientBookings", fields: [clientId], references: [id])
+  barber         User                   @relation("BarberBookings", fields: [barberId], references: [id])
+  receptionist   User?                  @relation("ReceptionistBookings", fields: [receptionistId], references: [id])
+  service        Service                @relation(fields: [serviceId], references: [id])
+  recurringGroup RecurringBookingGroup? @relation(fields: [recurringGroupId], references: [id])
+  payments       Payment[]
+  ledgers        PaymentLedger[]
+  notifications  NotificationLog[]
+  bookingSlots   BookingSlot[]
+
+  @@index([barberId, startTime, endTime, status])
+  @@index([branchId, startTime])
+  @@index([clientId])
+  @@map("bookings")
+}
+
+model RecurringBookingGroup {
+  id        String   @id @default(uuid())
+  clientId  String   @map("client_id")
+  branchId  String   @map("branch_id")
+  barberId  String   @map("barber_id")
+  serviceId String   @map("service_id")
+  dayOfWeek Int      @map("day_of_week")
+  timeSlot  String   @map("time_slot") // "10:00"
+  startDate DateTime @map("start_date")
+  endDate   DateTime? @map("end_date")
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  client   User      @relation(fields: [clientId], references: [id])
+  branch   Branch    @relation(fields: [branchId], references: [id])
+  service  Service   @relation(fields: [serviceId], references: [id])
+  bookings Booking[]
+
+  @@map("recurring_booking_groups")
+}
+
+model Payment {
+  id                String        @id @default(uuid())
+  bookingId         String        @map("booking_id")
+  amount            Float
+  paymentType       PaymentType   @map("payment_type")
+  status            PaymentStatus @default(PENDING)
+  providerReference String?       @map("provider_reference")
+  idempotencyKey    String        @unique @map("idempotency_key")
+  refundAmount      Float         @default(0.00) @map("refund_amount")
+  penaltyDeduction  Float         @default(0.00) @map("penalty_deduction")
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  booking Booking         @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  ledgers PaymentLedger[]
+
+  @@map("payments")
+}
+
+model PaymentLedger {
+  id               String          @id @default(uuid())
+  paymentId        String?         @map("payment_id")
+  bookingId        String          @map("booking_id")
+  branchId         String          @map("branch_id")
+  entryType        LedgerEntryType @map("entry_type")
+  serviceAmount    Float           @map("service_amount")
+  bookingFee       Float           @map("booking_fee")
+  emergencyFee     Float           @map("emergency_fee")
+  squeezeInFee     Float           @map("squeeze_in_fee")
+  houseCallFee     Float           @map("house_call_fee")
+  penaltyAmount    Float           @map("penalty_amount")
+  totalNet         Float           @map("total_net")
+  providerRef      String?         @map("provider_ref")
+  createdAt        DateTime        @default(now()) @map("created_at")
+
+  payment Payment? @relation(fields: [paymentId], references: [id])
+  booking Booking  @relation(fields: [bookingId], references: [id])
+  branch  Branch   @relation(fields: [branchId], references: [id])
+
+  @@map("payment_ledgers")
+}
+
+model NotificationLog {
+  id             String             @id @default(uuid())
+  bookingId      String?            @map("booking_id")
+  recipientPhone String             @map("recipient_phone")
+  recipientRole  UserRole           @map("recipient_role")
+  type           String             @map("type")
+  channel        String             @default("SMS")
+  message        String
+  status         NotificationStatus @default(SCHEDULED)
+  providerRef    String?            @map("provider_ref")
+  retryCount     Int                @default(0) @map("retry_count")
+  sentAt         DateTime?          @map("sent_at")
+  createdAt      DateTime           @default(now()) @map("created_at")
+
+  booking Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  @@map("notification_logs")
+}
+
+model AuditLog {
+  id            String   @id @default(uuid())
+  userId        String?  @map("user_id")
+  userRole      UserRole? @map("user_role")
+  branchId      String?  @map("branch_id")
+  action        String
+  entityName    String   @map("entity_name")
+  entityId      String?  @map("entity_id")
+  beforeState   Json?    @map("before_state")
+  afterState    Json?    @map("after_state")
+  ipAddress     String?  @map("ip_address")
+  correlationId String?  @map("correlation_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([correlationId])
+  @@index([action])
+  @@map("audit_logs")
+}
+
+model SystemSetting {
+  key         String   @id
+  value       String
+  description String
+  category    String   @default("GENERAL")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("system_settings")
+}
+
+model OtpCode {
+  id         String   @id @default(uuid())
+  phone      String
+  code       String
+  expiresAt  DateTime @map("expires_at")
+  attempts   Int      @default(0)
+  isVerified Boolean  @default(false) @map("is_verified")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([phone, code])
+  @@map("otp_codes")
+}
+
+model DailyReport {
+  id          String   @id @default(uuid())
+  branchId    String?  @map("branch_id")
+  reportDate  DateTime @map("report_date")
+  reportType  String   @map("report_type") // FINANCIAL, SYSTEM
+  reportData  Json     @map("report_data")
+  generatedAt DateTime @default(now()) @map("generated_at")
+
+  branch Branch? @relation(fields: [branchId], references: [id])
+
+  @@map("daily_reports")
+}
+
+model BookingSlot {
+  id        String   @id @default(uuid())
+  bookingId String   @unique @map("booking_id")
+  barberId  String   @map("barber_id")
+  startTime DateTime @map("start_time")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@unique([barberId, startTime])
+  @@map("booking_slots")
+}
