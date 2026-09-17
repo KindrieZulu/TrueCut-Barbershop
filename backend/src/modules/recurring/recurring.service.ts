@@ -1,8 +1,8 @@
-import { Injectable, BadRequestException, Logger } from '@nestjs/common';
+import { Injectable, BadRequestException, ForbiddenException, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { BookingHoldsService } from '../booking-holds/booking-holds.service';
 import { BookingsService } from '../bookings/bookings.service';
-import { BookingType } from '@prisma/client';
+import { BookingType, UserRole } from '@prisma/client';
 import { addWeeks, parse, format, addMinutes } from 'date-fns';
 
 export interface CreateRecurringDto {
@@ -85,7 +85,27 @@ export class RecurringService {
     };
   }
 
-  async getGroupById(groupId: string) {
+  private async getOwnedGroupOrThrow(groupId: string, requestingUser: { id: string; role: string }) {
+    const group = await this.prisma.recurringBookingGroup.findUnique({ where: { id: groupId } });
+    if (!group) {
+      throw new NotFoundException('Recurring booking series not found');
+    }
+
+    const isStaff =
+      requestingUser.role === UserRole.RECEPTIONIST ||
+      requestingUser.role === UserRole.COMPANY_ADMIN ||
+      requestingUser.role === UserRole.SYSTEM_ADMIN;
+
+    if (!isStaff && group.clientId !== requestingUser.id) {
+      throw new ForbiddenException('Access denied to this recurring booking series');
+    }
+
+    return group;
+  }
+
+  async getGroupById(groupId: string, requestingUser: { id: string; role: string }) {
+    await this.getOwnedGroupOrThrow(groupId, requestingUser);
+
     return this.prisma.recurringBookingGroup.findUnique({
       where: { id: groupId },
       include: {
@@ -97,7 +117,9 @@ export class RecurringService {
     });
   }
 
-  async cancelSeries(groupId: string) {
+  async cancelSeries(groupId: string, requestingUser: { id: string; role: string }) {
+    await this.getOwnedGroupOrThrow(groupId, requestingUser);
+
     await this.prisma.recurringBookingGroup.update({
       where: { id: groupId },
       data: { isActive: false },
