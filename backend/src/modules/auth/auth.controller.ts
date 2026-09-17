@@ -1,5 +1,6 @@
 import { Controller, Post, Body, UseGuards, Req, Res } from '@nestjs/common';
 import { Response } from 'express';
+import { randomBytes } from 'crypto';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RequestOtpDto } from './dto/request-otp.dto';
@@ -7,6 +8,8 @@ import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { VerifyOtpLoginDto } from './dto/verify-otp-login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { parseCookies } from '../../common/cookies';
+import { CSRF_COOKIE_NAME } from '../../common/csrf.middleware';
 
 @Controller('auth')
 export class AuthController {
@@ -56,7 +59,7 @@ export class AuthController {
 
   @Post('refresh')
   async refresh(@Req() request: any, @Res({ passthrough: true }) response: Response) {
-    const refreshToken = this.readCookie(request, 'truecut_refresh');
+    const refreshToken = parseCookies(request.headers?.cookie)['truecut_refresh'] || '';
     const result = await this.authService.refreshSession(refreshToken);
     this.setAuthCookies(response, result.accessToken, result.refreshToken);
     return { refreshed: true };
@@ -85,16 +88,21 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/api/v1/auth',
     });
+    // Deliberately NOT httpOnly: the frontend reads this and echoes it back as
+    // the X-CSRF-Token header (see CsrfMiddleware). Scoped to '/' so it is
+    // both readable from any page and sent alongside every API request.
+    response.cookie(CSRF_COOKIE_NAME, randomBytes(32).toString('hex'), {
+      httpOnly: false,
+      secure,
+      sameSite,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/',
+    });
   }
 
   private clearAuthCookies(response: Response) {
     response.clearCookie('truecut_access', { path: '/api/v1' });
     response.clearCookie('truecut_refresh', { path: '/api/v1/auth' });
-  }
-
-  private readCookie(request: any, name: string) {
-    const header = request.headers?.cookie || '';
-    const value = header.split(';').find((part: string) => part.trim().startsWith(`${name}=`));
-    return value ? decodeURIComponent(value.trim().slice(name.length + 1)) : '';
+    response.clearCookie(CSRF_COOKIE_NAME, { path: '/' });
   }
 }

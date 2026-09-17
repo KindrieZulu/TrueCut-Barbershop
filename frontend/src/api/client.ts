@@ -10,7 +10,21 @@ export const apiClient = axios.create({
   },
 });
 
+function readCookie(name: string): string | undefined {
+  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : undefined;
+}
+
+const SAFE_METHODS = new Set(['get', 'head', 'options']);
+
 apiClient.interceptors.request.use((config) => {
+  const method = (config.method || 'get').toLowerCase();
+  if (!SAFE_METHODS.has(method)) {
+    const csrfToken = readCookie('truecut_csrf');
+    if (csrfToken) {
+      config.headers.set('X-CSRF-Token', csrfToken);
+    }
+  }
   return config;
 });
 

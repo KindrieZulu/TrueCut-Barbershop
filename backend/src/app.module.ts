@@ -7,6 +7,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { PrismaModule } from './database/prisma.module';
 import { CorrelationIdMiddleware } from './common/correlation-id.middleware';
 import { RateLimitMiddleware } from './common/rate-limit.middleware';
+import { CsrfMiddleware } from './common/csrf.middleware';
 
 import { SystemSettingsModule } from './modules/config/system-settings.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -70,5 +71,6 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(CorrelationIdMiddleware).forRoutes('*');
     consumer.apply(RateLimitMiddleware).forRoutes('*');
+    consumer.apply(CsrfMiddleware).forRoutes('*');
   }
 }
