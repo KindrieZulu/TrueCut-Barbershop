@@ -82,6 +82,7 @@ false success.
 
 ## Key docs
 
+- [docs/srs.md](docs/srs.md)
 - [docs/system-architecture.md](docs/system-architecture.md)
 - [docs/database-erd.md](docs/database-erd.md)
 - [docs/production-hardening.md](docs/production-hardening.md)

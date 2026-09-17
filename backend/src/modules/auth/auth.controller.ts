@@ -2,55 +2,54 @@ import { Controller, Post, Body, UseGuards, Req, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { UserRole } from '@prisma/client';
+import { RequestOtpDto } from './dto/request-otp.dto';
+import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { VerifyOtpLoginDto } from './dto/verify-otp-login.dto';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('otp/request')
-  async requestOtp(@Body() body: { phone: string }) {
-    return this.authService.requestOtp(body.phone);
+  async requestOtp(@Body() dto: RequestOtpDto) {
+    return this.authService.requestOtp(dto.phone);
   }
 
   @Post('otp/verify')
-  async verifyOtp(@Body() body: { phone: string; code: string }) {
-    return this.authService.verifyOtp(body.phone, body.code);
+  async verifyOtp(@Body() dto: VerifyOtpDto) {
+    return this.authService.verifyOtp(dto.phone, dto.code);
   }
 
   @Post('otp/verify-login')
   async verifyOtpAndLogin(
     @Res({ passthrough: true }) response: Response,
-    @Body() body: { phone: string; code: string; name?: string },
+    @Body() dto: VerifyOtpLoginDto,
   ) {
-    const result = await this.authService.verifyOtpAndLogin(body.phone, body.code, body.name);
+    const result = await this.authService.verifyOtpAndLogin(dto.phone, dto.code, dto.name);
     this.setAuthCookies(response, result.accessToken, result.refreshToken);
     return { user: result.user };
   }
 
   @Post('register')
   @UseGuards(JwtAuthGuard)
-  async register(
-    @Req() req: any,
-    @Body('name') name: string,
-    @Body('phone') phone: string,
-    @Body('email') email?: string,
-    @Body('password') password?: string,
-    @Body('role') role?: UserRole,
-  ) {
+  async register(@Req() req: any, @Body() dto: RegisterDto) {
     const requestingUserRole = req.user?.role;
-    const result = await this.authService.register(name, phone, email, password, role, requestingUserRole);
+    const result = await this.authService.register(
+      dto.name,
+      dto.phone,
+      dto.email,
+      dto.password,
+      dto.role,
+      requestingUserRole,
+    );
     return { user: result.user };
   }
 
   @Post('login')
-  async login(
-    @Req() request: any,
-    @Res({ passthrough: true }) response: Response,
-    @Body() body: { phone: string; password?: string },
-  ) {
-    const payload = this.getPayload(request, body);
-    const result = await this.authService.login(payload.phone, payload.password);
+  async login(@Res({ passthrough: true }) response: Response, @Body() dto: LoginDto) {
+    const result = await this.authService.login(dto.phone, dto.password);
     this.setAuthCookies(response, result.accessToken, result.refreshToken);
     return { user: result.user };
   }
@@ -97,16 +96,5 @@ export class AuthController {
     const header = request.headers?.cookie || '';
     const value = header.split(';').find((part: string) => part.trim().startsWith(`${name}=`));
     return value ? decodeURIComponent(value.trim().slice(name.length + 1)) : '';
-  }
-
-  private getPayload(request: any, body: any) {
-    if (body?.phone) return body;
-    if (request.body?.phone) return request.body;
-
-    try {
-      return JSON.parse(request.rawBody?.toString('utf8') || '{}');
-    } catch {
-      return {};
-    }
   }
 }
