@@ -39,6 +39,10 @@ apiClient.interceptors.response.use(
         return apiClient(request);
       } catch {
         localStorage.removeItem('user_info');
+        // AuthContext listens for this to clear its in-memory user state too -
+        // without it, the UI kept rendering as logged-in after a failed
+        // refresh, with every subsequent request 401ing, until a reload.
+        window.dispatchEvent(new Event('auth:session-expired'));
       }
     }
     return Promise.reject(error);

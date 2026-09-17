@@ -29,6 +29,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const clearSession = () => {
+    setUser(null);
+    localStorage.removeItem('user_info');
+  };
+
+  useEffect(() => {
+    // Dispatched by the axios interceptor in api/client.ts when a token
+    // refresh fails - keeps this in-memory user state from going stale
+    // relative to what api/client.ts already cleared from localStorage.
+    window.addEventListener('auth:session-expired', clearSession);
+    return () => window.removeEventListener('auth:session-expired', clearSession);
+  }, []);
+
   const login = async (phone: string, password?: string) => {
     setIsLoading(true);
     try {
@@ -61,8 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     void apiClient.post('/auth/logout').catch(() => undefined);
-    setUser(null);
-    localStorage.removeItem('user_info');
+    clearSession();
   };
 
   return (
