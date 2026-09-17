@@ -22,6 +22,14 @@ enum BookingType {
   HOUSE_CALL
 }
 
+// The real database enum also has PENDING_PAYMENT and REFUNDED (see
+// migrations/20260912_truecut_foundation/migration.sql), left over from an
+// earlier, more granular design. Neither is referenced anywhere in
+// application code: a HELD booking stays HELD through payment initiation,
+// and a refund is represented by PaymentStatus.REFUNDED plus a ledger entry,
+// not a booking status change. Intentionally not narrowing the DB enum to
+// match - that requires a recreate-and-swap migration for zero functional
+// gain. Documented here so this doesn't get mistaken for an active bug.
 enum BookingStatus {
   HELD
   CONFIRMED
