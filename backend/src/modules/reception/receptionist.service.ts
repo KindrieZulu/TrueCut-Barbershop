@@ -10,20 +10,8 @@ import { BookingHoldsService } from '../booking-holds/booking-holds.service';
 import { BookingsService } from '../bookings/bookings.service';
 import { PaymentsService } from '../payments/payments.service';
 import { SystemSettingsService } from '../config/system-settings.service';
-import { BookingType, PaymentType, UserRole } from '@prisma/client';
-
-export interface WalkInRegisterDto {
-  clientName: string;
-  clientPhone: string;
-  clientEmail?: string;
-  branchId: string;
-  barberId: string;
-  serviceId: string;
-  startTimeStr: string;
-  paymentType: PaymentType;
-  isSqueezeIn?: boolean;
-  squeezeInReason?: string;
-}
+import { BookingType, UserRole } from '@prisma/client';
+import { WalkInRegisterDto } from './dto/walk-in-register.dto';
 
 @Injectable()
 export class ReceptionistService {

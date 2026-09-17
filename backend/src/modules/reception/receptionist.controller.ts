@@ -1,5 +1,6 @@
 import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
-import { ReceptionistService, WalkInRegisterDto } from './receptionist.service';
+import { ReceptionistService } from './receptionist.service';
+import { WalkInRegisterDto } from './dto/walk-in-register.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/roles.guard';
 import { Roles } from '../../common/roles.decorator';
