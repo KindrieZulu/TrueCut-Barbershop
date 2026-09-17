@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { UserRole } from '@prisma/client';
 
@@ -21,13 +21,14 @@ export class BarbersService {
       };
     }
 
+    // This listing is deliberately public (used during the pre-login booking
+    // wizard to let a visitor pick a barber before creating an account), so
+    // it must not include contact PII the frontend never even displays.
     const barbers = await this.prisma.user.findMany({
       where: whereClause,
       select: {
         id: true,
         name: true,
-        phone: true,
-        email: true,
         barberServices: {
           select: {
             service: { select: { id: true, name: true, durationMinutes: true, price: true } },
@@ -59,7 +60,19 @@ export class BarbersService {
     return { schedules, blockOuts };
   }
 
-  async addBlockOut(barberId: string, branchId: string, startTime: Date, endTime: Date, reason: string) {
+  async addBlockOut(
+    barberId: string,
+    branchId: string,
+    startTime: Date,
+    endTime: Date,
+    reason: string,
+    requestingUser: { id: string; role: string },
+  ) {
+    // A barber may only block out their own schedule; admins may act on any barber.
+    if (requestingUser.role === UserRole.BARBER && requestingUser.id !== barberId) {
+      throw new ForbiddenException('Cannot modify the schedule of another barber');
+    }
+
     return this.prisma.barberBlockOut.create({
       data: {
         barberId,

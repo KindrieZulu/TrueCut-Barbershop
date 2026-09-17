@@ -18,6 +18,7 @@ export class BarbersController {
   }
 
   @Get(':id/schedule')
+  @UseGuards(JwtAuthGuard)
   async getBarberSchedule(
     @Param('id') barberId: string,
     @Query('branchId') branchId: string,
@@ -25,10 +26,34 @@ export class BarbersController {
     return this.barbersService.getBarberSchedule(barberId, branchId);
   }
 
+  // Registered before ':id/block-out' so 'me' is matched literally rather
+  // than falling through to the :id param route (which is what was
+  // happening before - the frontend always calls this literal path).
+  @Post('me/block-out')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.BARBER)
+  async addOwnBlockOut(
+    @Req() req: any,
+    @Body('branchId') branchId: string,
+    @Body('startTime') startTimeStr: string,
+    @Body('endTime') endTimeStr: string,
+    @Body('reason') reason: string,
+  ) {
+    return this.barbersService.addBlockOut(
+      req.user.id,
+      branchId,
+      new Date(startTimeStr),
+      new Date(endTimeStr),
+      reason,
+      req.user,
+    );
+  }
+
   @Post(':id/block-out')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.BARBER, UserRole.COMPANY_ADMIN, UserRole.SYSTEM_ADMIN)
   async addBlockOut(
+    @Req() req: any,
     @Param('id') barberId: string,
     @Body('branchId') branchId: string,
     @Body('startTime') startTimeStr: string,
@@ -41,6 +66,7 @@ export class BarbersController {
       new Date(startTimeStr),
       new Date(endTimeStr),
       reason,
+      req.user,
     );
   }
 
