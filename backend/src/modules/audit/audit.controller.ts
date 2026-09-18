@@ -12,7 +12,10 @@ export class AuditController {
 
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.COMPANY_ADMIN, UserRole.SYSTEM_ADMIN)
+  // System/technical audit logs are a developer/infra concern, not a
+  // business-operations one - Company Admin gets revenue/activity reports
+  // instead (see ReportsController), this stays System Admin only.
+  @Roles(UserRole.SYSTEM_ADMIN)
   async getAuditLogs(@Query() query: AuditLogQueryDto) {
     return this.auditService.getLogs(query.branchId, query.action, query.page, query.limit);
   }
