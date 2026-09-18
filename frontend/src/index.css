@@ -1,12 +1,38 @@
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800,900&f[]=general-sans@400,500,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Theme tokens (--tc-*) referenced below and by tailwind.config.js's
+   dark-*/gold-*/gray-* palettes are NOT defined here. They're applied as
+   inline custom properties on <html> by ThemeContext.tsx instead - this
+   project's Tailwind/PostCSS build pipeline was observed to silently drop
+   hand-authored html/:root rules from this file during compilation, so
+   ThemeContext sets them via the DOM style API, which bypasses that
+   pipeline entirely and always wins the cascade. See DESIGN.md "Color". */
+
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: #0d0f12;
-  color: #f3f4f6;
+  font-family: 'General Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--tc-dark-900);
+  color: var(--tc-text);
   min-height: 100vh;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cabinet Grotesk', 'General Sans', sans-serif;
+}
+
+/* Literal text-white/text-black usages predate the theme system and are
+   mostly headings - band-aid them to the theme's text color in light mode
+   rather than rewriting every occurrence across every page. bg-white stays
+   literal (used for paper-like surfaces such as the printable receipt,
+   which should look the same regardless of theme). */
+html[data-theme='light'] .text-white,
+html[data-theme='light'] .hover\:text-white:hover {
+  color: var(--tc-text);
 }
 
 /* Custom scrollbar */
@@ -16,16 +42,32 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #15181e;
+  background: var(--tc-dark-800);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2a303c;
+  background: var(--tc-dark-600);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #d4af37;
+  background: var(--tc-gold-500);
+}
+
+/* CSS-3D card-lift micro-interaction (DESIGN.md "Motion" section). Apply
+   .card-3d to any hoverable panel - barber status cards, stat tiles,
+   clickable list rows - for a subtle depth cue on hover. */
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-3d:hover {
+  transform: translateY(-4px) rotateX(2deg);
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(212, 175, 55, 0.14);
+  border-color: rgba(212, 175, 55, 0.3);
 }
 
 /* Print-just-one-element pattern: any element with .printable-area stays

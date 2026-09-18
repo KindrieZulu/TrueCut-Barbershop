@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Scissors, Clock, LogOut, LayoutDashboard, Sparkles, ArrowLeft } from 'lucide-react';
+import { Scissors, Clock, LogOut, LayoutDashboard, Sparkles, ArrowLeft, Settings } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
@@ -43,6 +43,7 @@ export const Navbar: React.FC = () => {
   // both are clutter, not navigation, in that context.
   const isOnOwnDashboard = user ? location.pathname === getDashboardPath() : false;
   const isStaff = user && user.role !== 'CLIENT';
+  const isOnSettings = location.pathname === '/settings';
 
   return (
     <nav className="bg-dark-800/80 backdrop-blur-xl border-b border-dark-700 sticky top-0 z-50 px-4 py-3">
@@ -64,7 +65,7 @@ export const Navbar: React.FC = () => {
               <Scissors className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-xl font-extrabold tracking-wider text-white">TRUE<span className="text-gold-500">CUT</span></span>
+              <span className="text-xl font-extrabold tracking-wider text-white font-display">TRUE<span className="text-gold-500">CUT</span></span>
               <span className="text-xs text-gray-400 block -mt-1 font-medium">HARARE, ZIMBABWE</span>
             </div>
           </Link>
@@ -97,6 +98,16 @@ export const Navbar: React.FC = () => {
                 >
                   <LayoutDashboard className="w-4 h-4" />
                   <span className="hidden sm:inline">Dashboard</span>
+                </Link>
+              )}
+
+              {!isOnSettings && (
+                <Link
+                  to="/settings"
+                  className="text-gray-400 hover:text-gold-400 p-1.5 rounded-lg transition-colors"
+                  title="Settings"
+                >
+                  <Settings className="w-4 h-4" />
                 </Link>
               )}
 

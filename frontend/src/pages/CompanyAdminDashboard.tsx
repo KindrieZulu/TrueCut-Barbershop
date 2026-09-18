@@ -169,7 +169,7 @@ export const CompanyAdminDashboard: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <span className="text-xs font-bold text-gold-400 bg-gold-500/10 px-2.5 py-0.5 rounded border border-gold-500/20">COMPANY ADMIN & ACCOUNTANT</span>
-          <h1 className="text-2xl font-extrabold text-white mt-1">Multi-Branch Executive Dashboard</h1>
+          <h1 className="text-2xl font-display font-extrabold text-white mt-1">Multi-Branch Executive Dashboard</h1>
         </div>
         <div className="flex items-center space-x-2">
           <button
@@ -229,13 +229,13 @@ export const CompanyAdminDashboard: React.FC = () => {
           2 hours" that the financial tab's daily numbers do not show. */}
       {occupancy.length > 0 && (
         <div className="bg-dark-800 border border-dark-700 rounded-2xl p-6 mb-6">
-          <h3 className="font-bold text-white text-sm mb-4 flex items-center gap-2">
+          <h3 className="font-display font-bold text-white text-sm mb-4 flex items-center gap-2">
             <Circle className="w-3 h-3 text-green-400 fill-green-400 animate-pulse" />
             <span>Live Barber Status</span>
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {occupancy.map((b) => (
-              <div key={b.barberId} className="bg-dark-900 border border-dark-700 rounded-xl p-4 text-xs space-y-2">
+              <div key={b.barberId} className="card-3d bg-dark-900 border border-dark-700 rounded-xl p-4 text-xs space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-white text-sm">{b.name}</span>
                   {b.status === 'WITH_CLIENT' ? (
@@ -287,21 +287,21 @@ export const CompanyAdminDashboard: React.FC = () => {
           {activeTab === 'financial' && report && (
             <div className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-dark-800 border border-dark-700 p-5 rounded-2xl">
+                <div className="card-3d bg-dark-800 border border-dark-700 p-5 rounded-2xl">
                   <span className="text-xs text-gray-400 block mb-1">Total Net Revenue</span>
-                  <span className="text-2xl font-extrabold text-gold-400">${report.totalNetRevenue.toFixed(2)}</span>
+                  <span className="text-2xl font-data font-extrabold text-gold-400">${report.totalNetRevenue.toFixed(2)}</span>
                 </div>
-                <div className="bg-dark-800 border border-dark-700 p-5 rounded-2xl">
+                <div className="card-3d bg-dark-800 border border-dark-700 p-5 rounded-2xl">
                   <span className="text-xs text-gray-400 block mb-1">Booking Fees Revenue</span>
-                  <span className="text-2xl font-extrabold text-white">${report.breakdown.bookingFeeRevenue.toFixed(2)}</span>
+                  <span className="text-2xl font-data font-extrabold text-white">${report.breakdown.bookingFeeRevenue.toFixed(2)}</span>
                 </div>
-                <div className="bg-dark-800 border border-dark-700 p-5 rounded-2xl">
+                <div className="card-3d bg-dark-800 border border-dark-700 p-5 rounded-2xl">
                   <span className="text-xs text-gray-400 block mb-1">Emergency Surcharges</span>
-                  <span className="text-2xl font-extrabold text-amber-400">${report.breakdown.emergencyFeeRevenue.toFixed(2)}</span>
+                  <span className="text-2xl font-data font-extrabold text-amber-400">${report.breakdown.emergencyFeeRevenue.toFixed(2)}</span>
                 </div>
-                <div className="bg-dark-800 border border-dark-700 p-5 rounded-2xl">
+                <div className="card-3d bg-dark-800 border border-dark-700 p-5 rounded-2xl">
                   <span className="text-xs text-gray-400 block mb-1">House Call Travel Fees</span>
-                  <span className="text-2xl font-extrabold text-blue-400">${report.breakdown.houseCallRevenue.toFixed(2)}</span>
+                  <span className="text-2xl font-data font-extrabold text-blue-400">${report.breakdown.houseCallRevenue.toFixed(2)}</span>
                 </div>
               </div>
 

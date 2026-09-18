@@ -21,6 +21,7 @@ const CompanyAdminDashboard = lazy(() =>
 const SystemAdminDashboard = lazy(() =>
   import('./pages/SystemAdminDashboard').then((m) => ({ default: m.SystemAdminDashboard })),
 );
+const SettingsPage = lazy(() => import('./pages/SettingsPage').then((m) => ({ default: m.SettingsPage })));
 
 const RouteFallback: React.FC = () => (
   <div className="flex items-center justify-center py-24 text-gold-500 animate-pulse">Loading...</div>
@@ -44,6 +45,7 @@ export const App: React.FC = () => {
             <Route path="/barber" element={user ? <BarberDashboard /> : <Navigate to="/welcome" />} />
             <Route path="/admin" element={user ? <CompanyAdminDashboard /> : <Navigate to="/welcome" />} />
             <Route path="/sysadmin" element={user ? <SystemAdminDashboard /> : <Navigate to="/welcome" />} />
+            <Route path="/settings" element={user ? <SettingsPage /> : <Navigate to="/welcome" />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
