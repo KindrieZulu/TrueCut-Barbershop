@@ -17,6 +17,13 @@ export class BarbersController {
     return this.barbersService.findEligibleBarbers(branchId, serviceId);
   }
 
+  @Get('occupancy')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.RECEPTIONIST, UserRole.COMPANY_ADMIN, UserRole.SYSTEM_ADMIN)
+  async getBranchOccupancy(@Query('branchId') branchId: string) {
+    return this.barbersService.getBranchOccupancy(branchId);
+  }
+
   @Get(':id/schedule')
   @UseGuards(JwtAuthGuard)
   async getBarberSchedule(

@@ -1,6 +1,9 @@
 import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { UserRole } from '@prisma/client';
+import { UserRole, BookingStatus } from '@prisma/client';
+import { addHours } from 'date-fns';
+
+const OCCUPANCY_LOOKAHEAD_HOURS = 2;
 
 @Injectable()
 export class BarbersService {
@@ -81,6 +84,60 @@ export class BarbersService {
         endTime,
         reason,
       },
+    });
+  }
+
+  /**
+   * For every active barber at a branch: who they are currently serving
+   * (a CONFIRMED booking spanning right now) and who is booked in the next
+   * two hours. One query covering both windows (startTime < lookahead AND
+   * endTime > now already captures "in progress" bookings too), split into
+   * current/upcoming in memory afterward rather than querying per barber.
+   */
+  async getBranchOccupancy(branchId: string) {
+    const now = new Date();
+    const lookaheadEnd = addHours(now, OCCUPANCY_LOOKAHEAD_HOURS);
+
+    const barbers = await this.prisma.user.findMany({
+      where: {
+        role: UserRole.BARBER,
+        isActive: true,
+        staffBranches: { some: { branchId } },
+      },
+      select: {
+        id: true,
+        name: true,
+        barberBookings: {
+          where: {
+            status: BookingStatus.CONFIRMED,
+            branchId,
+            startTime: { lt: lookaheadEnd },
+            endTime: { gt: now },
+          },
+          select: {
+            id: true,
+            bookingCode: true,
+            startTime: true,
+            endTime: true,
+            client: { select: { name: true, phone: true } },
+            service: { select: { name: true } },
+          },
+          orderBy: { startTime: 'asc' },
+        },
+      },
+    });
+
+    return barbers.map((b) => {
+      const current = b.barberBookings.find((bk) => bk.startTime <= now && bk.endTime > now) || null;
+      const upcoming = b.barberBookings.filter((bk) => bk.startTime > now);
+
+      return {
+        barberId: b.id,
+        name: b.name,
+        status: current ? 'WITH_CLIENT' : 'FREE',
+        currentBooking: current,
+        upcomingBookings: upcoming,
+      };
     });
   }
 
