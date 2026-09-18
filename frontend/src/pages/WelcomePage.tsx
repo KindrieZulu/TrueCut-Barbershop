@@ -16,6 +16,7 @@ interface RoleOption {
   icon: any;
   path: string;
   demoPhone: string;
+  demoAccounts?: { name: string; phone: string }[];
   badge: string;
   gradient: string;
 }
@@ -28,6 +29,7 @@ export const WelcomePage: React.FC = () => {
   const [authMode, setAuthMode] = useState<'DEMO' | 'PHONE'>('DEMO');
   const [harareTime, setHarareTime] = useState('');
   const [password, setPassword] = useState('Password123!');
+  const [selectedDemoPhone, setSelectedDemoPhone] = useState('');
 
   // Custom Phone Sign-in / Sign-up state
   const [customName, setCustomName] = useState('');
@@ -76,6 +78,11 @@ export const WelcomePage: React.FC = () => {
       icon: Scissors,
       path: '/barber',
       demoPhone: '+263771000004',
+      demoAccounts: [
+        { name: 'Tinashe Barber', phone: '+263771000004' },
+        { name: 'Farai Stylist', phone: '+263771000005' },
+        { name: 'Blessing MasterBarber', phone: '+263771000006' },
+      ],
       badge: 'Barber Portal',
       gradient: 'from-yellow-500/20 via-amber-500/10 to-transparent border-amber-500/30',
     },
@@ -121,7 +128,8 @@ export const WelcomePage: React.FC = () => {
     setLoading(true);
     setErrorMsg('');
     try {
-      await login(roleOption.demoPhone, password);
+      const phone = selectedDemoPhone || roleOption.demoPhone;
+      await login(phone, password);
       navigate(roleOption.path);
     } catch (e: any) {
       setErrorMsg(e.response?.data?.message || 'Login failed. Please verify credentials.');
@@ -242,7 +250,7 @@ export const WelcomePage: React.FC = () => {
             return (
               <div
                 key={r.id}
-                onClick={() => setSelectedRole(r)}
+                onClick={() => { setSelectedRole(r); setSelectedDemoPhone(r.demoAccounts ? r.demoAccounts[0].phone : r.demoPhone); }}
                 className={`group relative bg-white/[0.03] hover:bg-white/[0.08] backdrop-blur-2xl border ${r.gradient} rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1.5 shadow-2xl flex flex-col justify-between`}
               >
                 <div>
@@ -324,16 +332,50 @@ export const WelcomePage: React.FC = () => {
             {/* DEMO AUTH MODE */}
             {authMode === 'DEMO' ? (
               <div className="space-y-4">
-                <div className="bg-dark-900/80 border border-white/10 p-4 rounded-2xl space-y-2 text-xs">
-                  <div className="flex justify-between text-gray-400">
-                    <span>Demo Account Phone:</span>
-                    <strong className="text-gold-400 font-mono">{selectedRole.demoPhone}</strong>
+                {selectedRole.demoAccounts ? (
+                  <div className="bg-dark-900/80 border border-white/10 p-4 rounded-2xl space-y-2 text-xs">
+                    <span className="text-gray-400 block mb-1">Choose which demo account to sign in as:</span>
+                    <div className="space-y-1.5">
+                      {selectedRole.demoAccounts.map((acct) => (
+                        <label
+                          key={acct.phone}
+                          className={`flex items-center justify-between p-2.5 rounded-xl border cursor-pointer transition-colors ${
+                            selectedDemoPhone === acct.phone
+                              ? 'border-gold-500 bg-gold-500/10'
+                              : 'border-white/10 bg-dark-900'
+                          }`}
+                        >
+                          <span className="flex items-center space-x-2">
+                            <input
+                              type="radio"
+                              name="demoAccount"
+                              checked={selectedDemoPhone === acct.phone}
+                              onChange={() => setSelectedDemoPhone(acct.phone)}
+                              className="accent-gold-500"
+                            />
+                            <span className="text-white font-semibold">{acct.name}</span>
+                          </span>
+                          <strong className="text-gold-400 font-mono">{acct.phone}</strong>
+                        </label>
+                      ))}
+                    </div>
+                    <div className="flex justify-between text-gray-400 pt-1">
+                      <span>Default Password:</span>
+                      <strong className="text-white font-mono">Password123!</strong>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-gray-400">
-                    <span>Default Password:</span>
-                    <strong className="text-white font-mono">Password123!</strong>
+                ) : (
+                  <div className="bg-dark-900/80 border border-white/10 p-4 rounded-2xl space-y-2 text-xs">
+                    <div className="flex justify-between text-gray-400">
+                      <span>Demo Account Phone:</span>
+                      <strong className="text-gold-400 font-mono">{selectedRole.demoPhone}</strong>
+                    </div>
+                    <div className="flex justify-between text-gray-400">
+                      <span>Default Password:</span>
+                      <strong className="text-white font-mono">Password123!</strong>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <button
                   onClick={() => handleQuickDemoLogin(selectedRole)}
