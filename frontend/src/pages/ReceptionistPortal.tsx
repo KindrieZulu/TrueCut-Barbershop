@@ -197,7 +197,7 @@ export const ReceptionistPortal: React.FC = () => {
               </span>
             )}
           </div>
-          <h1 className="text-2xl font-extrabold text-white">Harare Main Branch Schedule</h1>
+          <h1 className="text-2xl font-display font-extrabold text-white">Harare Main Branch Schedule</h1>
         </div>
 
         <button
@@ -230,7 +230,7 @@ export const ReceptionistPortal: React.FC = () => {
       {/* Schedule Table */}
       <div className="bg-dark-800 border border-dark-700 rounded-2xl overflow-hidden">
         <div className="p-4 border-b border-dark-700 flex items-center justify-between">
-          <h3 className="font-bold text-white text-sm">Today's Appointments ({todayBookings.length})</h3>
+          <h3 className="font-display font-bold text-white text-sm">Today's Appointments ({todayBookings.length})</h3>
           <button onClick={fetchTodaySchedule} className="p-1.5 text-gray-400 hover:text-white">
             <RefreshCw className="w-4 h-4" />
           </button>
@@ -243,7 +243,7 @@ export const ReceptionistPortal: React.FC = () => {
         ) : (
           <div className="divide-y divide-dark-700">
             {todayBookings.map((b) => (
-              <div key={b.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-dark-900/50">
+              <div key={b.id} className="card-3d p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-dark-900/50">
                 <div>
                   <div className="flex items-center space-x-2 mb-1">
                     <span className="font-mono text-xs font-bold text-gold-400">{b.bookingCode}</span>
@@ -254,8 +254,8 @@ export const ReceptionistPortal: React.FC = () => {
                   <p className="text-xs text-gray-400">Service: {b.service?.name} | Barber: {b.barber?.name}</p>
                 </div>
                 <div className="text-right">
-                  <div className="text-xs font-bold text-gold-400">{new Date(b.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                  <span className="text-xs font-extrabold text-white">${Number(b.totalAmount).toFixed(2)}</span>
+                  <div className="font-data text-xs font-bold text-gold-400">{new Date(b.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                  <span className="font-data text-xs font-extrabold text-white">${Number(b.totalAmount).toFixed(2)}</span>
                 </div>
               </div>
             ))}
@@ -268,7 +268,7 @@ export const ReceptionistPortal: React.FC = () => {
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-dark-800 border border-dark-700 rounded-2xl p-6 max-w-lg w-full space-y-5 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center border-b border-dark-700 pb-3">
-              <h3 className="font-bold text-white text-lg">Walk-In Client Registration</h3>
+              <h3 className="font-display font-bold text-white text-lg">Walk-In Client Registration</h3>
               <button onClick={() => setShowWalkInModal(false)} className="text-gray-400 text-sm font-bold">✕</button>
             </div>
 

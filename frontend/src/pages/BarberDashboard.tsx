@@ -92,7 +92,7 @@ export const BarberDashboard: React.FC = () => {
       <div className="flex items-center justify-between mb-8 bg-dark-800 border border-dark-700 p-6 rounded-2xl">
         <div>
           <span className="text-xs font-bold text-gold-400 bg-gold-500/10 px-2.5 py-0.5 rounded border border-gold-500/20">BARBER STATION</span>
-          <h1 className="text-2xl font-extrabold text-white mt-1">Today's Appointment Schedule</h1>
+          <h1 className="text-2xl font-display font-extrabold text-white mt-1">Today's Appointment Schedule</h1>
         </div>
         <div className="flex gap-2">
           <button
@@ -119,7 +119,7 @@ export const BarberDashboard: React.FC = () => {
       ) : (
         <div className="space-y-4">
           {appointments.map((a) => (
-            <div key={a.id} className="bg-dark-800 border border-dark-700 rounded-2xl p-5 space-y-3">
+            <div key={a.id} className="card-3d bg-dark-800 border border-dark-700 rounded-2xl p-5 space-y-3">
               <div className="flex items-center justify-between border-b border-dark-700 pb-3">
                 <div className="flex items-center space-x-2">
                   <span className="font-mono text-xs font-bold text-gold-400 bg-gold-500/10 px-2 py-0.5 rounded">{a.bookingCode}</span>
@@ -127,7 +127,7 @@ export const BarberDashboard: React.FC = () => {
                 </div>
                 <div className="flex items-center text-xs text-gold-400 font-bold space-x-1">
                   <Clock className="w-3.5 h-3.5" />
-                  <span>{new Date(a.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  <span className="font-data">{new Date(a.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                 </div>
               </div>
 
@@ -179,7 +179,7 @@ export const BarberDashboard: React.FC = () => {
       {showBlockOutModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-dark-800 border border-dark-700 rounded-2xl p-6 max-w-md w-full space-y-4">
-            <h3 className="font-bold text-white text-base">Add Leave / Block-Out Period</h3>
+            <h3 className="font-display font-bold text-white text-base">Add Leave / Block-Out Period</h3>
 
             <div>
               <label className="text-xs text-gray-400 block mb-1">Start Time</label>
