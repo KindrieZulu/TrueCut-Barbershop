@@ -12,14 +12,14 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'truecut_theme';
 
-// DESIGN.md "Color" section - kept in sync with index.css's fallback values.
-// Applied as inline custom properties on <html> (rather than relying on a
-// [data-theme] CSS selector in index.css) because this project's Tailwind/
-// PostCSS build pipeline was observed to silently drop hand-authored
-// html/:root rules from index.css during compilation - inline styles bypass
-// that stylesheet entirely and always win the cascade, so this is the
-// reliable way to drive the theme regardless of that build quirk.
-const PALETTES: Record<Theme, Record<string, string>> = {
+// DESIGN.md "Color" section - hex values kept here for readability/parity
+// with that doc. Converted to "R G B" triplets below because
+// tailwind.config.js's opacity-modifier syntax (e.g. bg-gold-500/10) only
+// works when the underlying CSS variable is a bare RGB triplet consumed via
+// rgb(var(--x) / <alpha-value>) - a variable holding a hex string like
+// "#d4af37" makes Tailwind's opacity modifier silently resolve to
+// transparent instead of a translucent color.
+const PALETTE_HEX: Record<Theme, Record<string, string>> = {
   dark: {
     '--tc-dark-900': '#0a0a0c',
     '--tc-dark-800': '#141417',
@@ -46,6 +46,19 @@ const PALETTES: Record<Theme, Record<string, string>> = {
     '--tc-text-muted': '#6b6b70',
     '--tc-text-faint': '#8a8a8f',
   },
+};
+
+function hexToRgbTriplet(hex: string): string {
+  const clean = hex.replace('#', '');
+  const r = parseInt(clean.substring(0, 2), 16);
+  const g = parseInt(clean.substring(2, 4), 16);
+  const b = parseInt(clean.substring(4, 6), 16);
+  return `${r} ${g} ${b}`;
+}
+
+const PALETTES: Record<Theme, Record<string, string>> = {
+  dark: Object.fromEntries(Object.entries(PALETTE_HEX.dark).map(([k, v]) => [k, hexToRgbTriplet(v)])),
+  light: Object.fromEntries(Object.entries(PALETTE_HEX.light).map(([k, v]) => [k, hexToRgbTriplet(v)])),
 };
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

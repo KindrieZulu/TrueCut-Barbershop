@@ -1,4 +1,19 @@
 /** @type {import('tailwindcss').Config} */
+
+// Colors backed by --tc-* CSS variables (set at runtime by ThemeContext,
+// see src/context/ThemeContext.tsx) need this helper rather than a plain
+// 'var(--tc-x)' string - Tailwind's opacity-modifier syntax (bg-gold-500/10)
+// only works when it can interpolate an alpha value into rgb(), which
+// requires the variable to hold a bare "R G B" triplet.
+function withOpacity(varName) {
+  return ({ opacityValue }) => {
+    if (opacityValue === undefined) {
+      return `rgb(var(${varName}))`;
+    }
+    return `rgb(var(${varName}) / ${opacityValue})`;
+  };
+}
+
 export default {
   content: [
     "./index.html",
@@ -8,22 +23,22 @@ export default {
     extend: {
       colors: {
         gold: {
-          400: 'var(--tc-gold-400)',
-          500: 'var(--tc-gold-500)',
-          600: 'var(--tc-gold-600)',
+          400: withOpacity('--tc-gold-400'),
+          500: withOpacity('--tc-gold-500'),
+          600: withOpacity('--tc-gold-600'),
         },
         dark: {
-          900: 'var(--tc-dark-900)',
-          800: 'var(--tc-dark-800)',
-          700: 'var(--tc-dark-700)',
-          600: 'var(--tc-dark-600)',
+          900: withOpacity('--tc-dark-900'),
+          800: withOpacity('--tc-dark-800'),
+          700: withOpacity('--tc-dark-700'),
+          600: withOpacity('--tc-dark-600'),
         },
         gray: {
-          100: 'var(--tc-text)',
-          300: 'var(--tc-text-soft)',
-          400: 'var(--tc-text-muted)',
-          500: 'var(--tc-text-muted)',
-          600: 'var(--tc-text-faint)',
+          100: withOpacity('--tc-text'),
+          300: withOpacity('--tc-text-soft'),
+          400: withOpacity('--tc-text-muted'),
+          500: withOpacity('--tc-text-muted'),
+          600: withOpacity('--tc-text-faint'),
         }
       },
       fontFamily: {
