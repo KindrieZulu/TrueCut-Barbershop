@@ -1,7 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { SmsAdapter } from './adapters/sms.adapter';
-import { NotificationStatus, UserRole } from '@prisma/client';
+import { BookingStatus, NotificationStatus, UserRole } from '@prisma/client';
+import { addMinutes } from 'date-fns';
+
+const REMINDER_TYPE = 'BOOKING_REMINDER';
+const REMINDER_LEAD_MINUTES = 15;
 
 @Injectable()
 export class NotificationsService {
@@ -68,6 +72,38 @@ export class NotificationsService {
         data: { status: NotificationStatus.FAILED },
       });
     }
+  }
+
+  /**
+   * Finds CONFIRMED bookings starting within the next REMINDER_LEAD_MINUTES
+   * that have not already had a reminder sent, and sends one. Intended to
+   * be called by a frequent cron tick (see JobsService) - the "not already
+   * sent" check against NotificationLog is what makes it safe to call
+   * repeatedly while a booking sits inside that window, rather than relying
+   * on catching it at an exact instant.
+   */
+  async sendUpcomingReminders() {
+    const now = new Date();
+    const windowEnd = addMinutes(now, REMINDER_LEAD_MINUTES);
+
+    const upcomingBookings = await this.prisma.booking.findMany({
+      where: {
+        status: BookingStatus.CONFIRMED,
+        startTime: { gte: now, lte: windowEnd },
+        notifications: {
+          none: { type: REMINDER_TYPE },
+        },
+      },
+      include: { client: true, barber: true, service: true, branch: true },
+    });
+
+    for (const booking of upcomingBookings) {
+      const message = `TrueCut Barbershop: Reminder! Your ${booking.service.name} appointment with ${booking.barber.name} starts at ${booking.startTime.toLocaleTimeString()} at ${booking.branch.address}. Code: ${booking.bookingCode}.`;
+      await this.dispatchSms(booking.id, booking.client.phone, UserRole.CLIENT, REMINDER_TYPE, message);
+      this.logger.log(`[BOOKING REMINDER] Sent to ${booking.client.phone} for ${booking.bookingCode}`);
+    }
+
+    return upcomingBookings.length;
   }
 
   async getLogs(bookingId?: string) {

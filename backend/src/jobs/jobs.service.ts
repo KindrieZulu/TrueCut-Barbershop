@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { BookingHoldsService } from '../modules/booking-holds/booking-holds.service';
 import { BookingsService } from '../modules/bookings/bookings.service';
+import { NotificationsService } from '../modules/notifications/notifications.service';
 
 @Injectable()
 export class JobsService {
@@ -10,6 +11,7 @@ export class JobsService {
   constructor(
     private readonly holdsService: BookingHoldsService,
     private readonly bookingsService: BookingsService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   @Cron(CronExpression.EVERY_MINUTE)
@@ -30,6 +32,15 @@ export class JobsService {
       }
     } catch (e) {
       this.logger.error('Error running auto no-show worker', e);
+    }
+  }
+
+  @Cron(CronExpression.EVERY_MINUTE)
+  async handleUpcomingBookingReminders() {
+    try {
+      await this.notificationsService.sendUpcomingReminders();
+    } catch (e) {
+      this.logger.error('Error running upcoming-booking reminder worker', e);
     }
   }
 }
