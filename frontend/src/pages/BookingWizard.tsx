@@ -238,7 +238,7 @@ export const BookingWizard: React.FC = () => {
       {/* STEP 1: Service & Branch Selection */}
       {step === 1 && (
         <div className="bg-dark-800 border border-dark-700 rounded-xl p-6 space-y-6">
-          <h2 className="text-xl font-bold text-white mb-4">Select Service & Branch</h2>
+          <h2 className="text-xl font-display font-bold text-white mb-4">Select Service & Branch</h2>
 
           {/* Service Selector */}
           <div>
@@ -248,7 +248,7 @@ export const BookingWizard: React.FC = () => {
                 <div
                   key={s.id}
                   onClick={() => setSelectedServiceId(s.id)}
-                  className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                  className={`card-3d p-4 rounded-xl border cursor-pointer transition-all ${
                     selectedServiceId === s.id
                       ? 'border-gold-500 bg-gold-500/10 text-white'
                       : 'border-dark-700 bg-dark-900 text-gray-400 hover:border-gray-600'
@@ -272,7 +272,7 @@ export const BookingWizard: React.FC = () => {
                 <div
                   key={b.id}
                   onClick={() => setSelectedBranchId(b.id)}
-                  className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
+                  className={`card-3d p-4 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                     selectedBranchId === b.id
                       ? 'border-gold-500 bg-gold-500/10 text-white'
                       : 'border-dark-700 bg-dark-900 text-gray-400 hover:border-gray-600'
@@ -301,7 +301,7 @@ export const BookingWizard: React.FC = () => {
       {/* STEP 2: Phone Verification / Auth */}
       {step === 2 && !user && (
         <div className="bg-dark-800 border border-dark-700 rounded-xl p-6 space-y-6">
-          <h2 className="text-xl font-bold text-white">Phone Verification (OTP)</h2>
+          <h2 className="text-xl font-display font-bold text-white">Phone Verification (OTP)</h2>
           <p className="text-sm text-gray-400">Phone verification is required for all bookings to prevent spam.</p>
 
           {!otpSent ? (
@@ -359,7 +359,7 @@ export const BookingWizard: React.FC = () => {
       {/* STEP 3: Barber & Time Slot Matrix */}
       {step === 3 && (
         <div className="bg-dark-800 border border-dark-700 rounded-xl p-6 space-y-6">
-          <h2 className="text-xl font-bold text-white">Select Barber & Time Slot</h2>
+          <h2 className="text-xl font-display font-bold text-white">Select Barber & Time Slot</h2>
 
           {/* Booking Type Options */}
           <div className="grid grid-cols-3 gap-3">
@@ -417,7 +417,7 @@ export const BookingWizard: React.FC = () => {
                     setSelectedBarberId(b.id);
                     setSelectedSlot(null);
                   }}
-                  className={`p-3.5 rounded-xl border cursor-pointer text-sm font-bold transition-all flex items-center justify-between ${
+                  className={`card-3d p-3.5 rounded-xl border cursor-pointer text-sm font-bold transition-all flex items-center justify-between ${
                     selectedBarberId === b.id
                       ? 'border-gold-500 bg-gold-500/10 text-white shadow-lg shadow-gold-500/10'
                       : 'border-dark-700 bg-dark-900 text-gray-400 hover:border-gray-600'
@@ -529,7 +529,7 @@ export const BookingWizard: React.FC = () => {
 
           {/* Pricing Summary */}
           <div className="bg-dark-900 border border-dark-700 rounded-xl p-4 space-y-2 text-sm">
-            <h3 className="font-bold text-white mb-2 pb-2 border-b border-dark-700">Payment Breakdown</h3>
+            <h3 className="font-display font-bold text-white mb-2 pb-2 border-b border-dark-700">Payment Breakdown</h3>
             <div className="flex justify-between text-gray-400">
               <span>Service Price</span>
               <span>${holdData.pricing.servicePrice.toFixed(2)}</span>
@@ -552,7 +552,7 @@ export const BookingWizard: React.FC = () => {
             )}
             <div className="flex justify-between font-extrabold text-white text-base pt-2 border-t border-dark-700">
               <span>Total Payable</span>
-              <span className="text-gold-400">${holdData.pricing.totalAmount.toFixed(2)}</span>
+              <span className="font-data text-gold-400">${holdData.pricing.totalAmount.toFixed(2)}</span>
             </div>
           </div>
 
@@ -578,7 +578,7 @@ export const BookingWizard: React.FC = () => {
             <span className="text-xs font-mono font-bold text-gold-400 bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/20">
               {bookingConfirmation.bookingCode}
             </span>
-            <h2 className="text-2xl font-extrabold text-white mt-2">Booking Confirmed!</h2>
+            <h2 className="text-2xl font-display font-extrabold text-white mt-2">Booking Confirmed!</h2>
             <p className="text-sm text-gray-400 mt-1">
               SMS confirmation sent to {bookingConfirmation.client?.phone}.
             </p>

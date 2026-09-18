@@ -64,7 +64,7 @@ export const ClientDashboard: React.FC = () => {
 
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-white">Client Dashboard</h1>
+          <h1 className="text-2xl font-display font-extrabold text-white">Client Dashboard</h1>
           <p className="text-sm text-gray-400">View and manage your grooming appointments</p>
         </div>
         <button onClick={fetchBookings} className="p-2 bg-dark-800 border border-dark-700 text-gold-400 rounded-lg hover:border-gold-500/50">
@@ -89,22 +89,22 @@ export const ClientDashboard: React.FC = () => {
       ) : (
         <div className="space-y-4">
           {bookings.map((b) => (
-            <div key={b.id} className="bg-dark-800 border border-dark-700 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div key={b.id} className="card-3d bg-dark-800 border border-dark-700 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1">
                 <div className="flex items-center space-x-2">
                   <span className="text-xs font-mono font-bold text-gold-400 bg-gold-500/10 px-2.5 py-0.5 rounded border border-gold-500/20">{b.bookingCode}</span>
                   {getStatusBadge(b.status)}
                 </div>
-                <h3 className="text-base font-bold text-white">{b.service?.name}</h3>
+                <h3 className="text-base font-display font-bold text-white">{b.service?.name}</h3>
                 <div className="text-xs text-gray-400 space-y-0.5">
                   <div>Barber: <strong className="text-gray-300">{b.barber?.name}</strong></div>
                   <div>Location: <strong className="text-gray-300">{b.branch?.address}</strong></div>
-                  <div>Time: <strong className="text-gold-400">{new Date(b.startTime).toLocaleString()}</strong></div>
+                  <div>Time: <strong className="text-gold-400 font-data">{new Date(b.startTime).toLocaleString()}</strong></div>
                 </div>
               </div>
 
               <div className="flex flex-col items-end justify-between border-t sm:border-t-0 border-dark-700 pt-3 sm:pt-0">
-                <span className="text-lg font-extrabold text-gold-400">${Number(b.totalAmount).toFixed(2)}</span>
+                <span className="text-lg font-data font-extrabold text-gold-400">${Number(b.totalAmount).toFixed(2)}</span>
                 {b.status === 'CONFIRMED' || b.status === 'HELD' ? (
                   <button
                     onClick={() => handleCancelBooking(b.id)}
