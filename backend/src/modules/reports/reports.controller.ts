@@ -30,4 +30,15 @@ export class ReportsController {
     const date = dateStr ? new Date(dateStr) : new Date();
     return this.reportsService.generateSystemReport(branchId, date);
   }
+
+  @Get('weekly/financial')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.COMPANY_ADMIN, UserRole.SYSTEM_ADMIN)
+  async getWeeklyFinancialReport(
+    @Query('branchId') branchId?: string,
+    @Query('weekEndDate') weekEndDateStr?: string,
+  ) {
+    const weekEndDate = weekEndDateStr ? new Date(weekEndDateStr) : new Date();
+    return this.reportsService.generateWeeklyReport(branchId, weekEndDate);
+  }
 }
