@@ -4,8 +4,25 @@ import { apiClient } from '../api/client';
 import { useRealtimeEvents } from '../api/events';
 import {
   Clock, UserPlus, Scissors, CheckCircle, AlertCircle,
-  Zap, DollarSign, Search, RefreshCw, Wifi, WifiOff, Home
+  Zap, DollarSign, Search, RefreshCw, Wifi, WifiOff, Home, Printer
 } from 'lucide-react';
+
+// Feeds both the on-screen receipt modal and the printed version - printing
+// uses the #printable-receipt CSS rule in index.css (window.print() on the
+// current page, with everything else hidden) rather than window.open(),
+// which popup blockers can silently kill even on a direct user click.
+function getReceiptFeeRows(booking: any) {
+  const fee = (n: any) => Number(n || 0).toFixed(2);
+  return [
+    ['Service Fee', booking.serviceFee],
+    ['Booking Fee', booking.bookingFee],
+    ['Emergency Fee', booking.emergencyFee],
+    ['House Call Fee', booking.houseCallFee],
+    ['Squeeze-in Fee', booking.squeezeInFee],
+  ]
+    .filter(([, amount]) => Number(amount) > 0)
+    .map(([label, amount]) => ({ label: label as string, amount: fee(amount) }));
+}
 
 export const ReceptionistPortal: React.FC = () => {
   const navigate = useNavigate();
@@ -34,9 +51,15 @@ export const ReceptionistPortal: React.FC = () => {
 
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [lastReceipt, setLastReceipt] = useState<{ booking: any; payment: any } | null>(null);
+  const [showReceiptModal, setShowReceiptModal] = useState(false);
 
-  // Default Harare Branch ID
-  const branchId = 'HARARE-MAIN';
+  // Fetched on mount rather than hardcoded - 'HARARE-MAIN' is the branch's
+  // human-readable code (Branch.code), not its id, and every backend query
+  // here filters by the real UUID (Branch.id). The hardcoded code silently
+  // matched nothing, so the barber dropdown was always empty and walk-in
+  // registration was completely non-functional.
+  const [branchId, setBranchId] = useState('');
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -50,6 +73,7 @@ export const ReceptionistPortal: React.FC = () => {
   }, []);
 
   const fetchTodaySchedule = () => {
+    if (!branchId) return;
     setLoading(true);
     apiClient.get(`/bookings/branch/today?branchId=${branchId}`)
       .then(res => setTodayBookings(res.data))
@@ -58,12 +82,18 @@ export const ReceptionistPortal: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchTodaySchedule();
+    apiClient.get('/branches').then(res => {
+      if (res.data.length > 0) setBranchId(res.data[0].id);
+    });
     apiClient.get('/services').then(res => {
       setServices(res.data);
       if (res.data.length > 0) setSelectedServiceId(res.data[0].id);
     });
   }, []);
+
+  useEffect(() => {
+    fetchTodaySchedule();
+  }, [branchId]);
 
   useRealtimeEvents((evt) => {
     if (evt.type === 'BOOKING_CONFIRMED' || evt.type === 'HOLD_CREATED' || evt.type === 'SQUEEZE_IN_ADDED' || evt.type === 'BOOKING_SERVED') {
@@ -72,22 +102,22 @@ export const ReceptionistPortal: React.FC = () => {
   });
 
   useEffect(() => {
-    if (selectedServiceId) {
+    if (branchId && selectedServiceId) {
       apiClient.get(`/barbers?branchId=${branchId}&serviceId=${selectedServiceId}`)
         .then(res => {
           setBarbers(res.data);
           if (res.data.length > 0) setSelectedBarberId(res.data[0].id);
         });
     }
-  }, [selectedServiceId]);
+  }, [branchId, selectedServiceId]);
 
   useEffect(() => {
-    if (selectedBarberId && selectedServiceId) {
+    if (branchId && selectedBarberId && selectedServiceId) {
       const todayDate = new Date().toISOString().split('T')[0];
       apiClient.get(`/availability?branchId=${branchId}&barberId=${selectedBarberId}&serviceId=${selectedServiceId}&date=${todayDate}`)
         .then(res => setSlots(res.data));
     }
-  }, [selectedBarberId, selectedServiceId]);
+  }, [branchId, selectedBarberId, selectedServiceId]);
 
   const handleSendOtp = async () => {
     if (!clientPhone) { setErrorMsg('Phone is required'); return; }
@@ -115,7 +145,7 @@ export const ReceptionistPortal: React.FC = () => {
     setErrorMsg('');
     try {
       const startTimeStr = selectedSlot ? selectedSlot.startTime : new Date().toISOString();
-      await apiClient.post('/receptionist/walk-in', {
+      const res = await apiClient.post('/receptionist/walk-in', {
         clientName,
         clientPhone,
         branchId,
@@ -127,7 +157,11 @@ export const ReceptionistPortal: React.FC = () => {
         squeezeInReason: isSqueezeIn ? squeezeInReason : undefined,
       });
 
-      setSuccessMsg(`Walk-in booked successfully for ${clientName}`);
+      const booking = res.data.booking;
+      const payment = res.data.payment;
+      setLastReceipt({ booking, payment });
+      setShowReceiptModal(true);
+      setSuccessMsg(`Walk-in booked successfully for ${clientName} - $${Number(booking.totalAmount).toFixed(2)} collected`);
       setShowWalkInModal(false);
       fetchTodaySchedule();
     } catch (e: any) {
@@ -176,9 +210,20 @@ export const ReceptionistPortal: React.FC = () => {
       </div>
 
       {successMsg && (
-        <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-4 rounded-xl mb-6 text-sm flex items-center justify-between">
+        <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-4 rounded-xl mb-6 text-sm flex items-center justify-between gap-3">
           <span>{successMsg}</span>
-          <button onClick={() => setSuccessMsg('')} className="text-xs font-bold">Dismiss</button>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {lastReceipt && (
+              <button
+                onClick={() => setShowReceiptModal(true)}
+                className="flex items-center gap-1.5 bg-green-500/20 hover:bg-green-500/30 border border-green-500/40 text-green-300 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>Print Receipt</span>
+              </button>
+            )}
+            <button onClick={() => setSuccessMsg('')} className="text-xs font-bold">Dismiss</button>
+          </div>
         </div>
       )}
 
@@ -355,6 +400,67 @@ export const ReceptionistPortal: React.FC = () => {
             >
               Confirm Walk-in & Record Payment
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Receipt Modal - the #printable-receipt element is what stays
+          visible per the print CSS rule in index.css when Print is clicked. */}
+      {showReceiptModal && lastReceipt && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 print:bg-white print:backdrop-blur-none">
+          <div className="bg-white text-black rounded-2xl p-6 max-w-sm w-full space-y-3 font-mono text-sm print:shadow-none print:rounded-none">
+            <div id="printable-receipt" className="printable-area">
+              <div className="text-center border-b border-dashed border-gray-400 pb-3 mb-3">
+                <h3 className="font-bold text-base tracking-wide">TRUECUT BARBERSHOP</h3>
+                <p className="text-xs text-gray-600">Harare Main Branch</p>
+                <p className="text-xs text-gray-600">100 Samora Machel Avenue, Harare Central</p>
+              </div>
+
+              <p className="text-xs text-gray-500 mb-2">{new Date().toLocaleString()}</p>
+              <p>Booking Code: <strong>{lastReceipt.booking.bookingCode}</strong></p>
+              <p>Client: {lastReceipt.booking.client?.name}</p>
+              <p>Barber: {lastReceipt.booking.barber?.name}</p>
+              <p>Service: {lastReceipt.booking.service?.name}</p>
+
+              <div className="border-t border-dashed border-gray-400 mt-3 pt-2 space-y-1">
+                {getReceiptFeeRows(lastReceipt.booking).map((row) => (
+                  <div key={row.label} className="flex justify-between text-xs">
+                    <span>{row.label}</span>
+                    <span>${row.amount}</span>
+                  </div>
+                ))}
+                <div className="flex justify-between font-bold border-t border-dashed border-gray-400 pt-2 mt-1 text-base">
+                  <span>TOTAL PAID</span>
+                  <span>${Number(lastReceipt.booking.totalAmount).toFixed(2)}</span>
+                </div>
+              </div>
+
+              <div className="border-t border-dashed border-gray-400 mt-3 pt-2 text-xs text-gray-600 space-y-0.5">
+                <p>Payment Method: {lastReceipt.payment.paymentType}</p>
+                <p>Status: {lastReceipt.payment.status}</p>
+                <p>Provider Ref: {lastReceipt.payment.providerReference || 'N/A'}</p>
+              </div>
+
+              <p className="text-center text-xs text-gray-500 mt-3 pt-2 border-t border-dashed border-gray-400">
+                Thank you for choosing TrueCut.
+              </p>
+            </div>
+
+            <div className="flex gap-2 pt-2 print:hidden">
+              <button
+                onClick={() => setShowReceiptModal(false)}
+                className="w-full bg-gray-200 hover:bg-gray-300 text-black font-bold py-2.5 rounded-xl text-sm"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => window.print()}
+                className="w-full bg-gold-500 hover:bg-gold-600 text-black font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-1.5"
+              >
+                <Printer className="w-4 h-4" />
+                <span>Print</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
