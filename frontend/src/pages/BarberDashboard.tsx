@@ -15,6 +15,12 @@ export const BarberDashboard: React.FC = () => {
   const [blockEnd, setBlockEnd] = useState('');
   const [reason, setReason] = useState('');
 
+  // 'HARARE-MAIN' used to be hardcoded here, but that is the branch's
+  // human-readable code (Branch.code), not its id - the backend FK expects
+  // the real UUID, so every block-out submission failed. Fetched on mount
+  // instead, matching the same fix applied to ReceptionistPortal.
+  const [branchId, setBranchId] = useState('');
+
   const fetchAppointments = () => {
     setLoading(true);
     apiClient.get('/barbers/me/appointments')
@@ -25,6 +31,9 @@ export const BarberDashboard: React.FC = () => {
 
   useEffect(() => {
     fetchAppointments();
+    apiClient.get('/branches').then(res => {
+      if (res.data.length > 0) setBranchId(res.data[0].id);
+    });
   }, []);
 
   // Real-time Event Listener: Refreshes agenda when booking is confirmed or created
@@ -48,9 +57,13 @@ export const BarberDashboard: React.FC = () => {
       alert('Please fill out all fields');
       return;
     }
+    if (!branchId) {
+      alert('Branch information still loading, please try again in a moment');
+      return;
+    }
     try {
       await apiClient.post(`/barbers/me/block-out`, {
-        branchId: 'HARARE-MAIN',
+        branchId,
         startTime: new Date(blockStart).toISOString(),
         endTime: new Date(blockEnd).toISOString(),
         reason,
