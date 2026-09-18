@@ -179,9 +179,10 @@ export const BookingWizard: React.FC = () => {
         paymentType: 'ECOCASH',
       });
 
+      // The backend confirms the booking itself once the payment adapter
+      // reports success (see PaymentsService.initiatePayment) - a client
+      // was never meant to confirm its own payment directly.
       setPaymentInstructions(payRes.data.instructions || 'EcoCash prompt sent.');
-
-      await apiClient.post(`/payments/${payRes.data.payment.id}/confirm`);
       setBookingConfirmation(booking);
       setStep(5);
     } catch (e: any) {

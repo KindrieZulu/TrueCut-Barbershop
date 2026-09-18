@@ -80,7 +80,7 @@ export class PaymentsService {
       booking.bookingCode,
     );
 
-    const payment = await this.prisma.payment.create({
+    let payment = await this.prisma.payment.create({
       data: {
         bookingId,
         amount,
@@ -90,6 +90,18 @@ export class PaymentsService {
         idempotencyKey,
       },
     });
+
+    // PaynowEcoCashAdapter has no real gateway integration today - it always
+    // reports success synchronously, so there is no genuine pending state to
+    // wait on. Confirm immediately, the same way the CASH branch above does.
+    // A real Paynow/EcoCash integration should leave this PENDING instead and
+    // rely on PaymentsController.handleWebhook (already implemented and
+    // signature-verified) to call confirmPayment once the provider actually
+    // reports success - the client should never be the one confirming its
+    // own payment, which is why that endpoint is staff-only.
+    if (initResult.success) {
+      payment = await this.confirmPayment(payment.id, initResult.providerReference);
+    }
 
     return {
       payment,
