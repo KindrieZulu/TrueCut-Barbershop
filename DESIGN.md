@@ -38,7 +38,12 @@
   - Text: `#17171a`
   - Text muted: `#6b6b70`
   - Gold: `#a8791f` (deepened for contrast on light backgrounds), Gold bright: `#8f6414`, Gold dim: `rgba(168,121,31,0.10)`
-- **Semantic:** success `#4ade80` (dark) / `#16a34a` (light), error `#f87171` (dark) / `#dc2626` (light).
+- **Semantic:** dark values are this app's original Tailwind defaults (unchanged); light values shift deeper/more saturated, the standard move for text and badge tints sitting on a near-white surface instead of a near-black one.
+  - Success (green): `#4ade80` (dark) / `#16a34a` (light)
+  - Error (red): `#f87171` (dark) / `#dc2626` (light)
+  - Warning (amber): `#fbbf24` (dark) / `#b45309` (light)
+  - Info (blue): `#60a5fa` (dark) / `#2563eb` (light)
+  - Implemented as `--tc-green-400/500/600`, `--tc-red-400/500/600`, `--tc-amber-400/500/600`, `--tc-blue-400/500/600` (only the shades this app actually uses are theme-aware; other shades and the one-off purple/emerald/yellow accents still use Tailwind's literal defaults - a known, accepted gap in the incremental rollout).
 - **Theme switching:** implemented via `data-theme` attribute on `<html>` plus CSS custom properties - see `frontend/src/index.css`. A theme toggle belongs in the global Settings surface (see below) and should persist the user's choice (e.g. localStorage), defaulting to dark.
 
 ## Spacing
@@ -72,3 +77,4 @@ The `.card-3d` hover pattern, color tokens, and typography roles above are demon
 |------|----------|-----------|
 | 2026-09-19 | Initial design system created (Industrial-Executive hybrid, dark+gold retained, Cabinet Grotesk/General Sans/Geist, CSS-3D card-lift motion) | Created by /design-consultation. Competitive research (Fresha/GlossGenius/Squire) showed category convergence on flat, generic, interchangeable UI - TrueCut differentiates via precision-engineered typography and depth. |
 | 2026-09-19 | Added light theme as a required feature | User request during design consultation - Settings should let users switch themes, not just consume dark mode. |
+| 2026-09-19 | Re-tuned semantic status colors (success/error/warning/info) for theme-awareness | User request - green/red/amber/blue text and badges were unthemed literal Tailwind colors, reading as washed-out on light backgrounds since they were only tuned for a dark background. |

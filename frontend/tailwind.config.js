@@ -39,7 +39,32 @@ export default {
           400: withOpacity('--tc-text-muted'),
           500: withOpacity('--tc-text-muted'),
           600: withOpacity('--tc-text-faint'),
-        }
+        },
+        // Semantic status colors - only 400/500/600 are theme-aware (the
+        // shades this app actually uses for status text/badges/buttons).
+        // Other shades (300, 700+) fall through to Tailwind's defaults,
+        // matching the same incremental, screen-by-screen rollout approach
+        // used for the rest of the design system.
+        green: {
+          400: withOpacity('--tc-green-400'),
+          500: withOpacity('--tc-green-500'),
+          600: withOpacity('--tc-green-600'),
+        },
+        red: {
+          400: withOpacity('--tc-red-400'),
+          500: withOpacity('--tc-red-500'),
+          600: withOpacity('--tc-red-600'),
+        },
+        amber: {
+          400: withOpacity('--tc-amber-400'),
+          500: withOpacity('--tc-amber-500'),
+          600: withOpacity('--tc-amber-600'),
+        },
+        blue: {
+          400: withOpacity('--tc-blue-400'),
+          500: withOpacity('--tc-blue-500'),
+          600: withOpacity('--tc-blue-600'),
+        },
       },
       fontFamily: {
         display: ['Cabinet Grotesk', 'General Sans', 'sans-serif'],

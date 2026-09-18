@@ -32,6 +32,24 @@ const PALETTE_HEX: Record<Theme, Record<string, string>> = {
     '--tc-text-soft': '#d4d4d8',
     '--tc-text-muted': '#9a9a9f',
     '--tc-text-faint': '#6b6b70',
+    // Semantic status colors (DESIGN.md "Color" > Semantic). Dark values are
+    // the Tailwind defaults this app already shipped with - unchanged, so
+    // existing dark-mode screens look identical. Light values shift deeper/
+    // more saturated (the standard move for text/tint colors on a near-white
+    // surface) so status text and badge tints stay readable in light mode
+    // instead of reusing washed-out tints tuned for a near-black background.
+    '--tc-green-400': '#4ade80',
+    '--tc-green-500': '#22c55e',
+    '--tc-green-600': '#16a34a',
+    '--tc-red-400': '#f87171',
+    '--tc-red-500': '#ef4444',
+    '--tc-red-600': '#dc2626',
+    '--tc-amber-400': '#fbbf24',
+    '--tc-amber-500': '#f59e0b',
+    '--tc-amber-600': '#d97706',
+    '--tc-blue-400': '#60a5fa',
+    '--tc-blue-500': '#3b82f6',
+    '--tc-blue-600': '#2563eb',
   },
   light: {
     '--tc-dark-900': '#f6f5f2',
@@ -45,6 +63,18 @@ const PALETTE_HEX: Record<Theme, Record<string, string>> = {
     '--tc-text-soft': '#3f3f43',
     '--tc-text-muted': '#6b6b70',
     '--tc-text-faint': '#8a8a8f',
+    '--tc-green-400': '#16a34a',
+    '--tc-green-500': '#16a34a',
+    '--tc-green-600': '#15803d',
+    '--tc-red-400': '#dc2626',
+    '--tc-red-500': '#dc2626',
+    '--tc-red-600': '#b91c1c',
+    '--tc-amber-400': '#b45309',
+    '--tc-amber-500': '#b45309',
+    '--tc-amber-600': '#92400e',
+    '--tc-blue-400': '#2563eb',
+    '--tc-blue-500': '#2563eb',
+    '--tc-blue-600': '#1d4ed8',
   },
 };
 
