@@ -44,7 +44,7 @@ export const SystemAdminDashboard: React.FC = () => {
       <div className="flex items-center justify-between mb-8">
         <div>
           <span className="text-xs font-bold text-red-400 bg-red-500/10 px-2.5 py-0.5 rounded border border-red-500/20">SYSTEM ADMIN MASTER CONTROL</span>
-          <h1 className="text-2xl font-extrabold text-white mt-1">Infrastructure & Cross-Portal Management</h1>
+          <h1 className="text-2xl font-display font-extrabold text-white mt-1">Infrastructure & Cross-Portal Management</h1>
         </div>
         <button onClick={fetchSysAdminData} className="p-2 bg-dark-800 border border-dark-700 text-gold-400 rounded-xl">
           <RefreshCw className="w-4 h-4" />
@@ -55,14 +55,14 @@ export const SystemAdminDashboard: React.FC = () => {
       <div className="bg-dark-800 border border-dark-700 p-6 rounded-2xl mb-8 space-y-3">
         <div className="flex items-center space-x-2 text-gold-400">
           <Shield className="w-5 h-5 text-red-400" />
-          <h3 className="font-bold text-white text-sm">System-Wide Operational Access</h3>
+          <h3 className="font-display font-bold text-white text-sm">System-Wide Operational Access</h3>
         </div>
         <p className="text-xs text-gray-400">As System Administrator, you have full privileges across all feature modules and role views.</p>
 
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
           <Link
             to="/admin"
-            className="p-3 bg-dark-900 hover:bg-dark-700 border border-dark-600 rounded-xl text-xs font-bold text-white flex flex-col items-center justify-center space-y-1 transition-all"
+            className="card-3d p-3 bg-dark-900 hover:bg-dark-700 border border-dark-600 rounded-xl text-xs font-bold text-white flex flex-col items-center justify-center space-y-1 transition-colors"
           >
             <Building2 className="w-5 h-5 text-emerald-400" />
             <span>Company Admin</span>
@@ -70,7 +70,7 @@ export const SystemAdminDashboard: React.FC = () => {
 
           <Link
             to="/receptionist"
-            className="p-3 bg-dark-900 hover:bg-dark-700 border border-dark-600 rounded-xl text-xs font-bold text-white flex flex-col items-center justify-center space-y-1 transition-all"
+            className="card-3d p-3 bg-dark-900 hover:bg-dark-700 border border-dark-600 rounded-xl text-xs font-bold text-white flex flex-col items-center justify-center space-y-1 transition-colors"
           >
             <UserCheck className="w-5 h-5 text-blue-400" />
             <span>Receptionist</span>
@@ -78,7 +78,7 @@ export const SystemAdminDashboard: React.FC = () => {
 
           <Link
             to="/barber"
-            className="p-3 bg-dark-900 hover:bg-dark-700 border border-dark-600 rounded-xl text-xs font-bold text-white flex flex-col items-center justify-center space-y-1 transition-all"
+            className="card-3d p-3 bg-dark-900 hover:bg-dark-700 border border-dark-600 rounded-xl text-xs font-bold text-white flex flex-col items-center justify-center space-y-1 transition-colors"
           >
             <Scissors className="w-5 h-5 text-amber-400" />
             <span>Barber Station</span>
@@ -86,7 +86,7 @@ export const SystemAdminDashboard: React.FC = () => {
 
           <Link
             to="/dashboard"
-            className="p-3 bg-dark-900 hover:bg-dark-700 border border-dark-600 rounded-xl text-xs font-bold text-white flex flex-col items-center justify-center space-y-1 transition-all"
+            className="card-3d p-3 bg-dark-900 hover:bg-dark-700 border border-dark-600 rounded-xl text-xs font-bold text-white flex flex-col items-center justify-center space-y-1 transition-colors"
           >
             <User className="w-5 h-5 text-gold-400" />
             <span>Client Portal</span>
@@ -94,7 +94,7 @@ export const SystemAdminDashboard: React.FC = () => {
 
           <Link
             to="/catalogue"
-            className="p-3 bg-dark-900 hover:bg-dark-700 border border-dark-600 rounded-xl text-xs font-bold text-white flex flex-col items-center justify-center space-y-1 transition-all"
+            className="card-3d p-3 bg-dark-900 hover:bg-dark-700 border border-dark-600 rounded-xl text-xs font-bold text-white flex flex-col items-center justify-center space-y-1 transition-colors"
           >
             <Sparkles className="w-5 h-5 text-purple-400" />
             <span>Price Catalogue</span>
@@ -109,24 +109,24 @@ export const SystemAdminDashboard: React.FC = () => {
           {/* Health Status Cards */}
           {health && (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-dark-800 border border-dark-700 p-5 rounded-2xl flex items-center justify-between">
+              <div className="card-3d bg-dark-800 border border-dark-700 p-5 rounded-2xl flex items-center justify-between">
                 <div>
                   <span className="text-xs text-gray-400 block">Database (SQLite/PostgreSQL)</span>
-                  <span className="text-lg font-extrabold text-green-400">{health.services.database}</span>
+                  <span className="text-lg font-data font-extrabold text-green-400">{health.services.database}</span>
                 </div>
                 <Database className="w-6 h-6 text-green-400" />
               </div>
-              <div className="bg-dark-800 border border-dark-700 p-5 rounded-2xl flex items-center justify-between">
+              <div className="card-3d bg-dark-800 border border-dark-700 p-5 rounded-2xl flex items-center justify-between">
                 <div>
                   <span className="text-xs text-gray-400 block">Backend API Node</span>
-                  <span className="text-lg font-extrabold text-green-400">{health.services.api}</span>
+                  <span className="text-lg font-data font-extrabold text-green-400">{health.services.api}</span>
                 </div>
                 <Server className="w-6 h-6 text-green-400" />
               </div>
-              <div className="bg-dark-800 border border-dark-700 p-5 rounded-2xl flex items-center justify-between">
+              <div className="card-3d bg-dark-800 border border-dark-700 p-5 rounded-2xl flex items-center justify-between">
                 <div>
                   <span className="text-xs text-gray-400 block">Timezone Scope</span>
-                  <span className="text-lg font-extrabold text-gold-400">{health.services.timezone}</span>
+                  <span className="text-lg font-data font-extrabold text-gold-400">{health.services.timezone}</span>
                 </div>
                 <Activity className="w-6 h-6 text-gold-400" />
               </div>
@@ -135,7 +135,7 @@ export const SystemAdminDashboard: React.FC = () => {
 
           {/* Technical Audit Logs */}
           <div className="bg-dark-800 border border-dark-700 rounded-2xl p-6">
-            <h3 className="font-bold text-white text-sm mb-4">Technical Audit Trail</h3>
+            <h3 className="font-display font-bold text-white text-sm mb-4">Technical Audit Trail</h3>
             <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
               {auditLogs.map((log) => (
                 <div key={log.id} className="bg-dark-900 border border-dark-700 p-3 rounded-xl text-xs font-mono flex flex-col sm:flex-row justify-between gap-2">

@@ -187,7 +187,7 @@ export const WelcomePage: React.FC = () => {
           <span>HARARE MAIN BRANCH: {harareTime} CAT</span>
         </div>
 
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight">
+        <h1 className="text-4xl sm:text-6xl font-display font-black tracking-tight text-white leading-tight">
           Precision Grooming & Executive <br className="hidden sm:inline" />
           <span className="bg-gradient-to-r from-gold-400 via-amber-300 to-yellow-500 bg-clip-text text-transparent">
             Barbershop Platform
@@ -238,7 +238,7 @@ export const WelcomePage: React.FC = () => {
       <div id="roles-section" className="max-w-6xl mx-auto w-full relative z-10 my-8 pt-8 border-t border-white/10 space-y-6">
         <div className="text-center space-y-1">
           <span className="text-xs font-mono font-bold text-gold-400 uppercase tracking-widest">Portal Access</span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-white">Select Your Operational Role</h2>
+          <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-white">Select Your Operational Role</h2>
           <p className="text-xs text-gray-400">Click a card below to enter portal with quick demo credentials or custom OTP sign-in.</p>
         </div>
 
@@ -251,7 +251,7 @@ export const WelcomePage: React.FC = () => {
               <div
                 key={r.id}
                 onClick={() => { setSelectedRole(r); setSelectedDemoPhone(r.demoAccounts ? r.demoAccounts[0].phone : r.demoPhone); }}
-                className={`group relative bg-white/[0.03] hover:bg-white/[0.08] backdrop-blur-2xl border ${r.gradient} rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1.5 shadow-2xl flex flex-col justify-between`}
+                className={`card-3d group relative bg-white/[0.03] hover:bg-white/[0.08] backdrop-blur-2xl border ${r.gradient} rounded-2xl p-5 cursor-pointer transition-colors flex flex-col justify-between`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -267,7 +267,7 @@ export const WelcomePage: React.FC = () => {
                   </div>
 
                   <span className="text-[10px] uppercase tracking-wider font-mono text-gold-400 block mb-1">{r.badge}</span>
-                  <h3 className="font-bold text-white text-base leading-snug">{r.title}</h3>
+                  <h3 className="font-display font-bold text-white text-base leading-snug">{r.title}</h3>
                   <p className="text-xs text-gray-400 font-medium mb-3">{r.subtitle}</p>
                   <p className="text-[11px] text-gray-500 leading-relaxed">{r.description}</p>
                 </div>
@@ -292,7 +292,7 @@ export const WelcomePage: React.FC = () => {
                 <span className="text-xs font-mono font-bold text-gold-400 bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/20">
                   {selectedRole.badge}
                 </span>
-                <h3 className="text-xl font-black text-white mt-2">{selectedRole.title}</h3>
+                <h3 className="text-xl font-display font-black text-white mt-2">{selectedRole.title}</h3>
                 <p className="text-xs text-gray-400">{selectedRole.subtitle}</p>
               </div>
               <button
