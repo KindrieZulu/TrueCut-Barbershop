@@ -37,6 +37,13 @@ export const Navbar: React.FC = () => {
     }
   };
 
+  // Once a user is already sitting on their own operational console (their
+  // dashboard route), a "go to Dashboard" button just points at the current
+  // page, and staff have no need for the public "Prices" marketing link -
+  // both are clutter, not navigation, in that context.
+  const isOnOwnDashboard = user ? location.pathname === getDashboardPath() : false;
+  const isStaff = user && user.role !== 'CLIENT';
+
   return (
     <nav className="bg-dark-800/80 backdrop-blur-xl border-b border-dark-700 sticky top-0 z-50 px-4 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -71,23 +78,27 @@ export const Navbar: React.FC = () => {
 
         {/* Navigation Links */}
         <div className="flex items-center space-x-3">
-          <Link
-            to="/catalogue"
-            className="text-xs sm:text-sm text-gray-300 hover:text-gold-400 px-2 py-1 transition-colors flex items-center space-x-1"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-gold-500" />
-            <span>Prices</span>
-          </Link>
+          {!isStaff && (
+            <Link
+              to="/catalogue"
+              className="text-xs sm:text-sm text-gray-300 hover:text-gold-400 px-2 py-1 transition-colors flex items-center space-x-1"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-gold-500" />
+              <span>Prices</span>
+            </Link>
+          )}
 
           {user ? (
             <>
-              <Link
-                to={getDashboardPath()}
-                className="flex items-center space-x-1 bg-gold-500 hover:bg-gold-600 text-black font-semibold text-xs sm:text-sm px-3 py-1.5 rounded-lg transition-colors"
-              >
-                <LayoutDashboard className="w-4 h-4" />
-                <span className="hidden sm:inline">Dashboard</span>
-              </Link>
+              {!isOnOwnDashboard && (
+                <Link
+                  to={getDashboardPath()}
+                  className="flex items-center space-x-1 bg-gold-500 hover:bg-gold-600 text-black font-semibold text-xs sm:text-sm px-3 py-1.5 rounded-lg transition-colors"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  <span className="hidden sm:inline">Dashboard</span>
+                </Link>
+              )}
 
               <button
                 onClick={() => { logout(); navigate('/welcome'); }}
