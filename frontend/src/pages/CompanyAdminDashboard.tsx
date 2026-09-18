@@ -4,7 +4,8 @@ import { apiClient } from '../api/client';
 import { useRealtimeEvents } from '../api/events';
 import {
   DollarSign, TrendingUp, Scissors, Settings, Users,
-  BarChart3, RefreshCw, Plus, Edit2, Check, Shield, Download, Home, UserPlus
+  BarChart3, RefreshCw, Plus, Edit2, Check, Shield, Download, Home, UserPlus,
+  Circle, Clock3
 } from 'lucide-react';
 
 export const CompanyAdminDashboard: React.FC = () => {
@@ -13,7 +14,17 @@ export const CompanyAdminDashboard: React.FC = () => {
   const [services, setServices] = useState<any[]>([]);
   const [settings, setSettings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'financial' | 'catalogue' | 'settings' | 'staff'>('financial');
+  const [activeTab, setActiveTab] = useState<'financial' | 'catalogue' | 'settings' | 'staff' | 'weekly'>('financial');
+  const [weeklyReport, setWeeklyReport] = useState<any>(null);
+  const [weeklyLoading, setWeeklyLoading] = useState(false);
+
+  // Live "who is with a client right now / who is booked in the next 2
+  // hours" widget. Separate from fetchAdminData since it needs to refresh
+  // on a timer, not just on SSE booking events - a booking silently
+  // transitions from "upcoming" to "in progress" as the clock passes its
+  // start time, with no event firing at that moment.
+  const [branchId, setBranchId] = useState('');
+  const [occupancy, setOccupancy] = useState<any[]>([]);
 
   // Catalogue state
   const [newServiceName, setNewServiceName] = useState('');
@@ -45,13 +56,46 @@ export const CompanyAdminDashboard: React.FC = () => {
 
   useEffect(() => {
     fetchAdminData();
+    apiClient.get('/branches').then(res => {
+      if (res.data.length > 0) setBranchId(res.data[0].id);
+    });
   }, []);
+
+  const fetchOccupancy = () => {
+    if (!branchId) return;
+    apiClient.get(`/barbers/occupancy?branchId=${branchId}`)
+      .then(res => setOccupancy(res.data))
+      .catch(err => console.error(err));
+  };
+
+  useEffect(() => {
+    fetchOccupancy();
+    // Booking start/end times pass silently with no event to react to, so
+    // this needs its own clock-driven refresh alongside the SSE-triggered one.
+    const interval = setInterval(fetchOccupancy, 60000);
+    return () => clearInterval(interval);
+  }, [branchId]);
 
   useRealtimeEvents((evt) => {
     if (evt.type === 'BOOKING_CONFIRMED' || evt.type === 'LEDGER_APPENDED' || evt.type === 'BOOKING_SERVED') {
       fetchAdminData();
+      fetchOccupancy();
     }
   });
+
+  const fetchWeeklyReport = () => {
+    setWeeklyLoading(true);
+    apiClient.get('/reports/weekly/financial')
+      .then(res => setWeeklyReport(res.data))
+      .catch(err => console.error(err))
+      .finally(() => setWeeklyLoading(false));
+  };
+
+  useEffect(() => {
+    if (activeTab === 'weekly' && !weeklyReport) {
+      fetchWeeklyReport();
+    }
+  }, [activeTab]);
 
   const handleExportCsv = () => {
     const exportUrl = import.meta.env.VITE_API_URL
@@ -153,6 +197,14 @@ export const CompanyAdminDashboard: React.FC = () => {
               Price Catalogue
             </button>
             <button
+              onClick={() => setActiveTab('weekly')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                activeTab === 'weekly' ? 'bg-gold-500 text-black' : 'text-gray-400'
+              }`}
+            >
+              Weekly Report
+            </button>
+            <button
               onClick={() => setActiveTab('staff')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                 activeTab === 'staff' ? 'bg-gold-500 text-black' : 'text-gray-400'
@@ -171,6 +223,61 @@ export const CompanyAdminDashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Live Barber Status - always visible regardless of active tab, this
+          answers "who is with a client right now, who is booked in the next
+          2 hours" that the financial tab's daily numbers do not show. */}
+      {occupancy.length > 0 && (
+        <div className="bg-dark-800 border border-dark-700 rounded-2xl p-6 mb-6">
+          <h3 className="font-bold text-white text-sm mb-4 flex items-center gap-2">
+            <Circle className="w-3 h-3 text-green-400 fill-green-400 animate-pulse" />
+            <span>Live Barber Status</span>
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {occupancy.map((b) => (
+              <div key={b.barberId} className="bg-dark-900 border border-dark-700 rounded-xl p-4 text-xs space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-white text-sm">{b.name}</span>
+                  {b.status === 'WITH_CLIENT' ? (
+                    <span className="bg-amber-500/10 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold">
+                      With Client
+                    </span>
+                  ) : (
+                    <span className="bg-green-500/10 text-green-400 border border-green-500/30 px-2 py-0.5 rounded-full font-bold">
+                      Free
+                    </span>
+                  )}
+                </div>
+
+                {b.currentBooking && (
+                  <div className="text-gray-400">
+                    <span className="text-white font-semibold">{b.currentBooking.client?.name}</span>
+                    {' - '}{b.currentBooking.service?.name} until{' '}
+                    {new Date(b.currentBooking.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                )}
+
+                {b.upcomingBookings.length > 0 ? (
+                  <div className="pt-1.5 border-t border-dark-700 space-y-1">
+                    <span className="text-gray-500 flex items-center gap-1">
+                      <Clock3 className="w-3 h-3" />
+                      <span>Next 2 hours:</span>
+                    </span>
+                    {b.upcomingBookings.map((u: any) => (
+                      <div key={u.id} className="text-gray-400 pl-4">
+                        {new Date(u.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {' - '}{u.client?.name} ({u.service?.name})
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="pt-1.5 border-t border-dark-700 text-gray-500">No bookings in the next 2 hours</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="text-center py-12 text-gold-500 animate-pulse text-sm">Loading company records...</div>
@@ -270,6 +377,84 @@ export const CompanyAdminDashboard: React.FC = () => {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* TAB: Weekly Revenue & Barber Activity Report */}
+          {activeTab === 'weekly' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-bold text-white text-sm">7-Day Revenue & Barber Activity</h3>
+                <button
+                  onClick={() => window.print()}
+                  disabled={!weeklyReport}
+                  className="bg-gold-500 hover:bg-gold-600 disabled:opacity-40 text-black font-extrabold text-xs px-4 py-2 rounded-xl transition-colors"
+                >
+                  Print Report
+                </button>
+              </div>
+
+              {weeklyLoading ? (
+                <div className="text-center py-12 text-gold-500 animate-pulse text-sm">Compiling weekly report...</div>
+              ) : weeklyReport ? (
+                <div className="printable-area bg-dark-800 border border-dark-700 rounded-2xl p-6 space-y-6 print:bg-white print:text-black print:border-none">
+                  <div>
+                    <h2 className="font-extrabold text-lg">TrueCut Barbershop - Weekly Report</h2>
+                    <p className="text-xs text-gray-400 print:text-gray-600">
+                      {new Date(weeklyReport.weekStart).toLocaleDateString()} - {new Date(weeklyReport.weekEnd).toLocaleDateString()}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                    <div className="bg-dark-900 print:bg-gray-100 p-3 rounded-xl">
+                      <span className="text-gray-400 print:text-gray-600 block">Total Net Revenue</span>
+                      <span className="text-lg font-extrabold text-gold-400 print:text-black">${weeklyReport.totalNetRevenue.toFixed(2)}</span>
+                    </div>
+                    <div className="bg-dark-900 print:bg-gray-100 p-3 rounded-xl">
+                      <span className="text-gray-400 print:text-gray-600 block">Transactions</span>
+                      <span className="text-lg font-extrabold print:text-black">{weeklyReport.totalTransactionsCount}</span>
+                    </div>
+                    <div className="bg-dark-900 print:bg-gray-100 p-3 rounded-xl">
+                      <span className="text-gray-400 print:text-gray-600 block">Bookings</span>
+                      <span className="text-lg font-extrabold print:text-black">{weeklyReport.totalBookingsCount}</span>
+                    </div>
+                    <div className="bg-dark-900 print:bg-gray-100 p-3 rounded-xl">
+                      <span className="text-gray-400 print:text-gray-600 block">Refunds Issued</span>
+                      <span className="text-lg font-extrabold text-red-400 print:text-black">${weeklyReport.breakdown.refundsIssued.toFixed(2)}</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-bold text-sm mb-2">Barber Activity</h4>
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="text-left text-gray-400 print:text-gray-600 border-b border-dark-700 print:border-gray-300">
+                          <th className="py-1.5">Barber</th>
+                          <th className="py-1.5 text-right">Served</th>
+                          <th className="py-1.5 text-right">Cancelled</th>
+                          <th className="py-1.5 text-right">No-Show</th>
+                          <th className="py-1.5 text-right">Revenue</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Object.entries(weeklyReport.activityPerBarber || {}).map(([id, info]: any) => (
+                          <tr key={id} className="border-b border-dark-900 print:border-gray-200">
+                            <td className="py-1.5 font-semibold">{info.name}</td>
+                            <td className="py-1.5 text-right text-green-400 print:text-black">{info.served}</td>
+                            <td className="py-1.5 text-right text-red-400 print:text-black">{info.cancelled}</td>
+                            <td className="py-1.5 text-right text-amber-400 print:text-black">{info.noShow}</td>
+                            <td className="py-1.5 text-right font-bold text-gold-400 print:text-black">
+                              ${(weeklyReport.revenuePerBarber?.[id]?.total || 0).toFixed(2)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-12 text-gray-500 text-sm">No report data yet.</div>
+              )}
             </div>
           )}
 

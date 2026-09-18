@@ -27,3 +27,24 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #d4af37;
 }
+
+/* Print-just-one-element pattern: any element with .printable-area stays
+   visible when printing, everything else on the page is hidden. Used by
+   ReceptionistPortal's receipt and CompanyAdminDashboard's weekly report -
+   avoids window.open(), which popup blockers can silently kill even on a
+   direct user click. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .printable-area,
+  .printable-area * {
+    visibility: visible;
+  }
+  .printable-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+}
