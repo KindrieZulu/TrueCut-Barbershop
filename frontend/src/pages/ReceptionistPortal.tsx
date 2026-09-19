@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/client';
 import { useRealtimeEvents } from '../api/events';
+import { getHarareDateString } from '../utils/date';
 import {
   Clock, UserPlus, Scissors, CheckCircle, AlertCircle,
   Zap, DollarSign, Search, RefreshCw, Wifi, WifiOff, Home, Printer
@@ -41,6 +42,7 @@ export const ReceptionistPortal: React.FC = () => {
   const [services, setServices] = useState<any[]>([]);
   const [barbers, setBarbers] = useState<any[]>([]);
   const [slots, setSlots] = useState<any[]>([]);
+  const [slotsLoading, setSlotsLoading] = useState(false);
 
   const [selectedServiceId, setSelectedServiceId] = useState('');
   const [selectedBarberId, setSelectedBarberId] = useState('');
@@ -112,10 +114,15 @@ export const ReceptionistPortal: React.FC = () => {
   }, [branchId, selectedServiceId]);
 
   useEffect(() => {
+    setSelectedSlot(null);
     if (branchId && selectedBarberId && selectedServiceId) {
-      const todayDate = new Date().toISOString().split('T')[0];
+      setSlotsLoading(true);
+      const todayDate = getHarareDateString();
       apiClient.get(`/availability?branchId=${branchId}&barberId=${selectedBarberId}&serviceId=${selectedServiceId}&date=${todayDate}`)
-        .then(res => setSlots(res.data));
+        .then(res => setSlots(res.data))
+        .finally(() => setSlotsLoading(false));
+    } else {
+      setSlots([]);
     }
   }, [branchId, selectedBarberId, selectedServiceId]);
 
@@ -345,6 +352,50 @@ export const ReceptionistPortal: React.FC = () => {
               </div>
             </div>
 
+            {/* Time Slot Picker - hidden while Squeeze-in is on, since that
+                path intentionally books "now" and overlaps the schedule
+                instead of using a real open slot. */}
+            {!isSqueezeIn && (
+              <div>
+                <label className="text-xs text-gray-400 uppercase font-semibold block mb-2">
+                  Time Slot <span className="text-gold-500">*</span>
+                </label>
+                {slotsLoading ? (
+                  <div className="text-xs text-gold-500 animate-pulse p-3 text-center bg-dark-900 rounded-xl border border-dark-700">
+                    Loading today's schedule...
+                  </div>
+                ) : slots.length === 0 ? (
+                  <div className="p-3 bg-dark-900 rounded-xl border border-dark-700 text-center text-xs text-gray-400">
+                    No available slots left today for this barber. Try another barber, or use Squeeze-in below.
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-4 gap-2 max-h-36 overflow-y-auto pr-1">
+                    {slots.map((s: any, idx: number) => {
+                      const timeLabel = new Date(s.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                      const isSelected = selectedSlot?.startTime === s.startTime;
+                      return (
+                        <button
+                          key={idx}
+                          type="button"
+                          disabled={!s.isAvailable}
+                          onClick={() => setSelectedSlot(s)}
+                          className={`p-2 rounded-lg text-xs font-bold border transition-all ${
+                            !s.isAvailable
+                              ? 'border-dark-700 bg-dark-900/50 text-gray-600 cursor-not-allowed line-through'
+                              : isSelected
+                              ? 'border-gold-500 bg-gold-500 text-black'
+                              : 'border-dark-700 bg-dark-900 text-gray-300 hover:border-gold-500/50'
+                          }`}
+                        >
+                          {timeLabel}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Squeeze-in Toggle */}
             <div className="bg-dark-900 p-3 rounded-xl border border-dark-700 flex items-center justify-between">
               <div>
@@ -354,7 +405,10 @@ export const ReceptionistPortal: React.FC = () => {
               <input
                 type="checkbox"
                 checked={isSqueezeIn}
-                onChange={(e) => setIsSqueezeIn(e.target.checked)}
+                onChange={(e) => {
+                  setIsSqueezeIn(e.target.checked);
+                  if (e.target.checked) setSelectedSlot(null);
+                }}
                 className="w-5 h-5 accent-gold-500"
               />
             </div>
@@ -396,7 +450,8 @@ export const ReceptionistPortal: React.FC = () => {
 
             <button
               onClick={handleCompleteWalkIn}
-              className="w-full bg-gold-500 hover:bg-gold-600 text-black font-extrabold py-3.5 rounded-xl transition-colors text-sm"
+              disabled={!selectedSlot && !isSqueezeIn}
+              className="w-full bg-gold-500 hover:bg-gold-600 disabled:opacity-50 disabled:cursor-not-allowed text-black font-extrabold py-3.5 rounded-xl transition-colors text-sm"
             >
               Confirm Walk-in & Record Payment
             </button>

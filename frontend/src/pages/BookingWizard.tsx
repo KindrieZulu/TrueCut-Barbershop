@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/client';
 import { useAuth } from '../context/AuthContext';
+import { getHarareDateString } from '../utils/date';
 import {
   Clock, Calendar, User, Scissors, MapPin, CheckCircle,
   AlertCircle, ShieldCheck, ArrowRight, Home, Zap, CreditCard, RefreshCw, ArrowLeft
@@ -22,7 +23,7 @@ export const BookingWizard: React.FC = () => {
   const [selectedBranchId, setSelectedBranchId] = useState('');
   const [selectedServiceId, setSelectedServiceId] = useState(searchParams.get('serviceId') || '');
   const [selectedBarberId, setSelectedBarberId] = useState(''); // Requires explicit selection
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(getHarareDateString());
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
 
   // Options
@@ -441,7 +442,7 @@ export const BookingWizard: React.FC = () => {
             <input
               type="date"
               value={selectedDate}
-              min={new Date().toISOString().split('T')[0]}
+              min={getHarareDateString()}
               onChange={(e) => {
                 setSelectedDate(e.target.value);
                 setSelectedSlot(null);
