@@ -182,7 +182,7 @@ export const WelcomePage: React.FC = () => {
 
       {/* SECTION 1: Brand Hero Welcome Landing */}
       <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6 pt-4 pb-12">
-        <div className="inline-flex items-center space-x-2 bg-white/5 backdrop-blur-xl border border-white/10 px-4 py-1.5 rounded-full text-xs text-gold-400 font-mono shadow-xl">
+        <div className="inline-flex items-center space-x-2 bg-dark-800 border border-dark-600 px-4 py-1.5 rounded-full text-xs text-gold-400 font-mono shadow-xl">
           <Clock className="w-3.5 h-3.5 text-gold-500 animate-pulse" />
           <span>HARARE MAIN BRANCH: {harareTime} CAT</span>
         </div>
@@ -200,15 +200,15 @@ export const WelcomePage: React.FC = () => {
 
         {/* Feature Pill Highlights */}
         <div className="flex flex-wrap items-center justify-center gap-2 pt-2 text-xs font-semibold text-gray-300">
-          <span className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
+          <span className="bg-dark-800 border border-dark-600 px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
             <CheckCircle className="w-3.5 h-3.5 text-gold-500" />
             <span>Zero Double-Booking Guarantee</span>
           </span>
-          <span className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
+          <span className="bg-dark-800 border border-dark-600 px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
             <Home className="w-3.5 h-3.5 text-blue-400" />
             <span>10km House Calls</span>
           </span>
-          <span className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
+          <span className="bg-dark-800 border border-dark-600 px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
             <Smartphone className="w-3.5 h-3.5 text-green-400" />
             <span>EcoCash Integration</span>
           </span>
@@ -226,7 +226,7 @@ export const WelcomePage: React.FC = () => {
 
           <Link
             to="/catalogue"
-            className="w-full sm:w-auto bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur-xl text-gold-400 font-bold text-sm px-6 py-3.5 rounded-xl transition-all flex items-center justify-center space-x-2"
+            className="w-full sm:w-auto bg-dark-800 hover:bg-dark-700 border border-dark-600 text-gold-400 font-bold text-sm px-6 py-3.5 rounded-xl transition-all flex items-center justify-center space-x-2"
           >
             <Sparkles className="w-4 h-4 text-gold-500" />
             <span>View Public Prices</span>
@@ -235,7 +235,7 @@ export const WelcomePage: React.FC = () => {
       </div>
 
       {/* SECTION 2: Role Selection & Sign-In / Sign-Up Grid */}
-      <div id="roles-section" className="max-w-6xl mx-auto w-full relative z-10 my-8 pt-8 border-t border-white/10 space-y-6">
+      <div id="roles-section" className="max-w-6xl mx-auto w-full relative z-10 my-8 pt-8 border-t border-dark-700 space-y-6">
         <div className="text-center space-y-1">
           <span className="text-xs font-mono font-bold text-gold-400 uppercase tracking-widest">Portal Access</span>
           <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-white">Select Your Operational Role</h2>
@@ -251,11 +251,11 @@ export const WelcomePage: React.FC = () => {
               <div
                 key={r.id}
                 onClick={() => { setSelectedRole(r); setSelectedDemoPhone(r.demoAccounts ? r.demoAccounts[0].phone : r.demoPhone); }}
-                className={`card-3d group relative bg-white/[0.03] hover:bg-white/[0.08] backdrop-blur-2xl border ${r.gradient} rounded-2xl p-5 cursor-pointer transition-colors flex flex-col justify-between`}
+                className={`card-3d group relative bg-dark-800 hover:bg-dark-700 border ${r.gradient} rounded-2xl p-5 cursor-pointer transition-colors flex flex-col justify-between`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-3 bg-white/5 border border-white/10 rounded-xl text-gold-400 group-hover:bg-gold-500 group-hover:text-black transition-colors">
+                    <div className="p-3 bg-dark-900 border border-dark-600 rounded-xl text-gold-400 group-hover:bg-gold-500 group-hover:text-black transition-colors">
                       <Icon className="w-6 h-6" />
                     </div>
                     {isCurrentActiveRole && (
@@ -272,7 +272,7 @@ export const WelcomePage: React.FC = () => {
                   <p className="text-[11px] text-gray-500 leading-relaxed">{r.description}</p>
                 </div>
 
-                <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs font-bold text-gold-400 group-hover:text-amber-300 transition-colors">
+                <div className="pt-4 border-t border-dark-700 flex items-center justify-between text-xs font-bold text-gold-400 group-hover:text-amber-300 transition-colors">
                   <span>Sign In</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </div>
@@ -285,9 +285,9 @@ export const WelcomePage: React.FC = () => {
       {/* Role Sign-In / Sign-Up Glass Modal */}
       {selectedRole && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
-          <div className="bg-dark-800/95 border border-white/15 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-6 relative overflow-hidden">
+          <div className="bg-dark-800/95 border border-dark-600 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-6 relative overflow-hidden">
             {/* Header */}
-            <div className="flex justify-between items-start border-b border-white/10 pb-4">
+            <div className="flex justify-between items-start border-b border-dark-700 pb-4">
               <div>
                 <span className="text-xs font-mono font-bold text-gold-400 bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/20">
                   {selectedRole.badge}
@@ -310,7 +310,7 @@ export const WelcomePage: React.FC = () => {
             )}
 
             {/* Auth Mode Toggle */}
-            <div className="flex bg-dark-900 p-1 rounded-xl border border-white/10 text-xs font-bold">
+            <div className="flex bg-dark-900 p-1 rounded-xl border border-dark-600 text-xs font-bold">
               <button
                 onClick={() => setAuthMode('DEMO')}
                 className={`w-1/2 py-2 rounded-lg transition-all ${
@@ -333,7 +333,7 @@ export const WelcomePage: React.FC = () => {
             {authMode === 'DEMO' ? (
               <div className="space-y-4">
                 {selectedRole.demoAccounts ? (
-                  <div className="bg-dark-900/80 border border-white/10 p-4 rounded-2xl space-y-2 text-xs">
+                  <div className="bg-dark-900/80 border border-dark-600 p-4 rounded-2xl space-y-2 text-xs">
                     <span className="text-gray-400 block mb-1">Choose which demo account to sign in as:</span>
                     <div className="space-y-1.5">
                       {selectedRole.demoAccounts.map((acct) => (
@@ -342,7 +342,7 @@ export const WelcomePage: React.FC = () => {
                           className={`flex items-center justify-between p-2.5 rounded-xl border cursor-pointer transition-colors ${
                             selectedDemoPhone === acct.phone
                               ? 'border-gold-500 bg-gold-500/10'
-                              : 'border-white/10 bg-dark-900'
+                              : 'border-dark-600 bg-dark-900'
                           }`}
                         >
                           <span className="flex items-center space-x-2">
@@ -365,7 +365,7 @@ export const WelcomePage: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-dark-900/80 border border-white/10 p-4 rounded-2xl space-y-2 text-xs">
+                  <div className="bg-dark-900/80 border border-dark-600 p-4 rounded-2xl space-y-2 text-xs">
                     <div className="flex justify-between text-gray-400">
                       <span>Demo Account Phone:</span>
                       <strong className="text-gold-400 font-mono">{selectedRole.demoPhone}</strong>
@@ -397,7 +397,7 @@ export const WelcomePage: React.FC = () => {
                         value={customName}
                         onChange={(e) => setCustomName(e.target.value)}
                         placeholder="e.g. Kudzai Ndlovu"
-                        className="w-full bg-dark-900 border border-white/10 rounded-xl p-3 text-white text-xs outline-none focus:border-gold-500"
+                        className="w-full bg-dark-900 border border-dark-600 rounded-xl p-3 text-white text-xs outline-none focus:border-gold-500"
                       />
                     </div>
                     <div>
@@ -407,7 +407,7 @@ export const WelcomePage: React.FC = () => {
                         value={customPhone}
                         onChange={(e) => setCustomPhone(e.target.value)}
                         placeholder="+263771000007"
-                        className="w-full bg-dark-900 border border-white/10 rounded-xl p-3 text-white text-xs outline-none focus:border-gold-500"
+                        className="w-full bg-dark-900 border border-dark-600 rounded-xl p-3 text-white text-xs outline-none focus:border-gold-500"
                       />
                     </div>
                     <button
@@ -426,7 +426,7 @@ export const WelcomePage: React.FC = () => {
                       value={otpCode}
                       onChange={(e) => setOtpCode(e.target.value)}
                       placeholder="Enter 6-digit OTP"
-                      className="w-full bg-dark-900 border border-white/10 rounded-xl p-3 text-center text-lg font-mono text-white outline-none focus:border-gold-500"
+                      className="w-full bg-dark-900 border border-dark-600 rounded-xl p-3 text-center text-lg font-mono text-white outline-none focus:border-gold-500"
                     />
                     <button
                       onClick={handleVerifyOtpLogin}
