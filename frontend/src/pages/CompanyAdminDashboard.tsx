@@ -44,6 +44,16 @@ export const CompanyAdminDashboard: React.FC = () => {
   const [staffRole, setStaffRole] = useState<'BARBER' | 'RECEPTIONIST'>('BARBER');
   const [staffMsg, setStaffMsg] = useState('');
 
+  // Staff directory - record-keeping only for support staff (cleaners,
+  // security, maintenance) who never log into the system, so unlike the
+  // form above this creates no User account, no password, no permissions.
+  const [directoryEntries, setDirectoryEntries] = useState<any[]>([]);
+  const [directoryLoading, setDirectoryLoading] = useState(false);
+  const [dirName, setDirName] = useState('');
+  const [dirPhone, setDirPhone] = useState('');
+  const [dirRoleLabel, setDirRoleLabel] = useState('');
+  const [dirMsg, setDirMsg] = useState('');
+
   const fetchAdminData = () => {
     setLoading(true);
     Promise.all([
@@ -100,6 +110,46 @@ export const CompanyAdminDashboard: React.FC = () => {
       fetchWeeklyReport();
     }
   }, [activeTab]);
+
+  const fetchDirectory = () => {
+    if (!branchId) return;
+    setDirectoryLoading(true);
+    apiClient.get(`/staff-directory?branchId=${branchId}`)
+      .then(res => setDirectoryEntries(res.data))
+      .catch(err => console.error(err))
+      .finally(() => setDirectoryLoading(false));
+  };
+
+  useEffect(() => {
+    if (activeTab === 'staff' && branchId) {
+      fetchDirectory();
+    }
+  }, [activeTab, branchId]);
+
+  const handleAddDirectoryEntry = async () => {
+    if (!dirName || !dirRoleLabel) {
+      setDirMsg('Name and Role are required');
+      return;
+    }
+    if (!branchId) {
+      setDirMsg('Branch information still loading, please try again in a moment');
+      return;
+    }
+    setDirMsg('');
+    try {
+      await apiClient.post('/staff-directory', {
+        name: dirName,
+        phone: dirPhone || undefined,
+        roleLabel: dirRoleLabel,
+        branchId,
+      });
+      setDirMsg('Added to staff directory!');
+      setDirName(''); setDirPhone(''); setDirRoleLabel('');
+      fetchDirectory();
+    } catch (e: any) {
+      setDirMsg(e.response?.data?.message || 'Failed to add staff directory entry');
+    }
+  };
 
   const handleExportCsv = () => {
     const exportUrl = import.meta.env.VITE_API_URL
@@ -468,6 +518,7 @@ export const CompanyAdminDashboard: React.FC = () => {
 
           {/* TAB 3: Staff Registration */}
           {activeTab === 'staff' && (
+            <div className="space-y-6">
             <div className="bg-dark-800 border border-dark-700 rounded-2xl p-6 space-y-6">
               <div>
                 <h3 className="font-bold text-white text-base">Register Operational Staff Member</h3>
@@ -547,6 +598,84 @@ export const CompanyAdminDashboard: React.FC = () => {
                 <UserPlus className="w-4 h-4" />
                 <span>Register Staff Account</span>
               </button>
+            </div>
+
+            {/* Staff Directory - record-keeping only, no login account.
+                For support staff (cleaners, security, maintenance, etc.)
+                who have no reason to ever sign into the system. */}
+            <div className="bg-dark-800 border border-dark-700 rounded-2xl p-6 space-y-6">
+              <div>
+                <h3 className="font-bold text-white text-base">Staff Directory (Record Only)</h3>
+                <p className="text-xs text-gray-400 mt-1">Log other staff - cleaners, security, maintenance - for record-keeping. No login account or password is created.</p>
+              </div>
+
+              {dirMsg && (
+                <div className={`p-4 rounded-xl text-xs font-bold ${
+                  dirMsg.includes('Added') ? 'bg-green-500/10 text-green-400 border border-green-500/30' : 'bg-red-500/10 text-red-400 border border-red-500/30'
+                }`}>
+                  {dirMsg}
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Sekai Moyo"
+                    value={dirName}
+                    onChange={(e) => setDirName(e.target.value)}
+                    className="w-full bg-dark-900 border border-dark-700 rounded-xl p-3 text-white text-xs outline-none focus:border-gold-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Phone Number (optional)</label>
+                  <input
+                    type="tel"
+                    placeholder="+263771000010"
+                    value={dirPhone}
+                    onChange={(e) => setDirPhone(e.target.value)}
+                    className="w-full bg-dark-900 border border-dark-700 rounded-xl p-3 text-white text-xs outline-none focus:border-gold-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Role</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Cleaner, Security"
+                    value={dirRoleLabel}
+                    onChange={(e) => setDirRoleLabel(e.target.value)}
+                    className="w-full bg-dark-900 border border-dark-700 rounded-xl p-3 text-white text-xs outline-none focus:border-gold-500"
+                  />
+                </div>
+              </div>
+
+              <button
+                onClick={handleAddDirectoryEntry}
+                className="bg-dark-700 hover:bg-dark-600 border border-dark-600 text-gold-400 font-bold px-6 py-3 rounded-xl text-xs flex items-center space-x-2"
+              >
+                <UserPlus className="w-4 h-4" />
+                <span>Add to Directory</span>
+              </button>
+
+              {directoryLoading ? (
+                <div className="text-center py-4 text-gold-500 animate-pulse text-xs">Loading directory...</div>
+              ) : directoryEntries.length === 0 ? (
+                <div className="p-6 text-center text-gray-500 text-xs bg-dark-900 rounded-xl border border-dark-700">No other staff logged yet.</div>
+              ) : (
+                <div className="space-y-2">
+                  {directoryEntries.map((entry) => (
+                    <div key={entry.id} className="card-3d bg-dark-900 border border-dark-700 rounded-xl p-3 flex items-center justify-between text-xs">
+                      <div>
+                        <strong className="text-white">{entry.name}</strong>
+                        {entry.phone && <span className="text-gray-400 ml-2">{entry.phone}</span>}
+                      </div>
+                      <span className="text-gold-400 font-bold uppercase text-[11px] bg-gold-500/10 px-2 py-0.5 rounded">{entry.roleLabel}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             </div>
           )}
 

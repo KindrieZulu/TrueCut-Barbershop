@@ -90,8 +90,28 @@ model User {
   receptionBookings  Booking[]             @relation("ReceptionistBookings")
   recurringGroups    RecurringBookingGroup[]
   auditLogs          AuditLog[]
+  staffDirectoryEntriesAdded StaffDirectoryEntry[]
 
   @@map("users")
+}
+
+// Record-keeping only, not a login account: support staff (cleaners,
+// security, maintenance, etc.) who have no reason to ever sign into the
+// booking system - Company Admin logs them here so they're on record
+// without granting a User row, password, or any role-based permission.
+model StaffDirectoryEntry {
+  id           String   @id @default(uuid())
+  name         String
+  phone        String?
+  roleLabel    String   @map("role_label")
+  branchId     String   @map("branch_id")
+  registeredBy String   @map("registered_by")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  branch           Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  registeredByUser User   @relation(fields: [registeredBy], references: [id], onDelete: Cascade)
+
+  @@map("staff_directory_entries")
 }
 
 model Branch {
@@ -117,6 +137,7 @@ model Branch {
   recurringGroups RecurringBookingGroup[]
   ledgers         PaymentLedger[]
   dailyReports    DailyReport[]
+  staffDirectoryEntries StaffDirectoryEntry[]
 
   @@map("branches")
 }

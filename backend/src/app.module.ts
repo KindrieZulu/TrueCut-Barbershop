@@ -27,6 +27,7 @@ import { ReportsModule } from './modules/reports/reports.module';
 import { AuditModule } from './modules/audit/audit.module';
 import { HealthModule } from './modules/health/health.module';
 import { EventsModule } from './modules/events/events.module';
+import { StaffDirectoryModule } from './modules/staff-directory/staff-directory.module';
 import { JobsModule } from './jobs/jobs.module';
 
 @Module({
@@ -58,6 +59,7 @@ import { JobsModule } from './jobs/jobs.module';
     AuditModule,
     HealthModule,
     EventsModule,
+    StaffDirectoryModule,
     JobsModule,
   ],
   providers: [
