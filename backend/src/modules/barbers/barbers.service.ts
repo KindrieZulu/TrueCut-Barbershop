@@ -162,4 +162,31 @@ export class BarbersService {
       orderBy: { startTime: 'asc' },
     });
   }
+
+  // Companion to getBarberAppointmentsForToday - that view is an action
+  // list (CONFIRMED/HELD only), so a booking a barber never marked served
+  // simply vanishes once the no-show sweep (see JobsService) flips it to
+  // NO_SHOW - there was previously no way for the barber to see what
+  // happened to it. This surfaces today's terminal-status bookings instead.
+  async getBarberHistoryForToday(barberId: string) {
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
+
+    return this.prisma.booking.findMany({
+      where: {
+        barberId,
+        startTime: { gte: todayStart, lte: todayEnd },
+        status: { in: ['SERVED', 'NO_SHOW', 'CANCELLED'] },
+      },
+      include: {
+        client: { select: { id: true, name: true, phone: true } },
+        service: true,
+        branch: { select: { id: true, name: true, address: true } },
+      },
+      orderBy: { startTime: 'desc' },
+    });
+  }
 }

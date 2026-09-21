@@ -2,12 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/client';
 import { useRealtimeEvents } from '../api/events';
-import { Clock, Calendar, MapPin, User, CheckCircle, AlertCircle, RefreshCw, PlusCircle, CheckCircle2, Home } from 'lucide-react';
+import { Clock, Calendar, MapPin, User, CheckCircle, AlertCircle, RefreshCw, PlusCircle, CheckCircle2, XCircle, History, Home } from 'lucide-react';
+
+const HISTORY_BADGE: Record<string, string> = {
+  SERVED: 'text-green-400 bg-green-500/10 border-green-500/30',
+  NO_SHOW: 'text-red-400 bg-red-500/10 border-red-500/30',
+  CANCELLED: 'text-gray-400 bg-gray-500/10 border-gray-500/30',
+};
 
 export const BarberDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [appointments, setAppointments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [history, setHistory] = useState<any[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(true);
   const [showBlockOutModal, setShowBlockOutModal] = useState(false);
 
   // Block out form
@@ -29,8 +37,25 @@ export const BarberDashboard: React.FC = () => {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => {
+  // Companion to fetchAppointments - "Today's Appointment Schedule" only
+  // shows actionable (CONFIRMED/HELD) bookings, so once the no-show sweep
+  // (runs every minute server-side) flips a missed one to NO_SHOW, it used
+  // to just vanish with no way for the barber to see what happened to it.
+  const fetchHistory = () => {
+    setHistoryLoading(true);
+    apiClient.get('/barbers/me/history')
+      .then(res => setHistory(res.data))
+      .catch(err => console.error(err))
+      .finally(() => setHistoryLoading(false));
+  };
+
+  const fetchAll = () => {
     fetchAppointments();
+    fetchHistory();
+  };
+
+  useEffect(() => {
+    fetchAll();
     apiClient.get('/branches').then(res => {
       if (res.data.length > 0) setBranchId(res.data[0].id);
     });
@@ -46,7 +71,7 @@ export const BarberDashboard: React.FC = () => {
   const handleMarkServed = async (bookingId: string) => {
     try {
       await apiClient.post(`/bookings/${bookingId}/serve`);
-      fetchAppointments();
+      fetchAll();
     } catch (e: any) {
       alert('Failed to update booking status');
     }
@@ -102,7 +127,7 @@ export const BarberDashboard: React.FC = () => {
             <PlusCircle className="w-4 h-4" />
             <span>Add Leave / Block-Out</span>
           </button>
-          <button onClick={fetchAppointments} className="p-2 bg-dark-700 text-gray-300 rounded-xl">
+          <button onClick={fetchAll} className="p-2 bg-dark-700 text-gray-300 rounded-xl">
             <RefreshCw className="w-4 h-4" />
           </button>
         </div>
@@ -174,6 +199,43 @@ export const BarberDashboard: React.FC = () => {
           ))}
         </div>
       )}
+
+      {/* Today's History - completed, missed, and cancelled appointments
+          that have dropped off the actionable schedule above. */}
+      <div className="mt-8">
+        <h2 className="text-sm font-display font-bold text-white flex items-center space-x-2 mb-4">
+          <History className="w-4 h-4 text-gray-500" />
+          <span>Today's History</span>
+        </h2>
+
+        {historyLoading ? (
+          <div className="text-center py-8 text-gold-500 animate-pulse text-sm">Loading history...</div>
+        ) : history.length === 0 ? (
+          <div className="bg-dark-800 border border-dark-700 rounded-2xl p-8 text-center text-gray-400">
+            <p className="text-sm font-semibold">No completed, missed, or cancelled appointments yet today.</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {history.map((a) => (
+              <div key={a.id} className="card-3d bg-dark-800 border border-dark-700 rounded-2xl p-4 flex items-center justify-between gap-3">
+                <div className="flex items-center space-x-3">
+                  <span className="font-mono text-xs font-bold text-gold-400 bg-gold-500/10 px-2 py-0.5 rounded">{a.bookingCode}</span>
+                  <div>
+                    <strong className="text-white text-sm block">{a.client?.name}</strong>
+                    <span className="text-xs text-gray-400">{a.service?.name} - {new Date(a.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  </div>
+                </div>
+                <span className={`text-xs font-bold flex items-center space-x-1 px-3 py-1 rounded-lg border ${HISTORY_BADGE[a.status] || 'text-gray-400 bg-gray-500/10 border-gray-500/30'}`}>
+                  {a.status === 'SERVED' && <CheckCircle2 className="w-3.5 h-3.5" />}
+                  {a.status === 'NO_SHOW' && <AlertCircle className="w-3.5 h-3.5" />}
+                  {a.status === 'CANCELLED' && <XCircle className="w-3.5 h-3.5" />}
+                  <span>{a.status === 'NO_SHOW' ? 'No-Show' : a.status === 'SERVED' ? 'Served' : 'Cancelled'}</span>
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Block Out Modal */}
       {showBlockOutModal && (

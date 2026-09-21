@@ -83,4 +83,11 @@ export class BarbersController {
   async getMyTodayAppointments(@Req() req: any) {
     return this.barbersService.getBarberAppointmentsForToday(req.user.id);
   }
+
+  @Get('me/history')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.BARBER)
+  async getMyTodayHistory(@Req() req: any) {
+    return this.barbersService.getBarberHistoryForToday(req.user.id);
+  }
 }

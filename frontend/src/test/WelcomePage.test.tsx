@@ -31,8 +31,8 @@ describe('WelcomePage UI Component Tests', () => {
     expect(screen.getByText(/Barbershop Platform/i)).toBeInTheDocument();
     expect(screen.getByText(/Executive Client/i)).toBeInTheDocument();
     expect(screen.getByText(/Barber & Stylist/i)).toBeInTheDocument();
-    expect(screen.getByText(/Receptionist & Walk-In Manager/i)).toBeInTheDocument();
-    expect(screen.getByText(/Company Admin & Accountant/i)).toBeInTheDocument();
+    expect(screen.getByText(/^Receptionist$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^Company Admin$/i)).toBeInTheDocument();
     expect(screen.getByText(/System Administrator/i)).toBeInTheDocument();
   });
 
