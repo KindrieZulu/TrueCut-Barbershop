@@ -89,7 +89,7 @@ export const WelcomePage: React.FC = () => {
     {
       id: 'receptionist',
       role: 'RECEPTIONIST',
-      title: 'Receptionist & Walk-In Manager',
+      title: 'Receptionist',
       subtitle: 'Branch Cashier & Squeeze-Ins',
       description: 'Register walk-in clients with OTP, execute $3 squeeze-ins, record cash/EcoCash & manage branch schedule.',
       icon: UserCheck,
@@ -101,7 +101,7 @@ export const WelcomePage: React.FC = () => {
     {
       id: 'admin',
       role: 'COMPANY_ADMIN',
-      title: 'Company Admin & Accountant',
+      title: 'Company Admin',
       subtitle: 'Multi-Branch Analytics & Catalogue',
       description: 'Executive financial ledger, revenue breakdown, catalogue pricing editor & system settings configurator.',
       icon: Building2,
