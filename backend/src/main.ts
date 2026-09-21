@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/http-exception.filter';
-import { getAllowedOrigins } from './common/security';
+import { getAllowedOrigins, isOriginAllowed } from './common/security';
 import { initSentry } from './sentry';
 import helmet from 'helmet';
 import * as express from 'express';
@@ -33,7 +33,7 @@ async function bootstrap() {
 
   app.enableCors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || isOriginAllowed(origin, allowedOrigins)) {
         callback(null, true);
         return;
       }

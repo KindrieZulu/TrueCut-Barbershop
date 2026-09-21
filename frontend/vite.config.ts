@@ -38,6 +38,11 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    // Vite's dev-server host check rejects any Host header it doesn't
+    // recognize (a DNS-rebinding protection) - a Cloudflare quick tunnel's
+    // random *.trycloudflare.com hostname would otherwise get a 403 on
+    // every request proxied through it.
+    allowedHosts: ['.trycloudflare.com'],
     proxy: {
       '/api': {
         target: 'http://localhost:3000',
