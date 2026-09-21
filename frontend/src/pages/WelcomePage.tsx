@@ -31,11 +31,17 @@ export const WelcomePage: React.FC = () => {
   const [password, setPassword] = useState('Password123!');
   const [selectedDemoPhone, setSelectedDemoPhone] = useState('');
 
-  // Custom Phone Sign-in / Sign-up state
+  // Custom Phone Sign-in / Sign-up state (Client role - OTP, no password)
   const [customName, setCustomName] = useState('');
   const [customPhone, setCustomPhone] = useState('');
   const [otpCode, setOtpCode] = useState('');
   const [otpSent, setOtpSent] = useState(false);
+
+  // Staff Password Login state - for a real staff account (registered by
+  // a System Admin or Company Admin with its own password), not one of
+  // the fixed demo accounts above. Staff never use OTP; only clients do.
+  const [staffLoginPhone, setStaffLoginPhone] = useState('');
+  const [staffLoginPassword, setStaffLoginPassword] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -131,6 +137,20 @@ export const WelcomePage: React.FC = () => {
       const phone = selectedDemoPhone || roleOption.demoPhone;
       await login(phone, password);
       navigate(roleOption.path);
+    } catch (e: any) {
+      setErrorMsg(e.response?.data?.message || 'Login failed. Please verify credentials.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStaffPasswordLogin = async () => {
+    if (!staffLoginPhone || !staffLoginPassword) { setErrorMsg('Phone and password are required'); return; }
+    setLoading(true);
+    setErrorMsg('');
+    try {
+      await login(staffLoginPhone, staffLoginPassword);
+      if (selectedRole) navigate(selectedRole.path);
     } catch (e: any) {
       setErrorMsg(e.response?.data?.message || 'Login failed. Please verify credentials.');
     } finally {
@@ -325,7 +345,7 @@ export const WelcomePage: React.FC = () => {
                   authMode === 'PHONE' ? 'bg-gold-500 text-black' : 'text-gray-400'
                 }`}
               >
-                Custom Phone OTP
+                {selectedRole.role === 'CLIENT' ? 'Custom Phone OTP' : 'Staff Password Login'}
               </button>
             </div>
 
@@ -383,6 +403,40 @@ export const WelcomePage: React.FC = () => {
                   className="w-full bg-gradient-to-r from-gold-500 to-amber-500 hover:from-gold-600 hover:to-amber-600 text-black font-extrabold py-3.5 rounded-xl transition-all shadow-lg shadow-gold-500/20 flex items-center justify-center space-x-2 text-sm"
                 >
                   <span>{loading ? 'Signing In...' : 'Sign In'}</span>
+                </button>
+              </div>
+            ) : selectedRole.role !== 'CLIENT' ? (
+              /* STAFF PASSWORD LOGIN MODE - a real registered staff
+                 account (System Admin creates Company Admins; Company
+                 Admin creates Receptionists/Barbers), signing in with its
+                 own phone + password rather than a fixed demo credential. */
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Phone Number</label>
+                  <input
+                    type="tel"
+                    value={staffLoginPhone}
+                    onChange={(e) => setStaffLoginPhone(e.target.value)}
+                    placeholder="+263771234567"
+                    className="w-full bg-dark-900 border border-dark-600 rounded-xl p-3 text-white text-xs outline-none focus:border-gold-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Password</label>
+                  <input
+                    type="password"
+                    value={staffLoginPassword}
+                    onChange={(e) => setStaffLoginPassword(e.target.value)}
+                    placeholder="Your account password"
+                    className="w-full bg-dark-900 border border-dark-600 rounded-xl p-3 text-white text-xs outline-none focus:border-gold-500"
+                  />
+                </div>
+                <button
+                  onClick={handleStaffPasswordLogin}
+                  disabled={loading}
+                  className="w-full bg-gold-500 hover:bg-gold-600 text-black font-extrabold py-3.5 rounded-xl transition-all text-sm"
+                >
+                  {loading ? 'Signing In...' : 'Sign In'}
                 </button>
               </div>
             ) : (

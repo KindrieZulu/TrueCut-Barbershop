@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { apiClient } from '../api/client';
 import {
   Shield, Activity, Database, Server, RefreshCw, FileText, Home,
-  Building2, UserCheck, Scissors, User, Sparkles
+  Building2, UserCheck, Scissors, User, Sparkles, UserPlus
 } from 'lucide-react';
 
 export const SystemAdminDashboard: React.FC = () => {
@@ -11,6 +11,15 @@ export const SystemAdminDashboard: React.FC = () => {
   const [health, setHealth] = useState<any>(null);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Company Admin registration - System Admin is the only role allowed to
+  // create a Company Admin account (enforced server-side in
+  // auth.service.ts); a Company Admin can't create a peer admin itself.
+  const [caName, setCaName] = useState('');
+  const [caPhone, setCaPhone] = useState('');
+  const [caEmail, setCaEmail] = useState('');
+  const [caPassword, setCaPassword] = useState('');
+  const [caMsg, setCaMsg] = useState('');
 
   const fetchSysAdminData = () => {
     setLoading(true);
@@ -27,6 +36,31 @@ export const SystemAdminDashboard: React.FC = () => {
   useEffect(() => {
     fetchSysAdminData();
   }, []);
+
+  const handleRegisterCompanyAdmin = async () => {
+    if (!caName || !caPhone || !caPassword) {
+      setCaMsg('Name, Phone, and Password are required');
+      return;
+    }
+    if (caPassword.length < 8) {
+      setCaMsg('Password must be at least 8 characters');
+      return;
+    }
+    setCaMsg('');
+    try {
+      await apiClient.post('/auth/register', {
+        name: caName,
+        phone: caPhone,
+        email: caEmail || undefined,
+        password: caPassword,
+        role: 'COMPANY_ADMIN',
+      });
+      setCaMsg('Company Admin account registered successfully!');
+      setCaName(''); setCaPhone(''); setCaEmail(''); setCaPassword('');
+    } catch (e: any) {
+      setCaMsg(e.response?.data?.message || 'Failed to register Company Admin');
+    }
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -100,6 +134,75 @@ export const SystemAdminDashboard: React.FC = () => {
             <span>Price Catalogue</span>
           </Link>
         </div>
+      </div>
+
+      {/* Company Admin Registration - top of the real registration
+          hierarchy: System Admin creates Company Admins, who in turn
+          create Receptionists/Barbers on their own dashboard. */}
+      <div className="card-3d bg-dark-800 border border-dark-700 p-6 rounded-2xl mb-8 space-y-4">
+        <div>
+          <h3 className="font-display font-bold text-white text-sm">Register Company Admin</h3>
+          <p className="text-xs text-gray-400 mt-1">Create a Company Admin account with a real password. Company Admins then register their own Receptionists and Barbers.</p>
+        </div>
+
+        {caMsg && (
+          <div className={`p-3 rounded-xl text-xs font-bold ${
+            caMsg.includes('successfully') ? 'bg-green-500/10 text-green-400 border border-green-500/30' : 'bg-red-500/10 text-red-400 border border-red-500/30'
+          }`}>
+            {caMsg}
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Full Name</label>
+            <input
+              type="text"
+              placeholder="e.g. Chipo Marufu"
+              value={caName}
+              onChange={(e) => setCaName(e.target.value)}
+              className="w-full bg-dark-900 border border-dark-700 rounded-xl p-3 text-white text-xs outline-none focus:border-gold-500"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Phone Number</label>
+            <input
+              type="tel"
+              placeholder="+263771000009"
+              value={caPhone}
+              onChange={(e) => setCaPhone(e.target.value)}
+              className="w-full bg-dark-900 border border-dark-700 rounded-xl p-3 text-white text-xs outline-none focus:border-gold-500"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Email Address</label>
+            <input
+              type="email"
+              placeholder="chipo@truecut.co.zw"
+              value={caEmail}
+              onChange={(e) => setCaEmail(e.target.value)}
+              className="w-full bg-dark-900 border border-dark-700 rounded-xl p-3 text-white text-xs outline-none focus:border-gold-500"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Set Their Password (min. 8 characters)</label>
+            <input
+              type="password"
+              placeholder="Enter a real password for this account"
+              value={caPassword}
+              onChange={(e) => setCaPassword(e.target.value)}
+              className="w-full bg-dark-900 border border-dark-700 rounded-xl p-3 text-white text-xs font-mono outline-none focus:border-gold-500"
+            />
+          </div>
+        </div>
+
+        <button
+          onClick={handleRegisterCompanyAdmin}
+          className="bg-gold-500 hover:bg-gold-600 text-black font-extrabold px-6 py-3 rounded-xl text-xs flex items-center space-x-2"
+        >
+          <UserPlus className="w-4 h-4" />
+          <span>Register Company Admin</span>
+        </button>
       </div>
 
       {loading ? (

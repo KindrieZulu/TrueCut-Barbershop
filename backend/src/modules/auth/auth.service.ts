@@ -168,12 +168,24 @@ export class AuthService {
       throw new ForbiddenException('Only a System Admin can create a System Admin account');
     }
 
+    // Registration hierarchy: System Admin creates Company Admins; Company
+    // Admin creates Receptionists and Barbers; a Company Admin creating
+    // another Company Admin (a peer, not a subordinate) is deliberately not
+    // allowed - only System Admin sits above Company Admin.
+    if (role === UserRole.COMPANY_ADMIN && requestingUserRole !== UserRole.SYSTEM_ADMIN) {
+      throw new ForbiddenException('Only a System Admin can create a Company Admin account');
+    }
+
     if (
       role !== UserRole.CLIENT &&
       requestingUserRole !== UserRole.COMPANY_ADMIN &&
       requestingUserRole !== UserRole.SYSTEM_ADMIN
     ) {
       throw new ForbiddenException('Only a Company Admin or System Admin can create staff accounts');
+    }
+
+    if (role !== UserRole.CLIENT && !password) {
+      throw new BadRequestException('A password is required for staff accounts');
     }
 
     const existing = await this.prisma.user.findUnique({ where: { phone: normalizedPhone } });

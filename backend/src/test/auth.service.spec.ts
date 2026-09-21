@@ -4,7 +4,7 @@ import { PrismaService } from '../database/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { SmsAdapter } from '../modules/notifications/adapters/sms.adapter';
-import { BadRequestException, UnauthorizedException, ConflictException } from '@nestjs/common';
+import { BadRequestException, UnauthorizedException, ConflictException, ForbiddenException } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
@@ -140,6 +140,40 @@ describe('AuthService Unit Tests', () => {
       const res = await authService.register('John Doe', '+263771234567', 'john@example.com');
       expect(res.user.name).toBe('John Doe');
       expect(res.accessToken).toBe('mocked_jwt_token');
+    });
+
+    // Registration hierarchy: System Admin creates Company Admins; Company
+    // Admin creates Receptionists/Barbers. A Company Admin creating another
+    // Company Admin (a peer, not a subordinate) must be rejected.
+    it('should throw ForbiddenException when a Company Admin tries to create another Company Admin', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+      await expect(
+        authService.register('Jane Doe', '+263771234568', undefined, 'ValidPass123!', UserRole.COMPANY_ADMIN, UserRole.COMPANY_ADMIN),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should allow a System Admin to create a Company Admin', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+      prismaMock.user.create.mockResolvedValue({
+        id: 'u2',
+        name: 'Jane Doe',
+        phone: '+263771234568',
+        email: null,
+        role: UserRole.COMPANY_ADMIN,
+      });
+      prismaMock.user.update.mockResolvedValue({});
+
+      const res = await authService.register(
+        'Jane Doe', '+263771234568', undefined, 'ValidPass123!', UserRole.COMPANY_ADMIN, UserRole.SYSTEM_ADMIN,
+      );
+      expect(res.user.role).toBe(UserRole.COMPANY_ADMIN);
+    });
+
+    it('should throw BadRequestException when registering a staff role without a password', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+      await expect(
+        authService.register('Barber Bob', '+263771234569', undefined, undefined, UserRole.BARBER, UserRole.COMPANY_ADMIN),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 

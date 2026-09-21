@@ -32,12 +32,16 @@ export const CompanyAdminDashboard: React.FC = () => {
   const [newServiceDuration, setNewServiceDuration] = useState('');
   const [newServiceDesc, setNewServiceDesc] = useState('');
 
-  // Staff registration state
+  // Staff registration state - Company Admin registers Receptionists and
+  // Barbers only (a peer Company Admin account can only be created by a
+  // System Admin, enforced server-side in auth.service.ts). No default
+  // password: each account gets its own real, admin-chosen credential
+  // rather than a shared placeholder.
   const [staffName, setStaffName] = useState('');
   const [staffPhone, setStaffPhone] = useState('');
   const [staffEmail, setStaffEmail] = useState('');
-  const [staffPassword, setStaffPassword] = useState('Password123!');
-  const [staffRole, setStaffRole] = useState<'BARBER' | 'RECEPTIONIST' | 'COMPANY_ADMIN'>('BARBER');
+  const [staffPassword, setStaffPassword] = useState('');
+  const [staffRole, setStaffRole] = useState<'BARBER' | 'RECEPTIONIST'>('BARBER');
   const [staffMsg, setStaffMsg] = useState('');
 
   const fetchAdminData = () => {
@@ -136,6 +140,10 @@ export const CompanyAdminDashboard: React.FC = () => {
       setStaffMsg('Name, Phone, and Password are required');
       return;
     }
+    if (staffPassword.length < 8) {
+      setStaffMsg('Password must be at least 8 characters');
+      return;
+    }
     setStaffMsg('');
     try {
       await apiClient.post('/auth/register', {
@@ -146,7 +154,7 @@ export const CompanyAdminDashboard: React.FC = () => {
         role: staffRole,
       });
       setStaffMsg(`Staff account (${staffRole}) registered successfully!`);
-      setStaffName(''); setStaffPhone(''); setStaffEmail('');
+      setStaffName(''); setStaffPhone(''); setStaffEmail(''); setStaffPassword('');
     } catch (e: any) {
       setStaffMsg(e.response?.data?.message || 'Failed to register staff member');
     }
@@ -463,7 +471,7 @@ export const CompanyAdminDashboard: React.FC = () => {
             <div className="bg-dark-800 border border-dark-700 rounded-2xl p-6 space-y-6">
               <div>
                 <h3 className="font-bold text-white text-base">Register Operational Staff Member</h3>
-                <p className="text-xs text-gray-400 mt-1">Register new Barbers, Receptionists, or Company Admins for the barbershop.</p>
+                <p className="text-xs text-gray-400 mt-1">Register new Barbers or Receptionists for the barbershop. Each account gets its own real password - Company Admin accounts are created by a System Admin.</p>
               </div>
 
               {staffMsg && (
@@ -517,14 +525,14 @@ export const CompanyAdminDashboard: React.FC = () => {
                   >
                     <option value="BARBER">BARBER / STYLIST</option>
                     <option value="RECEPTIONIST">RECEPTIONIST / CASHIER</option>
-                    <option value="COMPANY_ADMIN">COMPANY ADMIN / ACCOUNTANT</option>
                   </select>
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Initial Password</label>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Set Their Password (min. 8 characters)</label>
                   <input
-                    type="text"
+                    type="password"
+                    placeholder="Enter a real password for this account"
                     value={staffPassword}
                     onChange={(e) => setStaffPassword(e.target.value)}
                     className="w-full bg-dark-900 border border-dark-700 rounded-xl p-3 text-white text-xs font-mono outline-none focus:border-gold-500"
