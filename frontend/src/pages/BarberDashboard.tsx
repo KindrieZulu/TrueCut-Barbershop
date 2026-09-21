@@ -114,7 +114,7 @@ export const BarberDashboard: React.FC = () => {
       </div>
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-8 bg-dark-800 border border-dark-700 p-6 rounded-2xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-dark-800 border border-dark-700 p-6 rounded-2xl">
         <div>
           <span className="text-xs font-bold text-gold-400 bg-gold-500/10 px-2.5 py-0.5 rounded border border-gold-500/20">BARBER STATION</span>
           <h1 className="text-2xl font-display font-extrabold text-white mt-1">Today's Appointment Schedule</h1>
@@ -122,7 +122,7 @@ export const BarberDashboard: React.FC = () => {
         <div className="flex gap-2">
           <button
             onClick={() => setShowBlockOutModal(true)}
-            className="bg-dark-700 hover:bg-dark-600 text-gold-400 text-xs font-bold px-3 py-2 rounded-xl border border-dark-600 transition-colors flex items-center space-x-1"
+            className="flex-1 sm:flex-initial justify-center bg-dark-700 hover:bg-dark-600 text-gold-400 text-xs font-bold px-3 py-2 rounded-xl border border-dark-600 transition-colors flex items-center space-x-1"
           >
             <PlusCircle className="w-4 h-4" />
             <span>Add Leave / Block-Out</span>
