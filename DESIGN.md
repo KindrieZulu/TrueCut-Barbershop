@@ -7,37 +7,37 @@
 - **Project type:** Hybrid - operational web app (dashboards, schedules, reports) plus a lighter marketing/booking front for clients.
 
 ## Aesthetic Direction
-- **Direction:** Vibrant Craft - Industrial-Executive precision, warmed up. Still a serious operational tool, but livelier and more energetic than the original restrained gold-only version, pulling from the TrueCut Barber brand mark's fire motif (`frontend/src/assets/truecut-logo.webp`) and Booksy's approachable, photo-and-color-forward marketplace feel.
-- **Decoration level:** Intentional, more expressive than before - every card/panel across every dashboard now shows a persistent floating shadow at rest (see Motion), not just on hover.
-- **Mood:** Precision and trust, now expressed with warmth and energy rather than restraint - confident, alive, still built by people who care about the details.
-- **Memorable thing:** Precision and trust, brought to life - the fire-orange accent and floating cards should feel energetic without undermining the "serious operational tool" read.
-- **Reference sites (category landscape):** Fresha, GlossGenius, Squire (flat, generic) vs. Booksy (photo-forward, ProximaNova/rounded-sans warmth, teal/black accents, card-grid liveliness). TrueCut takes Booksy's energy and warmth but keeps its own dark-first, precision-tool identity rather than Booksy's light consumer-marketplace look.
+- **Direction:** Quiet Precision - Industrial-Executive, dialed back down, in a classic barbershop palette. Supersedes "Vibrant Craft" (2026-09-22): the fire-orange/warm-gradient treatment read as generic and AI-generated rather than professional. The accent moved to a deep maroon/burgundy with warm beige-and-near-black neutrals - a traditional barbershop-pole/barber-chair palette - and decoration was pared back to a single static glow instead of multiple pulsing ones.
+- **Decoration level:** Restrained. Background glows are static (no `animate-pulse`) and low-opacity (~10%); gradients are used sparingly (hero headline, primary CTA) and stay tonal (maroon-to-maroon) rather than mixing multiple hues. Cards still carry the persistent floating shadow (see Motion) - that part of "Vibrant Craft" stays, since it reads as tactile/polished rather than flashy.
+- **Mood:** Precision and trust, expressed with restraint - confident and competent, not "designed to impress." Classic and standard over distinctive; evokes a traditional barbershop rather than a tech startup.
+- **Memorable thing:** Maroon, beige, and near-black - a warm but restrained, classic barbershop palette, floating cards, and generous whitespace, not a wash of competing gradient colors.
+- **Reference sites (category landscape):** Fresha, GlossGenius, Squire (flat, generic) vs. a car-marketplace reference site (dark navy hero, single-accent label, one restrained gradient CTA, flat professional cards) - taken as a cue toward calm, standard-issue professionalism rather than a color-forward consumer-marketplace look, then re-colored into a maroon/beige barbershop identity rather than the reference's own cool blue tones.
 
 ## Typography
-- **Display/Hero:** Satoshi (700/800/900) - warm, rounded, friendly geometric sans (replaces Cabinet Grotesk's sharper architectural feel to match the new livelier direction). Same Fontshare family suite as General Sans below, so the two pair naturally. Used for headings, hero copy, section titles. Loaded via Fontshare: `https://api.fontshare.com/v2/css?f[]=satoshi@700,800,900&display=swap`
+- **Display/Hero:** Inter (700/800/900) - the standard, ubiquitous grotesk sans; replaces Satoshi's distinctive rounded warmth with a classic, unremarkable choice that matches the "not designed to look AI-generated" direction. Used for headings, hero copy, section titles. Loaded via Google Fonts: `https://fonts.googleapis.com/css2?family=Inter:wght@700;800;900&display=swap`
 - **Body/UI:** General Sans (400/500/600/700) - clean and highly legible for buttons, labels, forms, paragraph text. Loaded via Fontshare: `https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap`
 - **Data/Tables:** Geist (400/500/600/700), `font-variant-numeric: tabular-nums` - for revenue figures, timestamps, and any tabular data where digits must align. Loaded via Google Fonts: `https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap`
 - **Code:** not applicable to this product's UI.
 - **Scale:** Hero/H1 44px/900, H2 24px/800, body 14-16px/400-600, data values 26-30px/600-700, labels/eyebrows 11px/700 uppercase with 0.08-0.12em tracking.
 
 ## Color
-- **Approach:** The accent ("gold") token now runs vivid fire-orange instead of brass-gold, pulled directly from the logo's flame ring - still reserved for primary CTAs, revenue figures, active/"with client" status, and brand mark, just warmer and more energetic. Every existing `gold-400/500/600` usage across the app updated automatically since it's a CSS-variable token, not a per-component color.
+- **Approach:** The accent (still keyed as `gold-400/500/600` in code - the class name is legacy, kept to avoid a repo-wide rename) went through two retunes off "Vibrant Craft"'s fire-orange: first to a deep maroon/burgundy, then - because the maroon read as too dim/muted rather than "alive" - to a warm copper/terracotta. Copper sits deliberately in the middle: warmer and more eye-catching than maroon, but nowhere near as saturated/neon as the original fire-orange gradient treatment. Still reserved for primary CTAs, revenue figures, active/"with client" status, and brand accents. Buttons/badges on the accent use white/off-white text, not black - the accent is dark enough at every step of this that black-on-accent fails contrast. **Important implementation detail:** use `text-gray-50` for text sitting on a solid/gradient accent background, not `text-white` - a pre-existing light-mode CSS rule (`index.css`, the `.text-white` band-aid) silently repaints literal `text-white` to the theme's dark text color in light mode, which was invisible while accent buttons used `text-black`, but breaks white-on-accent text the moment the accent needs white text. `text-gray-50` isn't touched by that rule. The dark-mode neutrals stay warmed toward near-black-with-a-maroon-undertone, and light-mode neutrals stay genuine beige/cream, so the palette reads as "classic barbershop" rather than tech-neutral even as the accent hue itself has moved twice.
 - **Dark mode (default):**
-  - Background: `#0a0a0c`
-  - Surface: `#141417`
-  - Surface (secondary/shell): `#1c1c20`
-  - Border: `#2a2a2f`
-  - Text: `#f5f5f4`
-  - Text muted: `#9a9a9f`
-  - Gold/accent: `#f97316` (vivid orange), Gold bright (hover/emphasis): `#fb923c`, Gold deep (pressed): `#c2410c`
+  - Background: `#120a0c`
+  - Surface: `#1c1114`
+  - Surface (secondary/shell): `#271820`
+  - Border: `#3a2530`
+  - Text: `#f5efe8`
+  - Text muted: `#a89a8c`
+  - Gold/accent (copper): `#c97b3d`, Gold bright (hover/emphasis): `#e2924d`, Gold deep (pressed): `#9c5a28`
 - **Light mode:**
-  - Background: `#f6f5f2`
-  - Surface: `#ffffff`
-  - Surface (secondary/shell): `#eeece6`
-  - Border: `#ddd9d0`
-  - Text: `#17171a`
-  - Text muted: `#6b6b70`
-  - Gold/accent: `#9a3412` (deep burnt orange, contrast on light backgrounds), Gold bright: `#c2410c`, Gold deep: `#7c2d12`
+  - Background: `#f3e9d8` (beige)
+  - Surface: `#fffcf5` (ivory)
+  - Surface (secondary/shell): `#e8dcc2` (deeper beige)
+  - Border: `#d8c7a0` (tan)
+  - Text: `#2a1f18` (warm near-black brown, not neutral gray-black)
+  - Text muted: `#7a6a56`
+  - Gold/accent (copper): `#8a4a1d`, Gold bright: `#a85f27`, Gold deep: `#6b3814`
 - **Semantic:** dark values are this app's original Tailwind defaults (unchanged); light values shift deeper/more saturated, the standard move for text and badge tints sitting on a near-white surface instead of a near-black one.
   - Success (green): `#4ade80` (dark) / `#16a34a` (light)
   - Error (red): `#f87171` (dark) / `#dc2626` (light)
@@ -55,11 +55,13 @@
 - **Approach:** Hybrid - grid-disciplined for dashboards, schedules, and reports (predictable columns, strict alignment); slightly more editorial on the client-facing welcome/marketing page (asymmetric hero, looser rhythm).
 - **Max content width:** 1180px for dashboard/report views.
 - **Border radius:** sm 6px (buttons, inputs, badges), md 10px (stat tiles), lg 16px (cards, panels), full 999px (pills/toggles).
+- **Hero eyebrow label:** a small bold uppercase, tight-tracked accent-colored line directly above the H1 (e.g. "Zimbabwe's Premier Barbershop" above "Precision Grooming & Executive Barbershop Platform") - a standard marketing-hero convention, added per explicit user request referencing a car-marketplace reference site's "ZIMBABWE'S CAR MARKETPLACE" label sitting the same way above its own headline.
 
 ## Motion
-- **Approach:** CSS-3D floating cards - every panel now carries a visible shadow at rest, reading as physically lifted off the page, with a stronger lift-and-glow on interaction. More expressive than the original hover-only treatment, per explicit user request ("all boxes should be floating 3D designs with shadow... on all pages/dashboards").
-- **Signature interaction:** `.card-3d` - permanent resting shadow (`0 14px 32px -10px rgba(0,0,0,0.4), 0 4px 10px -4px rgba(0,0,0,0.25)`), hover intensifies to `transform: translateY(-6px) rotateX(2deg)` with a deeper shadow and a fire-orange border glow. Applied to barber status cards, stat tiles, and any clickable or informational panel - i.e. nearly every card in the app.
+- **Approach:** CSS-3D floating cards - every panel now carries a visible shadow at rest, reading as physically lifted off the page, with a stronger lift-and-glow on interaction. This part of "Vibrant Craft" was kept through the "Quiet Precision" pivot - it reads as tactile polish, not flashiness. Per explicit original user request ("all boxes should be floating 3D designs with shadow... on all pages/dashboards").
+- **Signature interaction:** `.card-3d` - permanent resting shadow (`0 14px 32px -10px rgba(0,0,0,0.4), 0 4px 10px -4px rgba(0,0,0,0.25)`), hover intensifies to `transform: translateY(-6px) rotateX(2deg)` with a deeper shadow and a copper accent border glow (`rgba(201, 123, 61, ...)`). Applied to barber status cards, stat tiles, and any clickable or informational panel - i.e. nearly every card in the app.
 - **Easing:** enter `cubic-bezier(0.16, 1, 0.3, 1)` (ease-out), short/medium durations (150-350ms).
+- **Background glows (hero sections):** static, single low-opacity pair (8%) rather than multiple pulsing ones - `animate-pulse` on decorative glows was removed as part of the "Quiet Precision" pivot, since it read as a generic AI-landing-page tell.
 
 ## Settings (cross-cutting requirement)
 Every role's dashboard (Company Admin, Receptionist, Barber, Client) should expose a Settings surface with, at minimum:
@@ -68,6 +70,13 @@ Every role's dashboard (Company Admin, Receptionist, Barber, Client) should expo
 - Notification preferences (SMS reminders, etc.)
 
 This is a functional requirement layered on top of the visual system above, not a separate visual direction - Settings screens should use the same components, spacing, and typography as the rest of the app.
+
+Additionally, a compact theme toggle (sun/moon icon) lives directly in the Navbar, visible on every page regardless of login state - including the public WelcomePage. This lets a visitor change the site-wide color theme before ever signing in, rather than only being reachable through the logged-in-only `/settings` page.
+
+## Session Security (cross-cutting requirement)
+Authenticated pages must not remain visible via the browser's back/forward button after logout. Two mechanisms enforce this:
+- Logout performs a hard navigation (`window.location.href`), not a client-side route change, so the authenticated page is fully torn down.
+- A `pageshow` listener (see `AuthContext.tsx`) forces `window.location.reload()` whenever the browser restores a page from its back/forward cache (`event.persisted`), so a stale, frozen dashboard is never left on screen - the app always re-checks auth state from scratch, and an already-logged-out visitor is bounced to the login prompt.
 
 ## Reference Implementation
 The `.card-3d` hover pattern, color tokens, and typography roles above are demonstrated in a working HTML preview generated during the design consultation (dark + light toggle, typography specimen, color swatches, and a live-data Company Admin Dashboard mockup). Use it as the visual source of truth when implementing components.
@@ -79,3 +88,6 @@ The `.card-3d` hover pattern, color tokens, and typography roles above are demon
 | 2026-09-19 | Added light theme as a required feature | User request during design consultation - Settings should let users switch themes, not just consume dark mode. |
 | 2026-09-19 | Re-tuned semantic status colors (success/error/warning/info) for theme-awareness | User request - green/red/amber/blue text and badges were unthemed literal Tailwind colors, reading as washed-out on light backgrounds since they were only tuned for a dark background. |
 | 2026-09-22 | Shifted to "Vibrant Craft": real logo integrated, accent warmed from brass-gold to fire-orange, display font Cabinet Grotesk -> Satoshi, `.card-3d` shadow now persistent (not hover-only) | User request, inspired by booksy.com's warmth/liveliness and the TrueCut Barber logo's fire motif - wanted more energy across every page/dashboard while keeping the dark-first precision-tool identity. |
+| 2026-09-22 | Pivoted to "Quiet Precision": accent re-colored from fire-orange to maroon/burgundy, dark-mode neutrals warmed toward near-black, light-mode neutrals shifted to genuine beige/cream, display font Satoshi -> Inter, background glows de-pulsed and reduced to one hue, star/sparkle icons near pricing replaced with a standard price-tag icon, black-on-accent text switched to white for contrast | User feedback that "Vibrant Craft" looked "very vibrant, like it was created and designed by AI" rather than natural/professional; wanted a calmer, classic, standard look and specifically asked to try maroon and beige - a traditional barbershop-pole palette. |
+| 2026-09-22 | Added a theme toggle to the Navbar (always visible, including logged-out) and a `pageshow`/back-forward-cache reload guard plus hard-navigation logout | User request: needed a way to change the site theme from the public welcome page (not just the logged-in Settings page), and needed the browser's Back button to never reveal a stale authenticated dashboard after logout - security concern. |
+| 2026-09-22 | Retuned accent from maroon to copper/terracotta; added a hero eyebrow label above the WelcomePage H1 | User feedback that the maroon read as too dim/muted, not "alive"; wanted something eye-catching to a broad audience without going back to "vibrant." Also asked for a small label band above the headline, referencing the same car-marketplace site's eyebrow-label-above-headline pattern. |

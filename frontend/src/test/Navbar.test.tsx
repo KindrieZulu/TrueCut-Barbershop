@@ -2,11 +2,21 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
+import { ThemeProvider } from '../context/ThemeContext';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 vi.mock('../context/AuthContext', () => ({
   useAuth: vi.fn(),
 }));
+
+const renderNavbar = () =>
+  render(
+    <ThemeProvider>
+      <BrowserRouter>
+        <Navbar />
+      </BrowserRouter>
+    </ThemeProvider>
+  );
 
 describe('Navbar Component UI Tests', () => {
   beforeEach(() => {
@@ -19,11 +29,7 @@ describe('Navbar Component UI Tests', () => {
       logout: vi.fn(),
     });
 
-    render(
-      <BrowserRouter>
-        <Navbar />
-      </BrowserRouter>
-    );
+    renderNavbar();
 
     expect(screen.getByText(/TRUE/i)).toBeInTheDocument();
     expect(screen.getByText(/CUT/i)).toBeInTheDocument();
@@ -38,11 +44,7 @@ describe('Navbar Component UI Tests', () => {
       logout: mockLogout,
     });
 
-    render(
-      <BrowserRouter>
-        <Navbar />
-      </BrowserRouter>
-    );
+    renderNavbar();
 
     expect(screen.getByText(/Dashboard/i)).toBeInTheDocument();
 

@@ -241,7 +241,7 @@ export const CompanyAdminDashboard: React.FC = () => {
             <button
               onClick={() => setActiveTab('financial')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                activeTab === 'financial' ? 'bg-gold-500 text-black' : 'text-gray-400'
+                activeTab === 'financial' ? 'bg-gold-500 text-gray-50' : 'text-gray-400'
               }`}
             >
               Financial Reports
@@ -249,7 +249,7 @@ export const CompanyAdminDashboard: React.FC = () => {
             <button
               onClick={() => setActiveTab('catalogue')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                activeTab === 'catalogue' ? 'bg-gold-500 text-black' : 'text-gray-400'
+                activeTab === 'catalogue' ? 'bg-gold-500 text-gray-50' : 'text-gray-400'
               }`}
             >
               Price Catalogue
@@ -257,7 +257,7 @@ export const CompanyAdminDashboard: React.FC = () => {
             <button
               onClick={() => setActiveTab('weekly')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                activeTab === 'weekly' ? 'bg-gold-500 text-black' : 'text-gray-400'
+                activeTab === 'weekly' ? 'bg-gold-500 text-gray-50' : 'text-gray-400'
               }`}
             >
               Weekly Report
@@ -265,7 +265,7 @@ export const CompanyAdminDashboard: React.FC = () => {
             <button
               onClick={() => setActiveTab('staff')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                activeTab === 'staff' ? 'bg-gold-500 text-black' : 'text-gray-400'
+                activeTab === 'staff' ? 'bg-gold-500 text-gray-50' : 'text-gray-400'
               }`}
             >
               Staff Registration
@@ -273,7 +273,7 @@ export const CompanyAdminDashboard: React.FC = () => {
             <button
               onClick={() => setActiveTab('settings')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                activeTab === 'settings' ? 'bg-gold-500 text-black' : 'text-gray-400'
+                activeTab === 'settings' ? 'bg-gold-500 text-gray-50' : 'text-gray-400'
               }`}
             >
               System Rules
@@ -415,7 +415,7 @@ export const CompanyAdminDashboard: React.FC = () => {
                 />
                 <button
                   onClick={handleCreateService}
-                  className="bg-gold-500 hover:bg-gold-600 text-black font-extrabold px-4 py-2.5 rounded-xl text-xs"
+                  className="bg-gold-500 hover:bg-gold-600 text-gray-50 font-extrabold px-4 py-2.5 rounded-xl text-xs"
                 >
                   Save Service
                 </button>
@@ -446,7 +446,7 @@ export const CompanyAdminDashboard: React.FC = () => {
                 <button
                   onClick={() => window.print()}
                   disabled={!weeklyReport}
-                  className="bg-gold-500 hover:bg-gold-600 disabled:opacity-40 text-black font-extrabold text-xs px-4 py-2 rounded-xl transition-colors"
+                  className="bg-gold-500 hover:bg-gold-600 disabled:opacity-40 text-gray-50 font-extrabold text-xs px-4 py-2 rounded-xl transition-colors"
                 >
                   Print Report
                 </button>
@@ -593,7 +593,7 @@ export const CompanyAdminDashboard: React.FC = () => {
 
               <button
                 onClick={handleRegisterStaff}
-                className="bg-gold-500 hover:bg-gold-600 text-black font-extrabold px-6 py-3 rounded-xl text-xs flex items-center space-x-2"
+                className="bg-gold-500 hover:bg-gold-600 text-gray-50 font-extrabold px-6 py-3 rounded-xl text-xs flex items-center space-x-2"
               >
                 <UserPlus className="w-4 h-4" />
                 <span>Register Staff Account</span>

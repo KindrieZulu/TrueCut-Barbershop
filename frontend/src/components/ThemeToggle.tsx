@@ -21,7 +21,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ compact = false }) => 
         aria-checked={theme === 'dark'}
         onClick={() => setTheme('dark')}
         className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
-          theme === 'dark' ? 'bg-gold-500 text-black' : 'text-gray-400 hover:text-white'
+          theme === 'dark' ? 'bg-gold-500 text-gray-50' : 'text-gray-400 hover:text-white'
         }`}
       >
         <Moon className="w-3.5 h-3.5" />
@@ -33,7 +33,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ compact = false }) => 
         aria-checked={theme === 'light'}
         onClick={() => setTheme('light')}
         className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
-          theme === 'light' ? 'bg-gold-500 text-black' : 'text-gray-400 hover:text-white'
+          theme === 'light' ? 'bg-gold-500 text-gray-50' : 'text-gray-400 hover:text-white'
         }`}
       >
         <Sun className="w-3.5 h-3.5" />

@@ -276,7 +276,7 @@ export const BarberDashboard: React.FC = () => {
 
             <div className="flex gap-2 pt-2">
               <button onClick={() => setShowBlockOutModal(false)} className="w-full bg-dark-700 text-gray-300 font-bold py-3 rounded-xl">Cancel</button>
-              <button onClick={handleAddBlockOut} className="w-full bg-gold-500 text-black font-bold py-3 rounded-xl">Save Block-Out</button>
+              <button onClick={handleAddBlockOut} className="w-full bg-gold-500 text-gray-50 font-bold py-3 rounded-xl">Save Block-Out</button>
             </div>
           </div>
         </div>

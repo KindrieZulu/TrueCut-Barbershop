@@ -13,7 +13,10 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 const STORAGE_KEY = 'truecut_theme';
 
 // DESIGN.md "Color" section - hex values kept here for readability/parity
-// with that doc. Converted to "R G B" triplets below because
+// with that doc. The `--tc-gold-*` name is legacy (kept to avoid a repo-wide
+// class-name rename); it now holds the site's maroon accent, not gold. The
+// `--tc-dark-*` neutrals lean warm (near-black in dark mode, beige/cream in
+// light mode) to pair with it. Converted to "R G B" triplets below because
 // tailwind.config.js's opacity-modifier syntax (e.g. bg-gold-500/10) only
 // works when the underlying CSS variable is a bare RGB triplet consumed via
 // rgb(var(--x) / <alpha-value>) - a variable holding a hex string like
@@ -21,17 +24,17 @@ const STORAGE_KEY = 'truecut_theme';
 // transparent instead of a translucent color.
 const PALETTE_HEX: Record<Theme, Record<string, string>> = {
   dark: {
-    '--tc-dark-900': '#0a0a0c',
-    '--tc-dark-800': '#141417',
-    '--tc-dark-700': '#1c1c20',
-    '--tc-dark-600': '#2a2a2f',
-    '--tc-gold-400': '#fb923c',
-    '--tc-gold-500': '#f97316',
-    '--tc-gold-600': '#c2410c',
-    '--tc-text': '#f5f5f4',
-    '--tc-text-soft': '#d4d4d8',
-    '--tc-text-muted': '#9a9a9f',
-    '--tc-text-faint': '#6b6b70',
+    '--tc-dark-900': '#120a0c',
+    '--tc-dark-800': '#1c1114',
+    '--tc-dark-700': '#271820',
+    '--tc-dark-600': '#3a2530',
+    '--tc-gold-400': '#e2924d',
+    '--tc-gold-500': '#c97b3d',
+    '--tc-gold-600': '#9c5a28',
+    '--tc-text': '#f5efe8',
+    '--tc-text-soft': '#d9cfc4',
+    '--tc-text-muted': '#a89a8c',
+    '--tc-text-faint': '#786a5e',
     // Semantic status colors (DESIGN.md "Color" > Semantic). Dark values are
     // the Tailwind defaults this app already shipped with - unchanged, so
     // existing dark-mode screens look identical. Light values shift deeper/
@@ -52,17 +55,17 @@ const PALETTE_HEX: Record<Theme, Record<string, string>> = {
     '--tc-blue-600': '#2563eb',
   },
   light: {
-    '--tc-dark-900': '#f6f5f2',
-    '--tc-dark-800': '#ffffff',
-    '--tc-dark-700': '#eeece6',
-    '--tc-dark-600': '#ddd9d0',
-    '--tc-gold-400': '#c2410c',
-    '--tc-gold-500': '#9a3412',
-    '--tc-gold-600': '#7c2d12',
-    '--tc-text': '#17171a',
-    '--tc-text-soft': '#3f3f43',
-    '--tc-text-muted': '#6b6b70',
-    '--tc-text-faint': '#8a8a8f',
+    '--tc-dark-900': '#f3e9d8',
+    '--tc-dark-800': '#fffcf5',
+    '--tc-dark-700': '#e8dcc2',
+    '--tc-dark-600': '#d8c7a0',
+    '--tc-gold-400': '#a85f27',
+    '--tc-gold-500': '#8a4a1d',
+    '--tc-gold-600': '#6b3814',
+    '--tc-text': '#2a1f18',
+    '--tc-text-soft': '#4a3b2f',
+    '--tc-text-muted': '#7a6a56',
+    '--tc-text-faint': '#9c8d78',
     '--tc-green-400': '#16a34a',
     '--tc-green-500': '#16a34a',
     '--tc-green-600': '#15803d',

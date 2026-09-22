@@ -198,7 +198,7 @@ export const SystemAdminDashboard: React.FC = () => {
 
         <button
           onClick={handleRegisterCompanyAdmin}
-          className="bg-gold-500 hover:bg-gold-600 text-black font-extrabold px-6 py-3 rounded-xl text-xs flex items-center space-x-2"
+          className="bg-gold-500 hover:bg-gold-600 text-gray-50 font-extrabold px-6 py-3 rounded-xl text-xs flex items-center space-x-2"
         >
           <UserPlus className="w-4 h-4" />
           <span>Register Company Admin</span>

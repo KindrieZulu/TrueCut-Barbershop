@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
-  Scissors, User, UserCheck, Shield, Building2, Clock, Sparkles,
+  Scissors, User, UserCheck, Shield, Building2, Clock, Tag,
   ArrowRight, KeyRound, LogIn, ChevronRight, CheckCircle2, Zap, Home,
   CreditCard, Smartphone, ChevronDown, CheckCircle
 } from 'lucide-react';
@@ -197,9 +197,11 @@ export const WelcomePage: React.FC = () => {
 
   return (
     <div className="min-h-[calc(100vh-70px)] relative overflow-hidden bg-dark-900 text-white flex flex-col justify-between py-8 px-4">
-      {/* Background Animated Glows */}
-      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-gold-500/10 rounded-full blur-[160px] pointer-events-none animate-pulse" />
-      <div className="absolute bottom-20 right-10 w-[450px] h-[400px] bg-amber-500/10 rounded-full blur-[130px] pointer-events-none" />
+      {/* Background Glows - a single, static, low-opacity pair rather than
+          multiple pulsing warm blobs, so the hero reads as calm/professional
+          instead of an "AI-generated landing page" */}
+      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-gold-500/10 rounded-full blur-[160px] pointer-events-none" />
+      <div className="absolute bottom-20 right-10 w-[450px] h-[400px] bg-gold-600/10 rounded-full blur-[130px] pointer-events-none" />
 
       {/* SECTION 1: Brand Hero Welcome Landing */}
       <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6 pt-4 pb-12">
@@ -214,9 +216,13 @@ export const WelcomePage: React.FC = () => {
           <span>HARARE MAIN BRANCH: {harareTime} CAT</span>
         </div>
 
+        <span className="block text-xs sm:text-sm font-extrabold uppercase tracking-[0.15em] text-gold-400">
+          Zimbabwe's Premier Barbershop
+        </span>
+
         <h1 className="text-4xl sm:text-6xl font-display font-black tracking-tight text-white leading-tight">
           Precision Grooming & Executive <br className="hidden sm:inline" />
-          <span className="bg-gradient-to-r from-gold-400 via-amber-300 to-yellow-500 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-gold-400 via-gold-500 to-gold-600 bg-clip-text text-transparent">
             Barbershop Platform
           </span>
         </h1>
@@ -245,7 +251,7 @@ export const WelcomePage: React.FC = () => {
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
           <button
             onClick={scrollToRoles}
-            className="w-full sm:w-auto bg-gradient-to-r from-gold-500 to-amber-500 hover:from-gold-600 hover:to-amber-600 text-black font-extrabold text-sm px-8 py-3.5 rounded-xl transition-all shadow-xl shadow-gold-500/20 flex items-center justify-center space-x-2"
+            className="w-full sm:w-auto bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-gray-50 font-extrabold text-sm px-8 py-3.5 rounded-xl transition-all shadow-xl shadow-gold-500/20 flex items-center justify-center space-x-2"
           >
             <span>Get Started / Select Role</span>
             <ChevronDown className="w-4 h-4 animate-bounce" />
@@ -255,7 +261,7 @@ export const WelcomePage: React.FC = () => {
             to="/catalogue"
             className="w-full sm:w-auto bg-dark-800 hover:bg-dark-700 border border-dark-600 text-gold-400 font-bold text-sm px-6 py-3.5 rounded-xl transition-all flex items-center justify-center space-x-2"
           >
-            <Sparkles className="w-4 h-4 text-gold-500" />
+            <Tag className="w-4 h-4 text-gold-500" />
             <span>View Public Prices</span>
           </Link>
         </div>
@@ -282,7 +288,7 @@ export const WelcomePage: React.FC = () => {
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-3 bg-dark-900 border border-dark-600 rounded-xl text-gold-400 group-hover:bg-gold-500 group-hover:text-black transition-colors">
+                    <div className="p-3 bg-dark-900 border border-dark-600 rounded-xl text-gold-400 group-hover:bg-gold-500 group-hover:text-gray-50 transition-colors">
                       <Icon className="w-6 h-6" />
                     </div>
                     {isCurrentActiveRole && (
@@ -341,7 +347,7 @@ export const WelcomePage: React.FC = () => {
               <button
                 onClick={() => setAuthMode('DEMO')}
                 className={`w-1/2 py-2 rounded-lg transition-all ${
-                  authMode === 'DEMO' ? 'bg-gold-500 text-black' : 'text-gray-400'
+                  authMode === 'DEMO' ? 'bg-gold-500 text-gray-50' : 'text-gray-400'
                 }`}
               >
                 Quick Demo Sign-In
@@ -349,7 +355,7 @@ export const WelcomePage: React.FC = () => {
               <button
                 onClick={() => setAuthMode('PHONE')}
                 className={`w-1/2 py-2 rounded-lg transition-all ${
-                  authMode === 'PHONE' ? 'bg-gold-500 text-black' : 'text-gray-400'
+                  authMode === 'PHONE' ? 'bg-gold-500 text-gray-50' : 'text-gray-400'
                 }`}
               >
                 {selectedRole.role === 'CLIENT' ? 'Custom Phone OTP' : 'Staff Password Login'}
@@ -407,7 +413,7 @@ export const WelcomePage: React.FC = () => {
                 <button
                   onClick={() => handleQuickDemoLogin(selectedRole)}
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-gold-500 to-amber-500 hover:from-gold-600 hover:to-amber-600 text-black font-extrabold py-3.5 rounded-xl transition-all shadow-lg shadow-gold-500/20 flex items-center justify-center space-x-2 text-sm"
+                  className="w-full bg-gradient-to-r from-gold-500 to-amber-500 hover:from-gold-600 hover:to-amber-600 text-gray-50 font-extrabold py-3.5 rounded-xl transition-all shadow-lg shadow-gold-500/20 flex items-center justify-center space-x-2 text-sm"
                 >
                   <span>{loading ? 'Signing In...' : 'Sign In'}</span>
                 </button>
@@ -441,7 +447,7 @@ export const WelcomePage: React.FC = () => {
                 <button
                   onClick={handleStaffPasswordLogin}
                   disabled={loading}
-                  className="w-full bg-gold-500 hover:bg-gold-600 text-black font-extrabold py-3.5 rounded-xl transition-all text-sm"
+                  className="w-full bg-gold-500 hover:bg-gold-600 text-gray-50 font-extrabold py-3.5 rounded-xl transition-all text-sm"
                 >
                   {loading ? 'Signing In...' : 'Sign In'}
                 </button>
@@ -474,7 +480,7 @@ export const WelcomePage: React.FC = () => {
                     <button
                       onClick={handleRequestOtp}
                       disabled={loading}
-                      className="w-full bg-gold-500 hover:bg-gold-600 text-black font-extrabold py-3 rounded-xl transition-all text-xs"
+                      className="w-full bg-gold-500 hover:bg-gold-600 text-gray-50 font-extrabold py-3 rounded-xl transition-all text-xs"
                     >
                       {loading ? 'Sending OTP...' : 'Send SMS Verification OTP'}
                     </button>
@@ -492,7 +498,7 @@ export const WelcomePage: React.FC = () => {
                     <button
                       onClick={handleVerifyOtpLogin}
                       disabled={loading}
-                      className="w-full bg-gold-500 hover:bg-gold-600 text-black font-extrabold py-3.5 rounded-xl transition-all text-sm"
+                      className="w-full bg-gold-500 hover:bg-gold-600 text-gray-50 font-extrabold py-3.5 rounded-xl transition-all text-sm"
                     >
                       {loading ? 'Signing In...' : 'Sign In'}
                     </button>

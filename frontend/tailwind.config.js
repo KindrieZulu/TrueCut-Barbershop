@@ -67,7 +67,7 @@ export default {
         },
       },
       fontFamily: {
-        display: ['Cabinet Grotesk', 'General Sans', 'sans-serif'],
+        display: ['Inter', 'General Sans', 'sans-serif'],
         sans: ['General Sans', 'system-ui', 'sans-serif'],
         data: ['Geist', 'sans-serif'],
       }

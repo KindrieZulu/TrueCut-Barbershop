@@ -42,6 +42,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => window.removeEventListener('auth:session-expired', clearSession);
   }, []);
 
+  useEffect(() => {
+    // Security: if the browser restores this page from its back/forward
+    // cache (e.g. the user hits Back after logging out), `event.persisted`
+    // is true and none of this app's JS re-runs - the last-rendered
+    // dashboard would otherwise just sit there, frozen, still showing
+    // whatever data was on screen at logout time. Forcing a real reload
+    // re-runs this provider's init (re-reads `user_info` from localStorage),
+    // so a logged-out visitor is correctly bounced back to a login prompt
+    // instead of seeing a stale authenticated page.
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    };
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, []);
+
   const login = async (phone: string, password?: string) => {
     setIsLoading(true);
     try {

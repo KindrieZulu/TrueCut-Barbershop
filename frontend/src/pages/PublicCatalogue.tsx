@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/client';
-import { Scissors, Clock, DollarSign, Sparkles, MapPin, CheckCircle, Info, Home } from 'lucide-react';
+import { Scissors, Clock, DollarSign, MapPin, CheckCircle, Info, Home } from 'lucide-react';
 
 export const PublicCatalogue: React.FC = () => {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ export const PublicCatalogue: React.FC = () => {
       {/* Header Banner */}
       <div className="text-center mb-10">
         <div className="inline-flex items-center space-x-2 bg-gold-500/10 border border-gold-500/30 text-gold-400 text-xs px-3 py-1 rounded-full mb-3">
-          <Sparkles className="w-3.5 h-3.5" />
+          <MapPin className="w-3.5 h-3.5" />
           <span>TrueCut Harare Main Branch</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-2">
@@ -83,7 +83,7 @@ export const PublicCatalogue: React.FC = () => {
                 </div>
                 <Link
                   to={`/book?serviceId=${s.id}`}
-                  className="bg-gold-500 hover:bg-gold-600 text-black font-bold text-xs px-4 py-2 rounded-lg transition-colors flex items-center space-x-1"
+                  className="bg-gold-500 hover:bg-gold-600 text-gray-50 font-bold text-xs px-4 py-2 rounded-lg transition-colors flex items-center space-x-1"
                 >
                   <span>Select & Book</span>
                 </Link>

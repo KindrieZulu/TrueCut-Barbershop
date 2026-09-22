@@ -291,7 +291,7 @@ export const BookingWizard: React.FC = () => {
 
           <button
             onClick={() => setStep(user ? 3 : 2)}
-            className="w-full bg-gold-500 hover:bg-gold-600 text-black font-bold py-3 rounded-xl transition-colors flex items-center justify-center space-x-2"
+            className="w-full bg-gold-500 hover:bg-gold-600 text-gray-50 font-bold py-3 rounded-xl transition-colors flex items-center justify-center space-x-2"
           >
             <span>Next: Select Barber & Slot</span>
             <ArrowRight className="w-4 h-4" />
@@ -330,7 +330,7 @@ export const BookingWizard: React.FC = () => {
               <button
                 onClick={handleRequestOtp}
                 disabled={loading}
-                className="w-full bg-gold-500 hover:bg-gold-600 text-black font-bold py-3 rounded-xl transition-colors"
+                className="w-full bg-gold-500 hover:bg-gold-600 text-gray-50 font-bold py-3 rounded-xl transition-colors"
               >
                 {loading ? 'Sending OTP...' : 'Send Verification OTP'}
               </button>
@@ -348,7 +348,7 @@ export const BookingWizard: React.FC = () => {
               <button
                 onClick={handleVerifyOtp}
                 disabled={loading}
-                className="w-full bg-gold-500 hover:bg-gold-600 text-black font-bold py-3 rounded-xl transition-colors"
+                className="w-full bg-gold-500 hover:bg-gold-600 text-gray-50 font-bold py-3 rounded-xl transition-colors"
               >
                 {loading ? 'Verifying...' : 'Verify OTP & Proceed'}
               </button>
@@ -490,7 +490,7 @@ export const BookingWizard: React.FC = () => {
                             !s.isAvailable
                               ? 'border-dark-700 bg-dark-900/50 text-gray-600 cursor-not-allowed line-through'
                               : isSelected
-                              ? 'border-gold-500 bg-gold-500 text-black shadow-lg shadow-gold-500/20'
+                              ? 'border-gold-500 bg-gold-500 text-gray-50 shadow-lg shadow-gold-500/20'
                               : 'border-dark-700 bg-dark-900 text-gray-300 hover:border-gold-500/50'
                           }`}
                         >
@@ -507,7 +507,7 @@ export const BookingWizard: React.FC = () => {
           <button
             onClick={handleCreateHold}
             disabled={!selectedBarberId || !selectedSlot || loading}
-            className="w-full bg-gold-500 hover:bg-gold-600 disabled:opacity-50 text-black font-bold py-3.5 rounded-xl transition-colors flex items-center justify-center space-x-2"
+            className="w-full bg-gold-500 hover:bg-gold-600 disabled:opacity-50 text-gray-50 font-bold py-3.5 rounded-xl transition-colors flex items-center justify-center space-x-2"
           >
             <span>{loading ? 'Reserving Slot...' : 'Reserve Slot (10-Min Temporary Hold)'}</span>
             <Clock className="w-4 h-4" />
@@ -560,7 +560,7 @@ export const BookingWizard: React.FC = () => {
           <button
             onClick={handlePaynowPayment}
             disabled={loading}
-            className="w-full bg-gold-500 hover:bg-gold-600 text-black font-bold py-3.5 rounded-xl transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-gold-500/10"
+            className="w-full bg-gold-500 hover:bg-gold-600 text-gray-50 font-bold py-3.5 rounded-xl transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-gold-500/10"
           >
             <CreditCard className="w-5 h-5" />
             <span>{loading ? 'Processing Payment...' : 'Pay via EcoCash / Paynow'}</span>
@@ -593,7 +593,7 @@ export const BookingWizard: React.FC = () => {
 
           <button
             onClick={() => navigate('/dashboard')}
-            className="w-full bg-gold-500 hover:bg-gold-600 text-black font-bold py-3 rounded-xl transition-colors"
+            className="w-full bg-gold-500 hover:bg-gold-600 text-gray-50 font-bold py-3 rounded-xl transition-colors"
           >
             Go to My Dashboard
           </button>

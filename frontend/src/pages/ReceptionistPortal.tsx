@@ -209,7 +209,7 @@ export const ReceptionistPortal: React.FC = () => {
 
         <button
           onClick={() => setShowWalkInModal(true)}
-          className="bg-gold-500 hover:bg-gold-600 text-black font-extrabold px-5 py-3 rounded-xl transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-gold-500/10"
+          className="bg-gold-500 hover:bg-gold-600 text-gray-50 font-extrabold px-5 py-3 rounded-xl transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-gold-500/10"
         >
           <UserPlus className="w-5 h-5" />
           <span>Register Walk-in Client</span>
@@ -302,7 +302,7 @@ export const ReceptionistPortal: React.FC = () => {
                 />
                 <button
                   onClick={handleSendOtp}
-                  className="bg-gold-500 text-black font-bold text-xs px-3 rounded-xl whitespace-nowrap"
+                  className="bg-gold-500 text-gray-50 font-bold text-xs px-3 rounded-xl whitespace-nowrap"
                 >
                   Send OTP
                 </button>
@@ -383,7 +383,7 @@ export const ReceptionistPortal: React.FC = () => {
                             !s.isAvailable
                               ? 'border-dark-700 bg-dark-900/50 text-gray-600 cursor-not-allowed line-through'
                               : isSelected
-                              ? 'border-gold-500 bg-gold-500 text-black'
+                              ? 'border-gold-500 bg-gold-500 text-gray-50'
                               : 'border-dark-700 bg-dark-900 text-gray-300 hover:border-gold-500/50'
                           }`}
                         >
@@ -451,7 +451,7 @@ export const ReceptionistPortal: React.FC = () => {
             <button
               onClick={handleCompleteWalkIn}
               disabled={!selectedSlot && !isSqueezeIn}
-              className="w-full bg-gold-500 hover:bg-gold-600 disabled:opacity-50 disabled:cursor-not-allowed text-black font-extrabold py-3.5 rounded-xl transition-colors text-sm"
+              className="w-full bg-gold-500 hover:bg-gold-600 disabled:opacity-50 disabled:cursor-not-allowed text-gray-50 font-extrabold py-3.5 rounded-xl transition-colors text-sm"
             >
               Confirm Walk-in & Record Payment
             </button>
@@ -510,7 +510,7 @@ export const ReceptionistPortal: React.FC = () => {
               </button>
               <button
                 onClick={() => window.print()}
-                className="w-full bg-gold-500 hover:bg-gold-600 text-black font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-1.5"
+                className="w-full bg-gold-500 hover:bg-gold-600 text-gray-50 font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-1.5"
               >
                 <Printer className="w-4 h-4" />
                 <span>Print</span>
