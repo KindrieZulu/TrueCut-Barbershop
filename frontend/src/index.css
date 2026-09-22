@@ -1,4 +1,4 @@
-@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800,900&f[]=general-sans@400,500,600,700&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@700,800,900&f[]=general-sans@400,500,600,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
 
 @tailwind base;
@@ -22,7 +22,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Cabinet Grotesk', 'General Sans', sans-serif;
+  font-family: 'Satoshi', 'General Sans', sans-serif;
 }
 
 /* Literal text-white/text-black usages predate the theme system and are
@@ -54,20 +54,23 @@ html[data-theme='light'] .hover\:text-white:hover {
   background: rgb(var(--tc-gold-500));
 }
 
-/* CSS-3D card-lift micro-interaction (DESIGN.md "Motion" section). Apply
-   .card-3d to any hoverable panel - barber status cards, stat tiles,
-   clickable list rows - for a subtle depth cue on hover. */
+/* Floating 3D card (DESIGN.md "Motion" section). Every card across every
+   dashboard uses this class - the shadow is now visible at rest (not just
+   on hover), so boxes read as physically floating above the page surface
+   site-wide, with a stronger lift-and-glow on interaction. */
 .card-3d {
   transform-style: preserve-3d;
+  transform: translateY(0);
+  box-shadow: 0 14px 32px -10px rgba(0, 0, 0, 0.4), 0 4px 10px -4px rgba(0, 0, 0, 0.25);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
               box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
               border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card-3d:hover {
-  transform: translateY(-4px) rotateX(2deg);
-  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(212, 175, 55, 0.14);
-  border-color: rgba(212, 175, 55, 0.3);
+  transform: translateY(-6px) rotateX(2deg);
+  box-shadow: 0 26px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(249, 115, 22, 0.25);
+  border-color: rgba(249, 115, 22, 0.4);
 }
 
 /* Print-just-one-element pattern: any element with .printable-area stays

@@ -6,6 +6,7 @@ import {
   ArrowRight, KeyRound, LogIn, ChevronRight, CheckCircle2, Zap, Home,
   CreditCard, Smartphone, ChevronDown, CheckCircle
 } from 'lucide-react';
+import truecutLogo from '../assets/truecut-logo.webp';
 
 interface RoleOption {
   id: string;
@@ -202,6 +203,12 @@ export const WelcomePage: React.FC = () => {
 
       {/* SECTION 1: Brand Hero Welcome Landing */}
       <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6 pt-4 pb-12">
+        <img
+          src={truecutLogo}
+          alt="TrueCut Barber"
+          className="w-24 h-24 sm:w-28 sm:h-28 mx-auto rounded-full object-cover shadow-2xl shadow-gold-500/30 border-4 border-dark-800"
+        />
+
         <div className="inline-flex items-center space-x-2 bg-dark-800 border border-dark-600 px-4 py-1.5 rounded-full text-xs text-gold-400 font-mono shadow-xl">
           <Clock className="w-3.5 h-3.5 text-gold-500 animate-pulse" />
           <span>HARARE MAIN BRANCH: {harareTime} CAT</span>

@@ -7,21 +7,21 @@
 - **Project type:** Hybrid - operational web app (dashboards, schedules, reports) plus a lighter marketing/booking front for clients.
 
 ## Aesthetic Direction
-- **Direction:** Industrial-Executive hybrid.
-- **Decoration level:** Intentional - subtle CSS-3D depth on interactive surfaces, no decorative texture or pattern for its own sake.
-- **Mood:** Precision-engineered and trustworthy. The product should feel like a serious operational tool run by people who take the craft seriously, not a generic SaaS booking template.
-- **Memorable thing:** Precision and trust - every design decision should reinforce that this system is exact, dependable, and built by people who care about the details.
-- **Reference sites (category landscape):** Fresha, GlossGenius, Squire - all converge on flat, friendly, interchangeable visual language. TrueCut deliberately departs with dark-first UI, sharper typography, and subtle depth.
+- **Direction:** Vibrant Craft - Industrial-Executive precision, warmed up. Still a serious operational tool, but livelier and more energetic than the original restrained gold-only version, pulling from the TrueCut Barber brand mark's fire motif (`frontend/src/assets/truecut-logo.webp`) and Booksy's approachable, photo-and-color-forward marketplace feel.
+- **Decoration level:** Intentional, more expressive than before - every card/panel across every dashboard now shows a persistent floating shadow at rest (see Motion), not just on hover.
+- **Mood:** Precision and trust, now expressed with warmth and energy rather than restraint - confident, alive, still built by people who care about the details.
+- **Memorable thing:** Precision and trust, brought to life - the fire-orange accent and floating cards should feel energetic without undermining the "serious operational tool" read.
+- **Reference sites (category landscape):** Fresha, GlossGenius, Squire (flat, generic) vs. Booksy (photo-forward, ProximaNova/rounded-sans warmth, teal/black accents, card-grid liveliness). TrueCut takes Booksy's energy and warmth but keeps its own dark-first, precision-tool identity rather than Booksy's light consumer-marketplace look.
 
 ## Typography
-- **Display/Hero:** Cabinet Grotesk (700/800/900) - sharp, architectural, geometric. Used for headings, hero copy, section titles. Loaded via Fontshare: `https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800,900&display=swap`
+- **Display/Hero:** Satoshi (700/800/900) - warm, rounded, friendly geometric sans (replaces Cabinet Grotesk's sharper architectural feel to match the new livelier direction). Same Fontshare family suite as General Sans below, so the two pair naturally. Used for headings, hero copy, section titles. Loaded via Fontshare: `https://api.fontshare.com/v2/css?f[]=satoshi@700,800,900&display=swap`
 - **Body/UI:** General Sans (400/500/600/700) - clean and highly legible for buttons, labels, forms, paragraph text. Loaded via Fontshare: `https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap`
 - **Data/Tables:** Geist (400/500/600/700), `font-variant-numeric: tabular-nums` - for revenue figures, timestamps, and any tabular data where digits must align. Loaded via Google Fonts: `https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap`
 - **Code:** not applicable to this product's UI.
 - **Scale:** Hero/H1 44px/900, H2 24px/800, body 14-16px/400-600, data values 26-30px/600-700, labels/eyebrows 11px/700 uppercase with 0.08-0.12em tracking.
 
 ## Color
-- **Approach:** Restrained. Gold is rare and meaningful - reserved for primary CTAs, revenue figures, active/"with client" status, and brand mark. Never used as decoration.
+- **Approach:** The accent ("gold") token now runs vivid fire-orange instead of brass-gold, pulled directly from the logo's flame ring - still reserved for primary CTAs, revenue figures, active/"with client" status, and brand mark, just warmer and more energetic. Every existing `gold-400/500/600` usage across the app updated automatically since it's a CSS-variable token, not a per-component color.
 - **Dark mode (default):**
   - Background: `#0a0a0c`
   - Surface: `#141417`
@@ -29,7 +29,7 @@
   - Border: `#2a2a2f`
   - Text: `#f5f5f4`
   - Text muted: `#9a9a9f`
-  - Gold: `#d4af37`, Gold bright (hover/emphasis): `#e8c65a`, Gold dim (tinted backgrounds): `rgba(212,175,55,0.14)`
+  - Gold/accent: `#f97316` (vivid orange), Gold bright (hover/emphasis): `#fb923c`, Gold deep (pressed): `#c2410c`
 - **Light mode:**
   - Background: `#f6f5f2`
   - Surface: `#ffffff`
@@ -37,7 +37,7 @@
   - Border: `#ddd9d0`
   - Text: `#17171a`
   - Text muted: `#6b6b70`
-  - Gold: `#a8791f` (deepened for contrast on light backgrounds), Gold bright: `#8f6414`, Gold dim: `rgba(168,121,31,0.10)`
+  - Gold/accent: `#9a3412` (deep burnt orange, contrast on light backgrounds), Gold bright: `#c2410c`, Gold deep: `#7c2d12`
 - **Semantic:** dark values are this app's original Tailwind defaults (unchanged); light values shift deeper/more saturated, the standard move for text and badge tints sitting on a near-white surface instead of a near-black one.
   - Success (green): `#4ade80` (dark) / `#16a34a` (light)
   - Error (red): `#f87171` (dark) / `#dc2626` (light)
@@ -57,9 +57,9 @@
 - **Border radius:** sm 6px (buttons, inputs, badges), md 10px (stat tiles), lg 16px (cards, panels), full 999px (pills/toggles).
 
 ## Motion
-- **Approach:** CSS-3D micro-interactions - intentional, not expressive. Motion should always aid comprehension or add a sense of precision, never choreography for its own sake.
-- **Signature interaction:** card hover-lift - `transform: translateY(-4px) rotateX(2deg)` with a matching elevated shadow and a gold-tinted border glow (see `.card-3d` pattern below). Used on barber status cards, stat tiles, and any clickable panel.
-- **Easing:** enter `cubic-bezier(0.16, 1, 0.3, 1)` (ease-out), short/medium durations (150-350ms). No expressive/scroll-driven choreography - this is a professional operational tool, not a marketing showcase.
+- **Approach:** CSS-3D floating cards - every panel now carries a visible shadow at rest, reading as physically lifted off the page, with a stronger lift-and-glow on interaction. More expressive than the original hover-only treatment, per explicit user request ("all boxes should be floating 3D designs with shadow... on all pages/dashboards").
+- **Signature interaction:** `.card-3d` - permanent resting shadow (`0 14px 32px -10px rgba(0,0,0,0.4), 0 4px 10px -4px rgba(0,0,0,0.25)`), hover intensifies to `transform: translateY(-6px) rotateX(2deg)` with a deeper shadow and a fire-orange border glow. Applied to barber status cards, stat tiles, and any clickable or informational panel - i.e. nearly every card in the app.
+- **Easing:** enter `cubic-bezier(0.16, 1, 0.3, 1)` (ease-out), short/medium durations (150-350ms).
 
 ## Settings (cross-cutting requirement)
 Every role's dashboard (Company Admin, Receptionist, Barber, Client) should expose a Settings surface with, at minimum:
@@ -78,3 +78,4 @@ The `.card-3d` hover pattern, color tokens, and typography roles above are demon
 | 2026-09-19 | Initial design system created (Industrial-Executive hybrid, dark+gold retained, Cabinet Grotesk/General Sans/Geist, CSS-3D card-lift motion) | Created by /design-consultation. Competitive research (Fresha/GlossGenius/Squire) showed category convergence on flat, generic, interchangeable UI - TrueCut differentiates via precision-engineered typography and depth. |
 | 2026-09-19 | Added light theme as a required feature | User request during design consultation - Settings should let users switch themes, not just consume dark mode. |
 | 2026-09-19 | Re-tuned semantic status colors (success/error/warning/info) for theme-awareness | User request - green/red/amber/blue text and badges were unthemed literal Tailwind colors, reading as washed-out on light backgrounds since they were only tuned for a dark background. |
+| 2026-09-22 | Shifted to "Vibrant Craft": real logo integrated, accent warmed from brass-gold to fire-orange, display font Cabinet Grotesk -> Satoshi, `.card-3d` shadow now persistent (not hover-only) | User request, inspired by booksy.com's warmth/liveliness and the TrueCut Barber logo's fire motif - wanted more energy across every page/dashboard while keeping the dark-first precision-tool identity. |

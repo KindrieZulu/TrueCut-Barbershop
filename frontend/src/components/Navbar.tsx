@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Scissors, Clock, LogOut, LayoutDashboard, Sparkles, ArrowLeft, Settings } from 'lucide-react';
+import { Clock, LogOut, LayoutDashboard, Sparkles, ArrowLeft, Settings } from 'lucide-react';
+import truecutLogo from '../assets/truecut-logo.webp';
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
@@ -61,9 +62,7 @@ export const Navbar: React.FC = () => {
             </button>
           )}
           <Link to="/welcome" className="flex items-center space-x-2">
-            <div className="bg-gold-500 p-2 rounded-lg text-black font-bold">
-              <Scissors className="w-5 h-5" />
-            </div>
+            <img src={truecutLogo} alt="TrueCut Barber" className="w-10 h-10 rounded-full object-cover shadow-lg shadow-gold-500/20" />
             <div>
               <span className="text-xl font-extrabold tracking-wider text-white font-display">TRUE<span className="text-gold-500">CUT</span></span>
               <span className="text-xs text-gray-400 block -mt-1 font-medium">HARARE, ZIMBABWE</span>
