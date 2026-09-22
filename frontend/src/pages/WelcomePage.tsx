@@ -196,79 +196,87 @@ export const WelcomePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-70px)] relative overflow-hidden bg-dark-900 text-white flex flex-col justify-between py-8 px-4">
-      {/* Background Glows - a single, static, low-opacity pair rather than
-          multiple pulsing warm blobs, so the hero reads as calm/professional
-          instead of an "AI-generated landing page" */}
-      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-gold-500/10 rounded-full blur-[160px] pointer-events-none" />
-      <div className="absolute bottom-20 right-10 w-[450px] h-[400px] bg-gold-600/10 rounded-full blur-[130px] pointer-events-none" />
+    <div className="min-h-[calc(100vh-70px)] relative flex flex-col justify-between">
+      {/* SECTION 1: Brand Hero Welcome Landing - a full-bleed band that's
+          always dark, regardless of the site's light/dark theme toggle
+          (a fixed hex, not a --tc-* token), so it reads as a distinct,
+          contrasting band under the navbar rather than blending into
+          whatever the current theme's background happens to be - matching
+          a car-marketplace reference site's light-navbar/dark-hero look.
+          Every color inside this band is likewise hardcoded rather than
+          theme-reactive, since it must stay legible against this fixed
+          dark backdrop no matter which theme is active. */}
+      <div className="relative overflow-hidden py-8 px-4" style={{ backgroundColor: '#15100d' }}>
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-[#c97b3d] opacity-10 rounded-full blur-[160px] pointer-events-none" />
+        <div className="absolute bottom-20 right-10 w-[450px] h-[400px] bg-[#9c5a28] opacity-10 rounded-full blur-[130px] pointer-events-none" />
 
-      {/* SECTION 1: Brand Hero Welcome Landing */}
-      <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6 pt-4 pb-12">
-        <img
-          src={truecutLogo}
-          alt="TrueCut Barber"
-          className="w-24 h-24 sm:w-28 sm:h-28 mx-auto rounded-full object-cover shadow-2xl shadow-gold-500/30 border-4 border-dark-800"
-        />
+        <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6 pt-4 pb-12">
+          <img
+            src={truecutLogo}
+            alt="TrueCut Barber"
+            className="w-24 h-24 sm:w-28 sm:h-28 mx-auto rounded-full object-cover shadow-2xl shadow-[#c97b3d]/30 border-4 border-black/30"
+          />
 
-        <div className="inline-flex items-center space-x-2 bg-dark-800 border border-dark-600 px-4 py-1.5 rounded-full text-xs text-gold-400 font-mono shadow-xl">
-          <Clock className="w-3.5 h-3.5 text-gold-500 animate-pulse" />
-          <span>HARARE MAIN BRANCH: {harareTime} CAT</span>
-        </div>
+          <div className="inline-flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full text-xs text-[#e2924d] font-mono shadow-xl">
+            <Clock className="w-3.5 h-3.5 text-[#c97b3d] animate-pulse" />
+            <span>HARARE MAIN BRANCH: {harareTime} CAT</span>
+          </div>
 
-        <span className="block text-xs sm:text-sm font-extrabold uppercase tracking-[0.15em] text-gold-400">
-          Zimbabwe's Premier Barbershop
-        </span>
-
-        <h1 className="text-4xl sm:text-6xl font-display font-black tracking-tight text-white leading-tight">
-          Precision Grooming & Executive <br className="hidden sm:inline" />
-          <span className="bg-gradient-to-r from-gold-400 via-gold-500 to-gold-600 bg-clip-text text-transparent">
-            Barbershop Platform
+          <span className="block text-xs sm:text-sm font-extrabold uppercase tracking-[0.15em] text-[#e2924d]">
+            Zimbabwe's Premier Barbershop
           </span>
-        </h1>
 
-        <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
-          Harare's premier barbershop. Enjoy real-time slot holds, house call deliveries, instant EcoCash checkout, and priority squeeze-in access.
-        </p>
+          <h1 className="text-4xl sm:text-6xl font-display font-black tracking-tight text-gray-50 leading-tight">
+            Precision Grooming & Executive <br className="hidden sm:inline" />
+            <span className="bg-gradient-to-r from-[#e2924d] via-[#c97b3d] to-[#9c5a28] bg-clip-text text-transparent">
+              Barbershop Platform
+            </span>
+          </h1>
 
-        {/* Feature Pill Highlights */}
-        <div className="flex flex-wrap items-center justify-center gap-2 pt-2 text-xs font-semibold text-gray-300">
-          <span className="bg-dark-800 border border-dark-600 px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
-            <CheckCircle className="w-3.5 h-3.5 text-gold-500" />
-            <span>Zero Double-Booking Guarantee</span>
-          </span>
-          <span className="bg-dark-800 border border-dark-600 px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
-            <Home className="w-3.5 h-3.5 text-blue-400" />
-            <span>10km House Calls</span>
-          </span>
-          <span className="bg-dark-800 border border-dark-600 px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
-            <Smartphone className="w-3.5 h-3.5 text-green-400" />
-            <span>EcoCash Integration</span>
-          </span>
-        </div>
+          <p className="text-gray-300 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+            Harare's premier barbershop. Enjoy real-time slot holds, house call deliveries, instant EcoCash checkout, and priority squeeze-in access.
+          </p>
 
-        {/* Action Buttons */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <button
-            onClick={scrollToRoles}
-            className="w-full sm:w-auto bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-gray-50 font-extrabold text-sm px-8 py-3.5 rounded-xl transition-all shadow-xl shadow-gold-500/20 flex items-center justify-center space-x-2"
-          >
-            <span>Get Started / Select Role</span>
-            <ChevronDown className="w-4 h-4 animate-bounce" />
-          </button>
+          {/* Feature Pill Highlights */}
+          <div className="flex flex-wrap items-center justify-center gap-2 pt-2 text-xs font-semibold text-gray-200">
+            <span className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
+              <CheckCircle className="w-3.5 h-3.5 text-[#c97b3d]" />
+              <span>Zero Double-Booking Guarantee</span>
+            </span>
+            <span className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
+              <Home className="w-3.5 h-3.5 text-blue-300" />
+              <span>10km House Calls</span>
+            </span>
+            <span className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
+              <Smartphone className="w-3.5 h-3.5 text-green-300" />
+              <span>EcoCash Integration</span>
+            </span>
+          </div>
 
-          <Link
-            to="/catalogue"
-            className="w-full sm:w-auto bg-dark-800 hover:bg-dark-700 border border-dark-600 text-gold-400 font-bold text-sm px-6 py-3.5 rounded-xl transition-all flex items-center justify-center space-x-2"
-          >
-            <Tag className="w-4 h-4 text-gold-500" />
-            <span>View Public Prices</span>
-          </Link>
+          {/* Action Buttons */}
+          <div className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button
+              onClick={scrollToRoles}
+              className="w-full sm:w-auto bg-gradient-to-r from-[#c97b3d] to-[#9c5a28] hover:from-[#e2924d] hover:to-[#c97b3d] text-gray-50 font-extrabold text-sm px-8 py-3.5 rounded-xl transition-all shadow-xl shadow-[#c97b3d]/20 flex items-center justify-center space-x-2"
+            >
+              <span>Get Started / Select Role</span>
+              <ChevronDown className="w-4 h-4 animate-bounce" />
+            </button>
+
+            <Link
+              to="/catalogue"
+              className="w-full sm:w-auto bg-white/5 hover:bg-white/10 border border-white/10 text-[#e2924d] font-bold text-sm px-6 py-3.5 rounded-xl transition-all flex items-center justify-center space-x-2"
+            >
+              <Tag className="w-4 h-4 text-[#c97b3d]" />
+              <span>View Public Prices</span>
+            </Link>
+          </div>
         </div>
       </div>
 
+      <div className="bg-dark-900 text-white flex-1 flex flex-col justify-between py-8 px-4">
       {/* SECTION 2: Role Selection & Sign-In / Sign-Up Grid */}
-      <div id="roles-section" className="max-w-6xl mx-auto w-full relative z-10 my-8 pt-8 border-t border-dark-700 space-y-6">
+      <div id="roles-section" className="max-w-6xl mx-auto w-full relative z-10 space-y-6">
         <div className="text-center space-y-1">
           <span className="text-xs font-mono font-bold text-gold-400 uppercase tracking-widest">Portal Access</span>
           <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-white">Select Your Operational Role</h2>
@@ -513,6 +521,7 @@ export const WelcomePage: React.FC = () => {
       {/* Footer */}
       <div className="text-center text-xs text-gray-600 font-mono relative z-10 pt-8">
         TrueCut Barbershop • Production Platform v1.0 • Harare, Zimbabwe
+      </div>
       </div>
     </div>
   );

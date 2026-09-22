@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
 import { ThemeProvider } from '../context/ThemeContext';
@@ -9,12 +9,14 @@ vi.mock('../context/AuthContext', () => ({
   useAuth: vi.fn(),
 }));
 
-const renderNavbar = () =>
+// Logout only renders outside the public welcome page (see Navbar's
+// `isOnHomePage` check), so tests that need it render on a dashboard route.
+const renderNavbar = (initialPath = '/welcome') =>
   render(
     <ThemeProvider>
-      <BrowserRouter>
+      <MemoryRouter initialEntries={[initialPath]}>
         <Navbar />
-      </BrowserRouter>
+      </MemoryRouter>
     </ThemeProvider>
   );
 
@@ -44,7 +46,10 @@ describe('Navbar Component UI Tests', () => {
       logout: mockLogout,
     });
 
-    renderNavbar();
+    // A route that's neither the public welcome page nor this BARBER's own
+    // dashboard (/barber), so both the Dashboard link and Logout button
+    // are expected to render.
+    renderNavbar('/settings');
 
     expect(screen.getByText(/Dashboard/i)).toBeInTheDocument();
 
@@ -52,5 +57,16 @@ describe('Navbar Component UI Tests', () => {
     expect(logoutBtn).toBeInTheDocument();
     fireEvent.click(logoutBtn);
     expect(mockLogout).toHaveBeenCalledTimes(1);
+  });
+
+  it('hides the Logout button on the public welcome page even when authenticated', () => {
+    (useAuth as any).mockReturnValue({
+      user: { id: 'b1', name: 'Barber Dave', role: 'BARBER' },
+      logout: vi.fn(),
+    });
+
+    renderNavbar('/welcome');
+
+    expect(screen.queryByTitle('Logout')).not.toBeInTheDocument();
   });
 });

@@ -47,6 +47,7 @@ export const Navbar: React.FC = () => {
   const isOnOwnDashboard = user ? location.pathname === getDashboardPath() : false;
   const isStaff = user && user.role !== 'CLIENT';
   const isOnSettings = location.pathname === '/settings';
+  const isOnHomePage = location.pathname === '/' || location.pathname === '/welcome';
 
   return (
     <nav className="bg-dark-800/80 backdrop-blur-xl border-b border-dark-700 sticky top-0 z-50 px-4 py-3">
@@ -124,22 +125,24 @@ export const Navbar: React.FC = () => {
                 </Link>
               )}
 
-              <button
-                onClick={() => {
-                  logout();
-                  // Hard navigation (not React Router's navigate) so the
-                  // authenticated dashboard is fully torn down rather than
-                  // left sitting in memory - see AuthContext's `pageshow`
-                  // handler, which forces a reload if the browser's
-                  // back/forward cache ever tries to restore this exact
-                  // page state after logout.
-                  window.location.href = '/welcome';
-                }}
-                className="text-gray-400 hover:text-red-400 p-1.5 rounded-lg transition-colors"
-                title="Logout"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
+              {!isOnHomePage && (
+                <button
+                  onClick={() => {
+                    logout();
+                    // Hard navigation (not React Router's navigate) so the
+                    // authenticated dashboard is fully torn down rather than
+                    // left sitting in memory - see AuthContext's `pageshow`
+                    // handler, which forces a reload if the browser's
+                    // back/forward cache ever tries to restore this exact
+                    // page state after logout.
+                    window.location.href = '/welcome';
+                  }}
+                  className="text-gray-400 hover:text-red-400 p-1.5 rounded-lg transition-colors"
+                  title="Logout"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              )}
             </>
           ) : (
             <Link
