@@ -21,14 +21,6 @@ body {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Black frame demarcation around the whole site (see index.html's <body>
-   for the actual border/box-sizing) - a literal, always-black border, not
-   a theme token, since it reads as a fixed design/frame element rather
-   than a themed surface. Set inline on <body> in index.html, not here:
-   this project's build pipeline has been observed to silently drop
-   hand-authored border/sizing rules added to a plain `body {}` selector
-   in this file - see the note above re: html/:root rules. */
-
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Inter', 'General Sans', sans-serif;
 }
