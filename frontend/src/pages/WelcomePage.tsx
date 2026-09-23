@@ -243,8 +243,18 @@ export const WelcomePage: React.FC = () => {
             card and blur through its translucent backdrop, giving the
             content a frosted-glass look rather than sitting directly on
             the flat dark band. Per explicit user request ("make the hero
-            band glassy"). */}
-        <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6 px-6 sm:px-12 py-10 rounded-3xl bg-white/[0.06] backdrop-blur-xl border border-white/10 shadow-2xl">
+            band glassy"). Dark theme gets a stronger, gradient "sheen" and
+            brighter border - against the near-black dark-theme backdrop, the
+            same subtle light-theme treatment read as barely-there rather
+            than glassy; against light theme's warm dark band it already
+            stood out fine, so that treatment is unchanged. */}
+        <div
+          className={`max-w-5xl mx-auto text-center relative z-10 space-y-6 px-6 sm:px-12 py-10 rounded-3xl backdrop-blur-xl border shadow-2xl ${
+            theme === 'dark'
+              ? 'bg-gradient-to-b from-white/[0.14] via-white/[0.07] to-white/[0.03] border-white/20 shadow-black/50'
+              : 'bg-white/[0.06] border-white/10'
+          }`}
+        >
           <img
             src={truecutLogo}
             alt="TrueCut Barber"
