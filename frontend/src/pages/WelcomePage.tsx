@@ -239,22 +239,30 @@ export const WelcomePage: React.FC = () => {
           </>
         )}
 
-        {/* Glass panel - the animated corner glows sit behind/around this
-            card and blur through its translucent backdrop, giving the
-            content a frosted-glass look rather than sitting directly on
-            the flat dark band. Per explicit user request ("make the hero
-            band glassy"). Dark theme gets a stronger, gradient "sheen" and
-            brighter border - against the near-black dark-theme backdrop, the
-            same subtle light-theme treatment read as barely-there rather
-            than glassy; against light theme's warm dark band it already
-            stood out fine, so that treatment is unchanged. */}
+        {/* Glass panel - full-bleed (no side margin/gap to the hero band's
+            own edges) and feathered with a left/right mask-image fade so
+            the frosted glass dissolves into the dark band at the edges
+            instead of stopping at a hard rounded-corner boundary. The
+            animated corner glows sit behind/around it and blur through its
+            translucent backdrop. Per explicit user request ("make the hero
+            band glassy" / "make the glassy on the hero bar fade away on
+            the left and right edge"). Dark theme gets a stronger, gradient
+            "sheen" and brighter border - against the near-black dark-theme
+            backdrop, the same subtle light-theme treatment read as
+            barely-there rather than glassy; against light theme's warm
+            dark band it already stood out fine, so that's unchanged. */}
         <div
-          className={`max-w-5xl mx-auto text-center relative z-10 space-y-6 px-6 sm:px-12 py-10 rounded-3xl backdrop-blur-xl border shadow-2xl ${
+          className={`relative z-10 backdrop-blur-xl border-y ${
             theme === 'dark'
               ? 'bg-gradient-to-b from-white/[0.14] via-white/[0.07] to-white/[0.03] border-white/20 shadow-black/50'
               : 'bg-white/[0.06] border-white/10'
           }`}
+          style={{
+            WebkitMaskImage: 'linear-gradient(to right, transparent, black 12%, black 88%, transparent)',
+            maskImage: 'linear-gradient(to right, transparent, black 12%, black 88%, transparent)',
+          }}
         >
+        <div className="max-w-5xl mx-auto text-center space-y-6 px-6 sm:px-12 py-10">
           <img
             src={truecutLogo}
             alt="TrueCut Barber"
@@ -315,6 +323,7 @@ export const WelcomePage: React.FC = () => {
               <span>View Public Prices</span>
             </Link>
           </div>
+        </div>
         </div>
       </div>
 
