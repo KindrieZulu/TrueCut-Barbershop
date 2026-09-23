@@ -37,9 +37,14 @@ export const App: React.FC = () => {
       <main className="pb-12">
         <Suspense fallback={<RouteFallback />}>
           {/* Keyed by pathname so every navigation remounts this wrapper,
-              re-triggering the fade - a quick 180ms opacity/transform
-              animation (see .page-fade-in in index.css), not a heavier
-              transition that would make navigation feel slow. */}
+              re-triggering the fade - a quick 180ms opacity-only animation
+              (see .page-fade-in in index.css). Deliberately opacity-only,
+              not opacity+transform: a `transform` here (even one that
+              animates to an identity/no-op value) makes this div a new
+              CSS containing block for any `position: fixed` descendant -
+              which broke every full-screen modal rendered by a routed
+              page, centering them against this div's (scrolled, full
+              page-height) box instead of the actual viewport. */}
           <div key={location.pathname} className="page-fade-in">
             <Routes>
               <Route path="/" element={<WelcomePage />} />
