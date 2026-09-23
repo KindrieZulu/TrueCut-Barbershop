@@ -262,7 +262,7 @@ export const WelcomePage: React.FC = () => {
             </span>
           </h1>
 
-          <p className="text-gray-300 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+          <p className="text-[#b5a179] max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
             Harare's premier barbershop. Enjoy real-time slot holds, house call deliveries, instant EcoCash checkout, and priority squeeze-in access.
           </p>
 
