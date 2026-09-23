@@ -81,24 +81,22 @@ html[data-theme='light'] .hover\:text-white:hover {
   border-color: rgba(201, 123, 61, 0.45);
 }
 
-/* WelcomePage hero background glows (see WelcomePage.tsx). Slow, gentle
-   drift + flicker on the blurred glow blobs behind the hero content -
-   "distinct but classic": a subtle ambient motion, not a flashy effect.
-   Two independent keyframes (position drift, opacity flicker) combined
-   per blob with staggered delays so the blobs don't move in lockstep. */
-@keyframes hero-glow-drift-a {
-  0%, 100% { transform: translate(-50%, 0) scale(1); }
-  50% { transform: translate(-50%, -24px) scale(1.1); }
+/* WelcomePage hero background glows (see WelcomePage.tsx) - four blurred
+   blobs, one anchored in each corner of the hero band, "dancing": the two
+   diagonal pairs (top-left/bottom-right vs top-right/bottom-left) sway in
+   mirrored/opposite directions at the exact same time (same duration, no
+   delay offset between the two direction keyframes), so the motion reads
+   as a synchronized cross-pattern rather than independent random drift.
+   Opacity still flickers per-blob with a slight delay stagger for texture,
+   since that doesn't disrupt the positional sync. */
+@keyframes hero-corner-dance-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(28px, -22px) scale(1.1); }
 }
 
-@keyframes hero-glow-drift-b {
+@keyframes hero-corner-dance-b {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-18px, 20px) scale(1.08); }
-}
-
-@keyframes hero-glow-drift-c {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(16px, -16px) scale(1.05); }
+  50% { transform: translate(-28px, 22px) scale(1.1); }
 }
 
 @keyframes hero-glow-flicker {
@@ -106,18 +104,18 @@ html[data-theme='light'] .hover\:text-white:hover {
   50% { opacity: 0.16; }
 }
 
-.hero-glow-a {
-  animation: hero-glow-drift-a 11s ease-in-out infinite, hero-glow-flicker 4.5s ease-in-out infinite;
+/* Applied to the top-left + bottom-right corner blobs - same animation,
+   same timing, so they move in lockstep along one diagonal. */
+.hero-corner-a {
+  animation: hero-corner-dance-a 8s ease-in-out infinite, hero-glow-flicker 4.5s ease-in-out infinite;
 }
 
-.hero-glow-b {
-  animation: hero-glow-drift-b 13s ease-in-out infinite, hero-glow-flicker 5.5s ease-in-out infinite;
-  animation-delay: 1.5s, 0.8s;
-}
-
-.hero-glow-c {
-  animation: hero-glow-drift-c 9s ease-in-out infinite, hero-glow-flicker 3.8s ease-in-out infinite;
-  animation-delay: 0.5s, 2.2s;
+/* Applied to the top-right + bottom-left corner blobs - the mirrored
+   keyframe, same duration/no delay as .hero-corner-a, so at any instant
+   this pair is moving opposite to the other pair while both move together. */
+.hero-corner-b {
+  animation: hero-corner-dance-b 8s ease-in-out infinite, hero-glow-flicker 5.2s ease-in-out infinite;
+  animation-delay: 0s, 1s;
 }
 
 /* Print-just-one-element pattern: any element with .printable-area stays

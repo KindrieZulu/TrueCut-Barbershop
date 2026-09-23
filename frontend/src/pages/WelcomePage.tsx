@@ -213,24 +213,29 @@ export const WelcomePage: React.FC = () => {
         style={{ backgroundColor: theme === 'dark' ? '#050403' : '#15100d' }}
       >
         {theme === 'dark' ? (
-          /* Dark theme: a "fire" glow - alternating blue and orange
-             blurred blobs that slowly drift and flicker independently,
+          /* Dark theme: a "fire" glow - four corner blobs alternating blue
+             and orange, dancing in diagonal pairs (top-left + bottom-right
+             move together one way while top-right + bottom-left move the
+             opposite way, in sync - see .hero-corner-a/b in index.css) -
              evoking flame colors against a black backdrop. Per explicit
-             user request ("in dark mode, make it black with fire
-             animation that is blueish and orange"). */
+             user request ("dancing in the corners, opposite but
+             simultaneous" and "black with fire animation that is
+             blueish and orange"). */
           <>
-            <div className="hero-glow-a absolute top-10 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-[#e2924d] opacity-10 rounded-full blur-[160px] pointer-events-none" />
-            <div className="hero-glow-b absolute bottom-16 right-10 w-[450px] h-[420px] bg-[#3b82f6] opacity-10 rounded-full blur-[150px] pointer-events-none" />
-            <div className="hero-glow-c absolute top-1/3 left-10 w-[380px] h-[380px] bg-[#2563eb] opacity-10 rounded-full blur-[140px] pointer-events-none" />
-            <div className="hero-glow-a absolute bottom-10 left-1/3 w-[320px] h-[320px] bg-[#c97b3d] opacity-10 rounded-full blur-[130px] pointer-events-none" style={{ animationDelay: '2.5s, 1.2s' }} />
+            <div className="hero-corner-a absolute -top-24 -left-24 w-[480px] h-[480px] bg-[#e2924d] opacity-10 rounded-full blur-[150px] pointer-events-none" />
+            <div className="hero-corner-b absolute -top-24 -right-24 w-[480px] h-[480px] bg-[#3b82f6] opacity-10 rounded-full blur-[150px] pointer-events-none" />
+            <div className="hero-corner-b absolute -bottom-24 -left-24 w-[440px] h-[440px] bg-[#c97b3d] opacity-10 rounded-full blur-[140px] pointer-events-none" />
+            <div className="hero-corner-a absolute -bottom-24 -right-24 w-[440px] h-[440px] bg-[#2563eb] opacity-10 rounded-full blur-[140px] pointer-events-none" />
           </>
         ) : (
-          /* Light theme: a calmer, single-hue copper drift - "distinct
-             but classic" ambient motion rather than the dark theme's
-             livelier multi-color fire effect. */
+          /* Light theme: the same corner-dance motion, but a calmer,
+             single-hue copper palette - "distinct but classic" rather
+             than the dark theme's livelier multi-color fire effect. */
           <>
-            <div className="hero-glow-a absolute top-10 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-[#c97b3d] opacity-10 rounded-full blur-[160px] pointer-events-none" />
-            <div className="hero-glow-b absolute bottom-20 right-10 w-[450px] h-[400px] bg-[#9c5a28] opacity-10 rounded-full blur-[130px] pointer-events-none" />
+            <div className="hero-corner-a absolute -top-24 -left-24 w-[480px] h-[480px] bg-[#c97b3d] opacity-10 rounded-full blur-[150px] pointer-events-none" />
+            <div className="hero-corner-b absolute -top-24 -right-24 w-[480px] h-[480px] bg-[#9c5a28] opacity-10 rounded-full blur-[150px] pointer-events-none" />
+            <div className="hero-corner-b absolute -bottom-24 -left-24 w-[440px] h-[440px] bg-[#9c5a28] opacity-10 rounded-full blur-[140px] pointer-events-none" />
+            <div className="hero-corner-a absolute -bottom-24 -right-24 w-[440px] h-[440px] bg-[#c97b3d] opacity-10 rounded-full blur-[140px] pointer-events-none" />
           </>
         )}
 
