@@ -143,6 +143,7 @@ export const Navbar: React.FC = () => {
               {!isOnHomePage && (
                 <button
                   onClick={() => {
+                    if (!window.confirm('Log out of your account?')) return;
                     logout();
                     // Hard navigation (not React Router's navigate) so the
                     // authenticated dashboard is fully torn down rather than
@@ -152,7 +153,14 @@ export const Navbar: React.FC = () => {
                     // page state after logout.
                     window.location.href = '/welcome';
                   }}
-                  className="text-gray-400 hover:text-red-400 p-1.5 rounded-lg transition-colors"
+                  // Deliberately red at rest, not just on hover, and
+                  // confirmed before it fires: Logout ends the session
+                  // (clears cookies/localStorage) while Return Home next to
+                  // it does not - they land on the same screen but do very
+                  // different things, so Logout needs to be unmistakable
+                  // rather than just another neutral icon a user could
+                  // click by mistake and wrongly assume signed them out.
+                  className="text-red-400 hover:text-white hover:bg-red-500 border border-red-500/30 hover:border-red-500 p-1.5 rounded-lg transition-colors"
                   title="Logout"
                 >
                   <LogOut className="w-4 h-4" />

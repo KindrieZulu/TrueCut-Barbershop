@@ -39,12 +39,17 @@ describe('Navbar Component UI Tests', () => {
     expect(screen.getByText(/Book Now/i)).toBeInTheDocument();
   });
 
-  it('renders Dashboard link and call logout when user is authenticated as BARBER', () => {
+  it('renders Dashboard link and calls logout (after confirmation) when user is authenticated as BARBER', () => {
     const mockLogout = vi.fn();
     (useAuth as any).mockReturnValue({
       user: { id: 'b1', name: 'Barber Dave', role: 'BARBER' },
       logout: mockLogout,
     });
+
+    // Logout asks for confirmation first (window.confirm) so it can't be
+    // mistaken for the neutral, session-preserving "Return Home" button -
+    // jsdom doesn't implement confirm(), so it's mocked here.
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
 
     // A route that's neither the public welcome page nor this BARBER's own
     // dashboard (/barber), so both the Dashboard link and Logout button
@@ -56,7 +61,28 @@ describe('Navbar Component UI Tests', () => {
     const logoutBtn = screen.getByTitle('Logout');
     expect(logoutBtn).toBeInTheDocument();
     fireEvent.click(logoutBtn);
+    expect(confirmSpy).toHaveBeenCalledTimes(1);
     expect(mockLogout).toHaveBeenCalledTimes(1);
+
+    confirmSpy.mockRestore();
+  });
+
+  it('does not log out if the confirmation is declined', () => {
+    const mockLogout = vi.fn();
+    (useAuth as any).mockReturnValue({
+      user: { id: 'b1', name: 'Barber Dave', role: 'BARBER' },
+      logout: mockLogout,
+    });
+
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+
+    renderNavbar('/settings');
+
+    fireEvent.click(screen.getByTitle('Logout'));
+    expect(confirmSpy).toHaveBeenCalledTimes(1);
+    expect(mockLogout).not.toHaveBeenCalled();
+
+    confirmSpy.mockRestore();
   });
 
   it('hides the Logout button on the public welcome page even when authenticated', () => {
