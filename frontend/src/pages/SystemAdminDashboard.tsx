@@ -66,8 +66,11 @@ export const SystemAdminDashboard: React.FC = () => {
 
       <div className="flex items-center justify-between mb-8">
         <div>
-          <span className="text-xs font-bold text-red-400 bg-red-500/10 px-2.5 py-0.5 rounded border border-red-500/20">SYSTEM ADMIN MASTER CONTROL</span>
-          <h1 className="text-2xl font-display font-extrabold text-white mt-1">Infrastructure & Cross-Portal Management</h1>
+          <div className="flex items-center gap-1.5 text-[11px] font-bold text-red-400 uppercase tracking-[0.14em] mb-2">
+            <Shield className="w-3.5 h-3.5" />
+            <span>System Admin Master Control</span>
+          </div>
+          <h1 className="text-3xl font-display font-black text-white tracking-tight leading-tight">Infrastructure & Cross-Portal Management</h1>
         </div>
         <button onClick={fetchSysAdminData} className="p-2 bg-dark-800 border border-dark-700 text-gold-400 rounded-xl">
           <RefreshCw className="w-4 h-4" />

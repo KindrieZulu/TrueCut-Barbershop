@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
-import { Calendar, Clock, Scissors, AlertCircle, XCircle, CheckCircle, RefreshCw } from 'lucide-react';
+import { Calendar, Clock, Scissors, AlertCircle, XCircle, CheckCircle, RefreshCw, User } from 'lucide-react';
 
 export const ClientDashboard: React.FC = () => {
   const [bookings, setBookings] = useState<any[]>([]);
@@ -52,8 +52,12 @@ export const ClientDashboard: React.FC = () => {
 
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-display font-extrabold text-white">Client Dashboard</h1>
-          <p className="text-sm text-gray-400">View and manage your grooming appointments</p>
+          <div className="flex items-center gap-1.5 text-[11px] font-bold text-gold-500 uppercase tracking-[0.14em] mb-2">
+            <User className="w-3.5 h-3.5" />
+            <span>Client Portal</span>
+          </div>
+          <h1 className="text-3xl font-display font-black text-white tracking-tight leading-tight">Client Dashboard</h1>
+          <p className="text-sm text-gray-400 mt-1">View and manage your grooming appointments</p>
         </div>
         <button onClick={fetchBookings} className="p-2 bg-dark-800 border border-dark-700 text-gold-400 rounded-lg hover:border-gold-500/50">
           <RefreshCw className="w-4 h-4" />

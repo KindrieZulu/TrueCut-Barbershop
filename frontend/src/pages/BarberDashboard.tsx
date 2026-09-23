@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import { useRealtimeEvents } from '../api/events';
-import { Clock, Calendar, MapPin, User, CheckCircle, AlertCircle, RefreshCw, PlusCircle, CheckCircle2, XCircle, History } from 'lucide-react';
+import { Clock, Calendar, MapPin, User, CheckCircle, AlertCircle, RefreshCw, PlusCircle, CheckCircle2, XCircle, History, Scissors } from 'lucide-react';
 
 const HISTORY_BADGE: Record<string, string> = {
   SERVED: 'text-green-400 bg-green-500/10 border-green-500/30',
@@ -104,8 +104,11 @@ export const BarberDashboard: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-dark-800 border border-dark-700 p-6 rounded-2xl">
         <div>
-          <span className="text-xs font-bold text-gold-400 bg-gold-500/10 px-2.5 py-0.5 rounded border border-gold-500/20">BARBER STATION</span>
-          <h1 className="text-2xl font-display font-extrabold text-white mt-1">Today's Appointment Schedule</h1>
+          <div className="flex items-center gap-1.5 text-[11px] font-bold text-gold-500 uppercase tracking-[0.14em] mb-2">
+            <Scissors className="w-3.5 h-3.5" />
+            <span>Barber Station</span>
+          </div>
+          <h1 className="text-3xl font-display font-black text-white tracking-tight leading-tight">Today's Appointment Schedule</h1>
         </div>
         <div className="flex gap-2">
           <button

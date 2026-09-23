@@ -4,7 +4,7 @@ import { useRealtimeEvents } from '../api/events';
 import { getHarareDateString } from '../utils/date';
 import {
   Clock, UserPlus, Scissors, CheckCircle, AlertCircle,
-  Zap, DollarSign, Search, RefreshCw, Wifi, WifiOff, Printer
+  Zap, DollarSign, Search, RefreshCw, Wifi, WifiOff, Printer, UserCheck
 } from 'lucide-react';
 
 // Feeds both the on-screen receipt modal and the printed version - printing
@@ -180,8 +180,11 @@ export const ReceptionistPortal: React.FC = () => {
       {/* Header Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-dark-800 border border-dark-700 p-6 rounded-2xl mb-8">
         <div>
-          <div className="flex items-center space-x-2 mb-1">
-            <span className="text-xs font-bold text-gold-400 bg-gold-500/10 px-2.5 py-0.5 rounded border border-gold-500/20">RECEPTIONIST PWA</span>
+          <div className="flex items-center space-x-2 mb-2">
+            <div className="flex items-center gap-1.5 text-[11px] font-bold text-gold-500 uppercase tracking-[0.14em]">
+              <UserCheck className="w-3.5 h-3.5" />
+              <span>Receptionist PWA</span>
+            </div>
             {isOnline ? (
               <span className="flex items-center text-xs text-green-400 bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20">
                 <Wifi className="w-3 h-3 mr-1" /> Online
@@ -192,7 +195,7 @@ export const ReceptionistPortal: React.FC = () => {
               </span>
             )}
           </div>
-          <h1 className="text-2xl font-display font-extrabold text-white">Harare Main Branch Schedule</h1>
+          <h1 className="text-3xl font-display font-black text-white tracking-tight leading-tight">Harare Main Branch Schedule</h1>
         </div>
 
         <button
