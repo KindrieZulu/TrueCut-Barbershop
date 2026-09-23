@@ -4,7 +4,7 @@ import { useRealtimeEvents } from '../api/events';
 import {
   DollarSign, TrendingUp, Scissors, Settings, Users,
   BarChart3, RefreshCw, Plus, Edit2, Check, Shield, Download, UserPlus,
-  Circle, Clock3
+  Circle, Clock3, Building2
 } from 'lucide-react';
 
 export const CompanyAdminDashboard: React.FC = () => {
@@ -214,8 +214,11 @@ export const CompanyAdminDashboard: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <span className="text-xs font-bold text-gold-400 bg-gold-500/10 px-2.5 py-0.5 rounded border border-gold-500/20">COMPANY ADMIN & ACCOUNTANT</span>
-          <h1 className="text-2xl font-display font-extrabold text-white mt-1">Multi-Branch Executive Dashboard</h1>
+          <div className="flex items-center gap-1.5 text-[11px] font-bold text-gold-500 uppercase tracking-[0.14em] mb-2">
+            <Building2 className="w-3.5 h-3.5" />
+            <span>Company Admin & Accountant</span>
+          </div>
+          <h1 className="text-3xl font-display font-black text-white tracking-tight leading-tight">Multi-Branch Executive Dashboard</h1>
         </div>
         <div className="flex items-center space-x-2">
           <button
