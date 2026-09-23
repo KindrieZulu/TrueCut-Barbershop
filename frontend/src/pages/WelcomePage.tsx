@@ -336,11 +336,11 @@ export const WelcomePage: React.FC = () => {
               <div
                 key={r.id}
                 onClick={() => { setSelectedRole(r); setSelectedDemoPhone(r.demoAccounts ? r.demoAccounts[0].phone : r.demoPhone); }}
-                className={`card-3d group relative bg-dark-800 hover:bg-dark-700 border ${r.gradient} rounded-2xl p-5 cursor-pointer transition-colors flex flex-col justify-between`}
+                className={`card-3d group relative bg-white/[0.04] hover:bg-white/10 backdrop-blur-md border ${r.gradient} rounded-2xl p-5 cursor-pointer transition-colors flex flex-col justify-between`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-3 bg-dark-900 border border-dark-600 rounded-xl text-gold-400 group-hover:bg-gold-500 group-hover:text-gray-50 transition-colors">
+                    <div className="p-3 bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl text-gold-400 group-hover:bg-gold-500 group-hover:text-gray-50 transition-colors">
                       <Icon className="w-6 h-6" />
                     </div>
                     {isCurrentActiveRole && (
