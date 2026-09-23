@@ -2,11 +2,21 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { WelcomePage } from '../pages/WelcomePage';
 import { useAuth } from '../context/AuthContext';
+import { ThemeProvider } from '../context/ThemeContext';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 vi.mock('../context/AuthContext', () => ({
   useAuth: vi.fn(),
 }));
+
+const renderWelcomePage = () =>
+  render(
+    <ThemeProvider>
+      <BrowserRouter>
+        <WelcomePage />
+      </BrowserRouter>
+    </ThemeProvider>
+  );
 
 describe('WelcomePage UI Component Tests', () => {
   beforeEach(() => {
@@ -21,11 +31,7 @@ describe('WelcomePage UI Component Tests', () => {
       verifyOtpAndLogin: vi.fn(),
     });
 
-    render(
-      <BrowserRouter>
-        <WelcomePage />
-      </BrowserRouter>
-    );
+    renderWelcomePage();
 
     expect(screen.getByText(/Precision Grooming/i)).toBeInTheDocument();
     expect(screen.getByText(/Barbershop Platform/i)).toBeInTheDocument();
@@ -42,11 +48,7 @@ describe('WelcomePage UI Component Tests', () => {
       login: vi.fn(),
     });
 
-    render(
-      <BrowserRouter>
-        <WelcomePage />
-      </BrowserRouter>
-    );
+    renderWelcomePage();
 
     const clientCard = screen.getByText('Executive Client');
     fireEvent.click(clientCard);
