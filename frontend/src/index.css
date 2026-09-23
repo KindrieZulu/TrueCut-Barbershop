@@ -21,6 +21,21 @@ body {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
+/* Glossy black page background, dark theme only - two soft, viewport-fixed
+   sheen highlights layered over the flat --tc-dark-900 color so the page
+   canvas reads as a polished/reflective black surface. Only body's own
+   background gets this treatment (background-image, not the --tc-dark-900
+   token itself), so every component that uses bg-dark-900/800/etc for its
+   own surface (cards, inputs, badges...) is untouched, per explicit user
+   request ("make the background glossy black, leave everything else as
+   is"). Light theme is unaffected. */
+html[data-theme='dark'] body {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 255, 255, 0.07), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 85% 110%, rgba(255, 255, 255, 0.05), transparent 60%);
+  background-attachment: fixed;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Inter', 'General Sans', sans-serif;
 }
