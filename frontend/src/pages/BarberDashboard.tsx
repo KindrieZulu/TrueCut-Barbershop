@@ -239,8 +239,8 @@ export const BarberDashboard: React.FC = () => {
 
       {/* Block Out Modal */}
       {showBlockOutModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-dark-800 border border-dark-700 rounded-2xl p-6 max-w-md w-full space-y-4">
+        <div className="modal-backdrop-in fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="modal-panel-in bg-dark-800 border border-dark-700 rounded-2xl p-6 max-w-md w-full space-y-4">
             <h3 className="font-display font-bold text-white text-base">Add Leave / Block-Out Period</h3>
 
             <div>

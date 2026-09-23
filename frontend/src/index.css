@@ -110,6 +110,50 @@ html[data-theme='light'] .hover\:text-white:hover {
   animation-delay: 0s, 1s;
 }
 
+/* System-wide transition timing (DESIGN.md "Motion"). Every animation
+   below is short (150-200ms) and animates only opacity/transform (GPU-
+   accelerated, no layout/paint cost) - "smooth" without ever feeling like
+   the app is slow to respond, per explicit user request to prioritize
+   perceived speed alongside the polish. */
+@keyframes page-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Applied to the routed page container, re-keyed per route in App.tsx so
+   every navigation re-triggers a quick fade+lift instead of a hard cut. */
+.page-fade-in {
+  animation: page-fade-in 180ms ease-out both;
+}
+
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-panel-in {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-backdrop-in {
+  animation: modal-backdrop-in 150ms ease-out both;
+}
+
+.modal-panel-in {
+  animation: modal-panel-in 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-fade-in,
+  .modal-backdrop-in,
+  .modal-panel-in,
+  .hero-corner-a,
+  .hero-corner-b {
+    animation: none;
+  }
+}
+
 /* Print-just-one-element pattern: any element with .printable-area stays
    visible when printing, everything else on the page is hidden. Used by
    ReceptionistPortal's receipt and CompanyAdminDashboard's weekly report -

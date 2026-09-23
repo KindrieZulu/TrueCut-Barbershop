@@ -356,8 +356,8 @@ export const WelcomePage: React.FC = () => {
 
       {/* Role Sign-In / Sign-Up Glass Modal */}
       {selectedRole && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
-          <div className="bg-dark-800/95 border border-dark-600 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-6 relative overflow-hidden">
+        <div className="modal-backdrop-in fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+          <div className="modal-panel-in bg-dark-800/95 border border-dark-600 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-6 relative overflow-hidden">
             {/* Header */}
             <div className="flex justify-between items-start border-b border-dark-700 pb-4">
               <div>

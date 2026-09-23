@@ -272,8 +272,8 @@ export const ReceptionistPortal: React.FC = () => {
 
       {/* Walk-in Registration Modal */}
       {showWalkInModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-dark-800 border border-dark-700 rounded-2xl p-6 max-w-lg w-full space-y-5 max-h-[90vh] overflow-y-auto">
+        <div className="modal-backdrop-in fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="modal-panel-in bg-dark-800 border border-dark-700 rounded-2xl p-6 max-w-lg w-full space-y-5 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center border-b border-dark-700 pb-3">
               <h3 className="font-display font-bold text-white text-lg">Walk-In Client Registration</h3>
               <button onClick={() => setShowWalkInModal(false)} className="text-gray-400 text-sm font-bold">✕</button>
@@ -462,8 +462,8 @@ export const ReceptionistPortal: React.FC = () => {
       {/* Receipt Modal - the #printable-receipt element is what stays
           visible per the print CSS rule in index.css when Print is clicked. */}
       {showReceiptModal && lastReceipt && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 print:bg-white print:backdrop-blur-none">
-          <div className="bg-white text-black rounded-2xl p-6 max-w-sm w-full space-y-3 font-mono text-sm print:shadow-none print:rounded-none">
+        <div className="modal-backdrop-in fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 print:bg-white print:backdrop-blur-none">
+          <div className="modal-panel-in bg-white text-black rounded-2xl p-6 max-w-sm w-full space-y-3 font-mono text-sm print:shadow-none print:rounded-none">
             <div id="printable-receipt" className="printable-area">
               <div className="text-center border-b border-dashed border-gray-400 pb-3 mb-3">
                 <h3 className="font-bold text-base tracking-wide">TRUECUT BARBERSHOP</h3>
