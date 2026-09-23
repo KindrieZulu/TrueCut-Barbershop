@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/client';
 import { useRealtimeEvents } from '../api/events';
 import { getHarareDateString } from '../utils/date';
 import {
   Clock, UserPlus, Scissors, CheckCircle, AlertCircle,
-  Zap, DollarSign, Search, RefreshCw, Wifi, WifiOff, Home, Printer
+  Zap, DollarSign, Search, RefreshCw, Wifi, WifiOff, Printer
 } from 'lucide-react';
 
 // Feeds both the on-screen receipt modal and the printed version - printing
@@ -26,7 +25,6 @@ function getReceiptFeeRows(booking: any) {
 }
 
 export const ReceptionistPortal: React.FC = () => {
-  const navigate = useNavigate();
   const [todayBookings, setTodayBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showWalkInModal, setShowWalkInModal] = useState(false);
@@ -178,16 +176,6 @@ export const ReceptionistPortal: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Navigation Return Header */}
-      <div className="flex items-center space-x-2 mb-4">
-        <button
-          onClick={() => navigate('/welcome')}
-          className="bg-dark-800 hover:bg-dark-700 text-gold-400 border border-dark-600 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5"
-        >
-          <Home className="w-3.5 h-3.5" />
-          <span>Return Home</span>
-        </button>
-      </div>
 
       {/* Header Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-dark-800 border border-dark-700 p-6 rounded-2xl mb-8">

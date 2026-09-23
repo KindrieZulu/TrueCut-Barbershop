@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { apiClient } from '../api/client';
 import {
-  Shield, Activity, Database, Server, RefreshCw, FileText, Home,
+  Shield, Activity, Database, Server, RefreshCw, FileText,
   Building2, UserCheck, Scissors, User, Sparkles, UserPlus
 } from 'lucide-react';
 
 export const SystemAdminDashboard: React.FC = () => {
-  const navigate = useNavigate();
   const [health, setHealth] = useState<any>(null);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,16 +63,6 @@ export const SystemAdminDashboard: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Return Home Header */}
-      <div className="flex items-center space-x-2 mb-4">
-        <button
-          onClick={() => navigate('/welcome')}
-          className="bg-dark-800 hover:bg-dark-700 text-gold-400 border border-dark-600 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5"
-        >
-          <Home className="w-3.5 h-3.5" />
-          <span>Return Home</span>
-        </button>
-      </div>
 
       <div className="flex items-center justify-between mb-8">
         <div>

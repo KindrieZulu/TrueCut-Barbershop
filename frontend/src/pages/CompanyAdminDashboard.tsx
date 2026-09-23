@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/client';
 import { useRealtimeEvents } from '../api/events';
 import {
   DollarSign, TrendingUp, Scissors, Settings, Users,
-  BarChart3, RefreshCw, Plus, Edit2, Check, Shield, Download, Home, UserPlus,
+  BarChart3, RefreshCw, Plus, Edit2, Check, Shield, Download, UserPlus,
   Circle, Clock3
 } from 'lucide-react';
 
 export const CompanyAdminDashboard: React.FC = () => {
-  const navigate = useNavigate();
   const [report, setReport] = useState<any>(null);
   const [services, setServices] = useState<any[]>([]);
   const [settings, setSettings] = useState<any[]>([]);
@@ -212,16 +210,6 @@ export const CompanyAdminDashboard: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Return Home Header */}
-      <div className="flex items-center space-x-2 mb-4">
-        <button
-          onClick={() => navigate('/welcome')}
-          className="bg-dark-800 hover:bg-dark-700 text-gold-400 border border-dark-600 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5"
-        >
-          <Home className="w-3.5 h-3.5" />
-          <span>Return Home</span>
-        </button>
-      </div>
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">

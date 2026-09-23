@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Clock, LogOut, LayoutDashboard, Tag, ArrowLeft, Settings, Sun, Moon } from 'lucide-react';
+import { Clock, LogOut, LayoutDashboard, Tag, Home, Settings, Sun, Moon } from 'lucide-react';
 import truecutLogo from '../assets/truecut-logo.webp';
 import { useTheme } from '../context/ThemeContext';
 
@@ -64,14 +64,19 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Brand & Home Navigation */}
         <div className="flex items-center space-x-3">
-          {location.pathname !== '/' && location.pathname !== '/welcome' && (
+          {/* Return Home - every page used to render its own copy of this
+              button in its own content (duplicated across 7 pages); it now
+              lives once, here, in the same top-left slot the old per-page
+              "Back" button used to occupy. Per explicit user request ("put
+              the 'return home' button, where the back button [is]"). */}
+          {!isOnHomePage && (
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/welcome')}
               className="flex items-center space-x-1.5 bg-dark-900 hover:bg-dark-700 text-gray-300 hover:text-white border border-dark-600 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
-              title="Go back"
+              title="Return Home"
             >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Back</span>
+              <Home className="w-4 h-4" />
+              <span className="hidden sm:inline">Return Home</span>
             </button>
           )}
           <Link to="/welcome" className="flex items-center space-x-2">

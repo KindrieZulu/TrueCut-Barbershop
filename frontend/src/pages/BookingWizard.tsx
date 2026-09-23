@@ -197,17 +197,8 @@ export const BookingWizard: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
-      {/* Return & Progress Header */}
-      <div className="flex items-center justify-between mb-4">
-        <button
-          onClick={() => navigate('/welcome')}
-          className="bg-dark-800 hover:bg-dark-700 text-gold-400 border border-dark-600 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5"
-        >
-          <Home className="w-3.5 h-3.5" />
-          <span>Return Home</span>
-        </button>
-
-        {step > 1 && (
+      {step > 1 && (
+        <div className="flex items-center justify-end mb-4">
           <button
             onClick={() => setStep(step - 1)}
             className="text-xs text-gray-400 hover:text-white flex items-center space-x-1"
@@ -215,8 +206,8 @@ export const BookingWizard: React.FC = () => {
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Previous Step</span>
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Progress Bar Header */}
       <div className="flex items-center justify-between mb-8 text-xs sm:text-sm font-semibold">

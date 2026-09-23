@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/client';
 import { useRealtimeEvents } from '../api/events';
-import { Clock, Calendar, MapPin, User, CheckCircle, AlertCircle, RefreshCw, PlusCircle, CheckCircle2, XCircle, History, Home } from 'lucide-react';
+import { Clock, Calendar, MapPin, User, CheckCircle, AlertCircle, RefreshCw, PlusCircle, CheckCircle2, XCircle, History } from 'lucide-react';
 
 const HISTORY_BADGE: Record<string, string> = {
   SERVED: 'text-green-400 bg-green-500/10 border-green-500/30',
@@ -11,7 +10,6 @@ const HISTORY_BADGE: Record<string, string> = {
 };
 
 export const BarberDashboard: React.FC = () => {
-  const navigate = useNavigate();
   const [appointments, setAppointments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [history, setHistory] = useState<any[]>([]);
@@ -102,16 +100,6 @@ export const BarberDashboard: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      {/* Navigation Return Header */}
-      <div className="flex items-center space-x-2 mb-4">
-        <button
-          onClick={() => navigate('/welcome')}
-          className="bg-dark-800 hover:bg-dark-700 text-gold-400 border border-dark-600 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5"
-        >
-          <Home className="w-3.5 h-3.5" />
-          <span>Return Home</span>
-        </button>
-      </div>
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-dark-800 border border-dark-700 p-6 rounded-2xl">
