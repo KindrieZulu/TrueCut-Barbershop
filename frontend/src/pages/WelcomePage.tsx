@@ -239,7 +239,12 @@ export const WelcomePage: React.FC = () => {
           </>
         )}
 
-        <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6 pt-4 pb-12">
+        {/* Glass panel - the animated corner glows sit behind/around this
+            card and blur through its translucent backdrop, giving the
+            content a frosted-glass look rather than sitting directly on
+            the flat dark band. Per explicit user request ("make the hero
+            band glassy"). */}
+        <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6 px-6 sm:px-12 py-10 rounded-3xl bg-white/[0.06] backdrop-blur-xl border border-white/10 shadow-2xl">
           <img
             src={truecutLogo}
             alt="TrueCut Barber"
