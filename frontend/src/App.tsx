@@ -32,7 +32,7 @@ export const App: React.FC = () => {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-dark-900 text-gray-100 font-sans">
+    <div className="app-shell min-h-screen bg-dark-900 text-gray-100 font-sans">
       <Navbar />
       <main className="pb-12">
         <Suspense fallback={<RouteFallback />}>

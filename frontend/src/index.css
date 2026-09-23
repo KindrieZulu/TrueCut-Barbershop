@@ -23,16 +23,27 @@ body {
 
 /* Glossy black page background, dark theme only - two soft, viewport-fixed
    sheen highlights layered over the flat --tc-dark-900 color so the page
-   canvas reads as a polished/reflective black surface. Only body's own
-   background gets this treatment (background-image, not the --tc-dark-900
-   token itself), so every component that uses bg-dark-900/800/etc for its
-   own surface (cards, inputs, badges...) is untouched, per explicit user
+   canvas reads as a polished/reflective black surface. Scoped to
+   `.app-shell` (App.tsx's root div, the actual opaque canvas visible
+   behind every route) rather than `body`: body sits underneath that
+   opaque div and is fully covered by it, so a body-level rule here is
+   invisible no matter what it says - this was verified live (disabling
+   body's background via an inline !important override changed nothing
+   on screen) after a user report that the background wasn't reading as
+   black. Every component that uses bg-dark-900/800/etc for its own
+   surface (cards, inputs, badges...) is untouched, per explicit user
    request ("make the background glossy black, leave everything else as
    is"). Light theme is unaffected. */
-html[data-theme='dark'] body {
+html[data-theme='dark'] .app-shell {
+  /* --tc-dark-900 (#120a0c) has a warm maroon undertone that reads as
+     brown, not black, once any highlight is layered on it - so this
+     surface's own fill is overridden to a true neutral black here
+     (scoped to .app-shell only; every component elsewhere keeps using
+     --tc-dark-900 unchanged). */
+  background-color: #050505;
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 255, 255, 0.07), transparent 60%),
-    radial-gradient(ellipse 60% 40% at 85% 110%, rgba(255, 255, 255, 0.05), transparent 60%);
+    radial-gradient(ellipse 45% 18% at 50% -6%, rgba(255, 255, 255, 0.05), transparent 65%),
+    radial-gradient(ellipse 30% 16% at 90% 104%, rgba(255, 255, 255, 0.035), transparent 65%);
   background-attachment: fixed;
 }
 
