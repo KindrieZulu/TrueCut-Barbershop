@@ -103,17 +103,20 @@ export const Navbar: React.FC = () => {
             </Link>
           )}
 
-          {/* Theme toggle - always visible, including on the public welcome
-              page, so a visitor can switch the site's color theme without
-              needing to log in first (Settings' toggle stays too, for
-              logged-in users who land there directly). */}
-          <button
-            onClick={toggleTheme}
-            className="bg-dark-900 hover:bg-dark-700 border border-dark-600 text-gray-300 hover:text-gold-400 p-1.5 rounded-full transition-colors"
-            title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-          >
-            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </button>
+          {/* Theme toggle - only for logged-out visitors, who have no other
+              way to reach a theme control. Every logged-in page either has
+              a Settings link (which has its own toggle) or, on /settings
+              itself, is the toggle's own destination - showing this too
+              would be a redundant second theme switch. */}
+          {!user && (
+            <button
+              onClick={toggleTheme}
+              className="bg-dark-900 hover:bg-dark-700 border border-dark-600 text-gray-300 hover:text-gold-400 p-1.5 rounded-full transition-colors"
+              title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+            >
+              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+          )}
 
           {user ? (
             <>
