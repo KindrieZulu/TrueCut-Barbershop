@@ -3,8 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   Scissors, User, UserCheck, Shield, Building2, Tag,
-  ArrowRight, KeyRound, LogIn, ChevronRight, CheckCircle2, Zap, Home,
-  CreditCard, Smartphone, ChevronDown, CheckCircle
+  ArrowRight, KeyRound, LogIn, ChevronRight, CheckCircle2, Zap,
+  CreditCard, ChevronDown
 } from 'lucide-react';
 import truecutLogo from '../assets/truecut-logo.webp';
 import { useTheme } from '../context/ThemeContext';
@@ -266,22 +266,6 @@ export const WelcomePage: React.FC = () => {
           <p className="text-[#b5a179] max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
             Harare's premier barbershop. Enjoy real-time slot holds, house call deliveries, instant EcoCash checkout, and priority squeeze-in access.
           </p>
-
-          {/* Feature Pill Highlights */}
-          <div className="flex flex-wrap items-center justify-center gap-2 pt-2 text-xs font-semibold text-gray-200">
-            <span className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
-              <CheckCircle className="w-3.5 h-3.5 text-[#c97b3d]" />
-              <span>Zero Double-Booking Guarantee</span>
-            </span>
-            <span className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
-              <Home className="w-3.5 h-3.5 text-blue-300" />
-              <span>10km House Calls</span>
-            </span>
-            <span className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
-              <Smartphone className="w-3.5 h-3.5 text-green-300" />
-              <span>EcoCash Integration</span>
-            </span>
-          </div>
 
           {/* Action Buttons */}
           <div className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
