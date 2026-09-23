@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
-  Scissors, User, UserCheck, Shield, Building2, Clock, Tag,
+  Scissors, User, UserCheck, Shield, Building2, Tag,
   ArrowRight, KeyRound, LogIn, ChevronRight, CheckCircle2, Zap, Home,
   CreditCard, Smartphone, ChevronDown, CheckCircle
 } from 'lucide-react';
@@ -30,7 +30,6 @@ export const WelcomePage: React.FC = () => {
 
   const [selectedRole, setSelectedRole] = useState<RoleOption | null>(null);
   const [authMode, setAuthMode] = useState<'DEMO' | 'PHONE'>('DEMO');
-  const [harareTime, setHarareTime] = useState('');
   const [password, setPassword] = useState('Password123!');
   const [selectedDemoPhone, setSelectedDemoPhone] = useState('');
 
@@ -48,22 +47,6 @@ export const WelcomePage: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-
-  // Live Harare Clock
-  useEffect(() => {
-    const updateClock = () => {
-      const now = new Date();
-      setHarareTime(now.toLocaleTimeString('en-US', {
-        timeZone: 'Africa/Harare',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-      }));
-    };
-    updateClock();
-    const interval = setInterval(updateClock, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   const roles: RoleOption[] = [
     {
@@ -268,11 +251,6 @@ export const WelcomePage: React.FC = () => {
             alt="TrueCut Barber"
             className="w-24 h-24 sm:w-28 sm:h-28 mx-auto rounded-full object-cover shadow-2xl shadow-[#c97b3d]/30 border-4 border-black/30"
           />
-
-          <div className="inline-flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full text-xs text-[#e2924d] font-mono shadow-xl">
-            <Clock className="w-3.5 h-3.5 text-[#c97b3d] animate-pulse" />
-            <span>HARARE MAIN BRANCH: {harareTime} CAT</span>
-          </div>
 
           <span className="block text-xs sm:text-sm font-extrabold uppercase tracking-[0.15em] text-[#e2924d]">
             Zimbabwe's Premier Barbershop

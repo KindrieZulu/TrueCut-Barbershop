@@ -51,6 +51,16 @@ export const Navbar: React.FC = () => {
 
   return (
     <nav className="bg-dark-800/80 backdrop-blur-xl border-b border-dark-700 sticky top-0 z-50 px-4 py-3">
+      {/* Live Harare Clock - absolutely centered on the navbar itself
+          (rather than a flex child of the brand/links row) so it stays
+          truly centered regardless of how wide either side is. Moved here
+          from the WelcomePage hero per explicit user request ("remove
+          this and put it in the navbar and center justify"). */}
+      <div className="hidden md:flex items-center space-x-2 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-dark-900 px-3 py-1.5 rounded-full border border-dark-600 text-xs text-gold-400">
+        <Clock className="w-3.5 h-3.5 animate-pulse text-gold-500" />
+        <span className="font-mono font-bold">HARARE MAIN BRANCH: {harareTime} CAT</span>
+      </div>
+
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Brand & Home Navigation */}
         <div className="flex items-center space-x-3">
@@ -71,12 +81,6 @@ export const Navbar: React.FC = () => {
               <span className="text-xs text-gray-400 block -mt-1 font-medium">HARARE, ZIMBABWE</span>
             </div>
           </Link>
-        </div>
-
-        {/* Live Harare Clock */}
-        <div className="hidden md:flex items-center space-x-2 bg-dark-900 px-3 py-1.5 rounded-full border border-dark-600 text-xs text-gold-400">
-          <Clock className="w-3.5 h-3.5 animate-pulse text-gold-500" />
-          <span className="font-mono font-bold">{harareTime} CAT</span>
         </div>
 
         {/* Navigation Links */}
