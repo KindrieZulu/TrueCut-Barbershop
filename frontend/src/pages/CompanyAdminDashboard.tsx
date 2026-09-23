@@ -491,7 +491,7 @@ export const CompanyAdminDashboard: React.FC = () => {
                             <td className="py-1.5 font-semibold">{info.name}</td>
                             <td className="py-1.5 text-right text-green-400 print:text-black">{info.served}</td>
                             <td className="py-1.5 text-right text-red-400 print:text-black">{info.cancelled}</td>
-                            <td className="py-1.5 text-right text-amber-400 print:text-black">{info.noShow}</td>
+                            <td className="py-1.5 text-right text-red-400 print:text-black">{info.noShow}</td>
                             <td className="py-1.5 text-right font-bold text-gold-400 print:text-black">
                               ${(weeklyReport.revenuePerBarber?.[id]?.total || 0).toFixed(2)}
                             </td>

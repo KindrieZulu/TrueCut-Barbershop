@@ -37,11 +37,11 @@ export const ClientDashboard: React.FC = () => {
       case 'HELD':
         return <span className="bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold">Slot Held</span>;
       case 'SERVED':
-        return <span className="bg-blue-500/10 text-blue-400 border border-blue-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold">Served</span>;
+        return <span className="bg-green-500/10 text-green-400 border border-green-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold">Served</span>;
       case 'CANCELLED':
         return <span className="bg-red-500/10 text-red-400 border border-red-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold">Cancelled</span>;
       case 'NO_SHOW':
-        return <span className="bg-purple-500/10 text-purple-400 border border-purple-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold">No Show</span>;
+        return <span className="bg-red-500/10 text-red-400 border border-red-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold">No Show</span>;
       default:
         return <span className="bg-gray-500/10 text-gray-400 border border-gray-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold">{status}</span>;
     }
