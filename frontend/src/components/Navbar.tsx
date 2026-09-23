@@ -83,12 +83,15 @@ export const Navbar: React.FC = () => {
           </Link>
         </div>
 
-        {/* Navigation Links */}
-        <div className="flex items-center space-x-3">
+        {/* Navigation Links - tight spacing below `sm` since a logged-in
+            user can have up to 5 items here (Prices, theme toggle,
+            Dashboard, Settings, Logout) at once, which overflows a phone
+            width at the default spacing/visibility. */}
+        <div className="flex items-center space-x-1 sm:space-x-3">
           {!isStaff && (
             <Link
               to="/catalogue"
-              className="text-xs sm:text-sm text-gray-300 hover:text-gold-400 px-2 py-1 transition-colors flex items-center space-x-1"
+              className="hidden sm:flex text-xs sm:text-sm text-gray-300 hover:text-gold-400 px-2 py-1 transition-colors items-center space-x-1"
             >
               <Tag className="w-3.5 h-3.5 text-gold-500" />
               <span>Prices</span>
